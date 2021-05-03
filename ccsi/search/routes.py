@@ -53,7 +53,7 @@ class AllSearchDescription(Resource):
 
     def get(self, form):
         check_form(form)
-        url = f'{request.url_root}/{form}/search'
+        url = f'{request.url_root}{form}/search'
         return Response(self.description.build_description('ccsi', url),
                         mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
@@ -84,7 +84,7 @@ class ResourceSearch(Resource):
                 query_processor.process_query(request.args, resource_name)
             except Exception as error:
                 return render_error(error)
-            url = f'{request.url_root}/{resource_name}/{form}/search'
+            url = f'{request.url_root}{resource_name}/{form}/search'
             response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, self.response_spec,
                                            Config.namespaces, query_processor, url, resource_name)
             return Response(response.build_response(), mimetype='application/xml', content_type='text/xml; charset=utf-8')
@@ -107,7 +107,7 @@ class ResourceSearchDescription(Resource):
     def get(self, resource_name, form):
         check_form(form)
         exist(resource_name)
-        url = f'{request.url_root}/{resource_name}/{form}/search'
+        url = f'{request.url_root}{resource_name}/{form}/search'
         return Response(self.description.build_description(resource_name, url),
                         mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
