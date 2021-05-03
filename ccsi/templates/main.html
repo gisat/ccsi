@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% filter markdown %}
+    {{ markdown|safe }}
+    {% endfilter %}
+{% endblock content %}

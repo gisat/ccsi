@@ -1,0 +1,283 @@
+resource_name: mundi_s1
+short_name: Mundi Sentinel 1 endpoint
+connection:
+  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel1/opensearch?
+  typ: simple_request
+parameters:
+  collection:
+    typ: string
+    name: collections
+    tranfunc: identity
+    values:
+      - sentinel1
+  resource:
+    typ: string
+    name: resource
+    tranfunc: identity
+    values:
+      - mundi
+  searchTerms:
+    name: g
+    typ: string
+    tranfunc: identity
+  title:
+    name: title
+    typ: string
+    tranfunc: identity
+  startindex:
+    name: startIndex
+    typ: integer
+    tranfunc: identity
+  maxRecords:
+    name: maxRecords
+    typ: integer
+    tranfunc: identity
+  uid:
+    name: uid
+    typ: string
+    tranfunc: identity
+  bbox:
+    name: bbox
+    typ: bbox
+    tranfunc: identity
+  geometry:
+    name: geometry
+    typ: wktgeom
+    tranfunc: identity
+  relation:
+    name: relation
+    typ: option
+    tranfunc: identity
+    mapping:
+      intersects: intersects
+      contains: contains
+      disjoint: disjoint
+  lat:
+    name: lat
+    typ: float
+    tranfunc: identity
+  lon:
+    name: lon
+    typ: float
+    tranfunc: identity
+  radius:
+    name: radius
+    typ: integer
+    tranfunc: identity
+  name:
+    name: name
+    typ: string
+    tranfunc: identity
+  timeStart:
+    name: timeStart
+    typ: datetime
+    tranfunc: identity
+  timeEnd:
+    name: timeEnd
+    typ: datetime
+    tranfunc: identity
+  timeRelation:
+    name: timeRelation
+    typ: option
+    tranfunc: identity
+    mapping:
+      intersects: intersects
+      contains: contains
+      disjoint: disjoint
+      during: during
+  parentIdentifier:
+    name: parentIdentifier
+    typ: string
+    tranfunc: identity
+  platform:
+    name: platform
+    typ: option
+    tranfunc: identity
+    mapping:
+      sentinel-1: sentinel-1
+  instrument:
+    name: instrument
+    typ: option
+    tranfunc: identity
+    mapping:
+      sar: SAR
+  sensorType:
+    name: sensorType
+    typ: option
+    tranfunc: identity
+    mapping:
+      radar: RADAR
+  sensorMode:
+    name: sensorMode
+    typ: option
+    tranfunc: identity
+    mapping:
+      sm: SM_
+      iw: IW_
+      ew: EW_
+      wv: WV_
+  orbitDirection:
+    name: orbitDirection
+    typ: option
+    tranfunc: identity
+    mapping:
+      ascending: ASCENDING
+      descending: DESCENDING
+  acquisitionType:
+    name: acquisitionType
+    typ: option
+    tranfunc: identity
+    mapping:
+      nominal: NOMINAL
+      calibration: CALIBRATION
+      other: OTHER
+  polarisationChannels:
+      name: polarisationChannels
+      typ: option
+      tranfunc: identity
+      mapping:
+        hh/vv: HH/VV
+        vv/vh: VV/VH
+        hh: HH
+        vv: VV
+        hv: HV
+        vh: VH
+  productType:
+    name: productType
+    typ: option
+    tranfunc: identity
+    mapping:
+      raw: RAW
+      ocn: OCN
+      grd: GRD
+      slc: SLC
+  processingLevel:
+    name: processingLevel
+    typ: option
+    tranfunc: identity
+    mapping:
+      level1: L0_
+      level2: L1_
+      level3: L3_
+  processingCenter:
+    name: processingCenter
+    typ: string
+    tranfunc: identity
+  processingDate:
+    name: processingDate
+    typ: datetime
+    tranfunc: identity
+  custom:onlineStatus:
+    name: onlineStatus
+    typ: option
+    tranfunc: identity
+    mapping:
+      online: ONLINE
+      offline: OFFLINE
+      notavaliable: NOTAVALIABLE
+      planed: PLANED
+  resolution:
+    name: resolution
+    typ: integer
+    tranfunc: identity
+  orbitNumber:
+    name: orbitNumber
+    typ: integer
+    tranfunc: identity
+parser:
+  typ: xmlsax
+  parameters:
+    totalResults:
+      tag: totalResults
+      uri: http://a9.com/-/spec/opensearch/1.1/
+      source: text
+      location: head
+    title:
+      tag: title
+      uri: http://www.w3.org/2005/Atom
+      source: text
+    content:
+      tag: content
+      uri: http://search.yahoo.com/mrss/
+      source:
+        attrib:
+          - url
+          - medium
+    imagePatternURI:
+      tag: link
+      tag_spec: text_to_enclousure
+      uri: http://tas/DIAS
+      source: text
+    resolution:
+      tag: resolution
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    sensorType:
+      tag: sensorType
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    sensorMode:
+      tag: sensorMode
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    instrument:
+      tag: instrument
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    orbitDirection:
+      tag: orbitDirection
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    orbitNumber:
+      tag: orbitNumber
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    polarisationChannels:
+      tag: polarisationChannels
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    productType:
+      tag: productType
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    processingLevel:
+      tag: processingLevel
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    archivingCenter:
+      tag: archivingCenter
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    processingCenter:
+      tag: processingCenter
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    processingDate:
+      tag: processingDate
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    platform:
+      tag: platform
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    box:
+      tag: box
+      uri: http://www.georss.org/georss
+      source: text
+    polygon:
+      tag: polygon
+      uri: http://www.georss.org/georss
+      source: text
+    format:
+      tag: format
+      uri: http://purl.org/dc/elements/1.1/
+      source: text
+    identifier:
+      tag: identifier
+      uri: http://purl.org/dc/elements/1.1/
+      source: text
+
+
+
+
+

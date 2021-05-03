@@ -1,0 +1,19 @@
+<feed xmlns="http://www.w3.org/2005/Atom"
+	  xmlns:dc="http://purl.org/dc/elements/1.1/"
+	  xmlns:gml="http://www.opengis.net/gml">
+    <title>Copernicus Core Service Interface search results</title>
+    <subtitle>Displaying {{ count }} results</subtitle>
+    <updated>{{date_now()}}</updated>
+	<author>
+		<name>Copernicus Core Service Interface</name>
+	</author>
+    <id>{{id}}</id>
+	<totalResults>{{count}}</totalResults>
+	<startIndex>{{start}}</startIndex>
+	<itemsPerPage>{{items}}</itemsPerPage>
+	{{query_links}}
+    <entry>
+        <title>{{ title }}</title>
+        <summary>{{ error }}</summary>
+    </entry>
+</feed>

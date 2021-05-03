@@ -1,0 +1,12 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Copernicus Core Service error report</title>
+    <entry>
+        <title>{{ msg.title }}</title>
+        <summary>
+            {% filter indent(first=0, width=0) %}
+            {{ msg.summary }}
+            {% endfilter %}
+
+        </summary>
+    </entry>
+</feed>

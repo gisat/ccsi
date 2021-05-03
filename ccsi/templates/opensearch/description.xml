@@ -1,0 +1,23 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+					   xmlns:atom="http://www.w3.org/2005/Atom"
+					   xmlns:eo="http://a9.com/-/opensearch/extensions/eo/1.0/"
+					   xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/"
+					   xmlns:param="http://a9.com/-/spec/opensearch/extensions/parameters/1.0/"
+					   xmlns:referrer="http://www.opensearch.org/Specifications/OpenSearch/Extensions/Referrer/1.0"
+					   xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/">
+<ShortName>CCSI</ShortName>
+<LongName>Copernicus Core Service Interface</LongName>
+<Description>OpenSearch description document that describes how to query data provided this endpoint</Description>
+<Contact>michal.opletal@gisat.cz</Contact>
+<!--  description document  -->
+<!--  search criterias  -->
+<!--  parameters examples  -->
+<Query role="example" geo:box="-180.0,-90.0,180.0,90.0" time:end="2018-07-30T00:00:00Z" time:start="2018-07-29T00:00:00Z"/>
+<!--  general common informations  -->
+<Developer>GISAT</Developer>
+<SyndicationRight>open</SyndicationRight>
+<AdultContent>false</AdultContent>
+<Language>en</Language>
+<OutputEncoding>UTF-8</OutputEncoding>
+<InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>
