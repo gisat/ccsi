@@ -352,19 +352,3 @@ class ResourceDescriptionContainer(Container):
 
     def create(self, resource_name, description):
         self.update(resource_name, description)
-
-
-if __name__ == '__main__':
-    from ccsi import init_app
-    init_app()
-    from ccsi.storage import storage
-    from ccsi.resource.query import QueryResource
-    from ccsi.config import Config
-    query_processor = QueryResource(storage.resource_schemas, storage.translator, storage.connections, storage.parsers)
-
-    q = {'orbitNumber': 106, 'timeStart': '2017-10-10'}
-    query_processor.process_query(q)
-    base_url = 'foo.bar'
-    response = AllResourceXMLResponse(Config.namespaces, query_processor, base_url)
-    response.build_response()
-    pass
