@@ -7,6 +7,7 @@ from ccsi.config import Config
 from ccsi.storage import storage
 from ccsi.base import load_yaml
 from ccsi.resource.connection import ConnectionSchema
+from ccsi.resource.output import ResourceDescriptionSchema
 from lxml.etree import register_namespace
 
 
@@ -55,11 +56,18 @@ def init_response_spec(definitions, resource_name):
             raise RuntimeError(f'Initialization of response specification failed: {resource_name}, {e}')
 
 
+def init_resource_description(definitions, resource_name):
+        try:
+            description = ResourceDescriptionSchema().load(definitions)
+            storage.resource_description.create(resource_name, description)
+        except Exception as e:
+            raise RuntimeError(f'Initialization of resource description failed: {resource_name}, {e}')
+
+
 def register_namespaces(namespace):
     for name, ns in namespace.items():
         for prefix, uri in ns.items():
             register_namespace(prefix, uri)
-
 
 
 def init_app():
@@ -74,6 +82,7 @@ def init_app():
         init_connections(definitions, resource_name)
         init_parsers(definitions, resource_name)
         init_response_spec(definitions, resource_name)
+        init_resource_description(definitions, resource_name)
 
     register_namespaces(Config.namespaces)
 
@@ -101,7 +110,7 @@ def create_app():
     init_app()
 
     # swagger
-    Swagger(app)
+    Swagger(app, template=Config.swagger)
 
     # with app.app_context():
     #     api.init_app(app)

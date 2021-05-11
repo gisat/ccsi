@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from ccsi.storage import storage
 from ccsi.base import validate_regpars, ExcludeSchema
 from marshmallow import fields
-
+from flasgger import swag_from
 
 api_resource = Blueprint('api_resource', __name__)
 api = Api(api_resource)
@@ -39,11 +39,43 @@ class Parameters(Resource):
 
 
     def get(self):
-        """return list of registered resources translations """
+        """
+        Return registered resources parameters set as list of resources names
+        ---
+        tags:
+          - Parameters
+        produces:
+          - application/json
+        responses:
+          200:
+            description: List of resources, which parameters sets are registered
+            examples:
+            items: [ccsi]
+        """
         return self.parameters.get_item_list(), 200
 
     def post(self):
-        """translate the guery from ccsi api to resource api"""
+        """
+        Register resource parameters set container
+        ---
+        tags:
+          - Parameters
+        produces:
+          - application/json
+        parameters:
+          - in: body
+            description: Name of resource
+            name: resource_name
+            type: string
+            required: true
+            schema:
+              type: string
+              items:
+                resource_name : name
+        responses:
+          '200':
+            description: Container for resource parameters for given resource is created
+        """
         resource_name = parser.parse_args()['resource_name']
         if self.exist(resource_name):
             return {"message": f"Failed to create Resource Parameters container for resource {resource_name}."
@@ -51,6 +83,29 @@ class Parameters(Resource):
         return self.make_operation(resource_name, 'create', 'create')
 
     def delete(self):
+        """
+        Delete resource parameters set container
+        ---
+        tags:
+          - Parameters
+        produces:
+          - application/json
+        parameters:
+          - in: body
+            description: Name of resource
+            name: resource_name
+            type: string
+            required: true
+            schema:
+              type: string
+              items:
+                resource_name : name
+        responses:
+          200:
+            description: Container for resource parameters for given resource was deleted
+          400:
+            description: Unknown resource name
+        """
         resource_name = parser.parse_args()['resource_name']
         if self.exist(resource_name):
             return self.make_operation(resource_name, 'delete', 'delete')
@@ -84,7 +139,25 @@ class ParametersResource(Resource):
             return {"message": f"Failed {msg} parameter {parameter_name} in resource {resource_name}. {e}"}, 400
 
     def get(self, resource_name):
-        """get resource parameters"""
+        """
+        Return  parameters set definitions for registered resource
+        ---
+        tags:
+          - ParametersResource
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            description: Name of resource
+            name: resource_name
+            type: string
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: List of resources, which parameters sets are registered
+        """
         if self.exist(resource_name):
             return {"parameters": self.parameters.get_item(resource_name).get()}, 200
 

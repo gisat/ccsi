@@ -178,7 +178,7 @@ class ResourceXMLResponse:
         self.namespaces = namespaces
         self.resource_name = resource_name
         self.response = query_processor.feeds.get(resource_name)
-        self.total_results = int(query_processor.feeds.get(resource_name).totalResults)
+        self.total_results = query_processor.feeds.get(resource_name).totalResults
         self.query = query_processor.valid_query
         self.base_url = base_url
 
@@ -263,3 +263,108 @@ class ResourceXMLResponse:
 
     def _encode(self, query_params):
         return '&'.join([f'{key}={value}' for key, value in query_params.items()])
+
+
+class AllResourceXMLResponse:
+
+    def __init__(self, namespaces, resource_description, query_processor, base_url):
+        self.namespaces = namespaces
+        self.resource_description = resource_description
+        self.total_results = {resource_name: feed.totalResults for resource_name, feed in query_processor.feeds.items()}
+        self.query = query_processor.valid_query
+        self.base_url = base_url
+
+    def build_response(self):
+        self._create_head()
+        self._create_body()
+        encoding = "utf-8"
+        xml = tostring(self.feed, pretty_print=True, encoding="unicode")
+        # xml = xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
+        # return unescape(xml)
+        return xml
+
+    def _create_head(self):
+        atom_uri = self.get_uri('atom')
+        os_uri = self.get_uri('os')
+
+        self.feed = Element(f'{{{atom_uri}}}Feed', nsmap=self._nsmap())
+        self._create_SubElement(self.feed, f'{{{atom_uri}}}Title', text=f'Copernicus Core Service Interface')
+        author = self._create_SubElement(self.feed, f'{{{atom_uri}}}Author')
+        self._create_SubElement(author, f'{{{atom_uri}}}Name', text=f'Gisat')
+        self._create_SubElement(author, f'{{{atom_uri}}}email', text='michal.opletal@gisat.cz')
+        self._create_SubElement(self.feed, f'{{{atom_uri}}}Update', text=datetime.now().strftime("%m-%d-%Y, %H:%M:%S"))
+        self._create_head_links()
+
+        all_results = sum(self.total_results.values())
+        self._create_SubElement(self.feed, f'{{{os_uri}}}TotalResults', text=str(all_results))
+
+    def _create_head_links(self):
+        atom_uri = self.get_uri('atom')
+        start_index = int(self.query['startIndex'])
+        max_record = int(self.query['maxRecords'])
+        self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
+                                attrib={"rel": "search", "href": f"{self.base_url}/search/description.xml"})
+        self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
+                                attrib={"rel": "self", "href": f"{self.base_url}/atom/search?"
+                                                               f"{self._encode(self.query)}"})
+
+    def _create_body(self):
+        atom_uri = self.get_uri('atom')
+        os_uri = self.get_uri('os')
+        ccsi_uri = self.get_uri('ccsi')
+
+        for resource_name, total_results in self.total_results.items():
+            entry_tag = Element(f'{{{atom_uri}}}Entry')
+            short_name = self.resource_description.get_item(resource_name).get('short_name')
+            self._create_SubElement(entry_tag, f'{{{ccsi_uri}}}Resource', text=short_name)
+            self._create_SubElement(entry_tag, f'{{{os_uri}}}TotalResults', text=str(total_results))
+            self._create_SubElement(entry_tag, f'{{{atom_uri}}}Link',
+                                    attrib={"rel": "search", "href": f"{self.base_url}/{resource_name}/atom/search?"
+                                                                     f"{self._encode(self.query)}"})
+            self.feed.append(entry_tag)
+
+    @staticmethod
+    def _create_SubElement(parent, tag, attrib={}, text=None, nsmap=None, **_extra):
+        result = SubElement(parent, tag, attrib, nsmap, **_extra)
+        result.text = text
+        return result
+
+    def _nsmap(self):
+        nsmap = {}
+        for name, ns in self.namespaces.items():
+            for prefix, uri in ns.items():
+                register_namespace(prefix, uri)
+                nsmap.update({prefix: uri})
+        return nsmap
+
+    def get_uri(self, prefix):
+        return self.namespaces.get(prefix).get(prefix)
+
+    def _encode(self, query_params):
+        return '&'.join([f'{key}={value}' for key, value in query_params.items()])
+
+
+class ResourceDescriptionSchema(ExcludeSchema):
+    short_name = fields.String()
+
+
+class ResourceDescriptionContainer(Container):
+
+    def create(self, resource_name, description):
+        self.update(resource_name, description)
+
+
+if __name__ == '__main__':
+    from ccsi import init_app
+    init_app()
+    from ccsi.storage import storage
+    from ccsi.resource.query import QueryResource
+    from ccsi.config import Config
+    query_processor = QueryResource(storage.resource_schemas, storage.translator, storage.connections, storage.parsers)
+
+    q = {'orbitNumber': 106, 'timeStart': '2017-10-10'}
+    query_processor.process_query(q)
+    base_url = 'foo.bar'
+    response = AllResourceXMLResponse(Config.namespaces, query_processor, base_url)
+    response.build_response()
+    pass

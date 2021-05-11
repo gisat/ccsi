@@ -65,7 +65,7 @@ class Feed:
     def add_to_head(self, tag):
         # get total results easy accessible
         if tag.tag == 'totalResults':
-            self.totalResults = tag.text
+            self.totalResults = int(tag.text)
         self.head.append(tag)
 
 

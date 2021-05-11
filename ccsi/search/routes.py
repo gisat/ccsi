@@ -4,7 +4,7 @@ from ccsi.config import Config
 from ccsi.storage import storage
 from ccsi.resource.query import QueryResource
 from ccsi.resource.parser import FeedSchema
-from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema
+from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse
 import datetime
 
 api_search = Blueprint('api_search', __name__)
@@ -35,15 +35,38 @@ def render_error(error):
 # main endpoint
 class AllSearch(Resource):
     """Search endpoint returning number of occurrences across all registered resources"""
+
+    def __init__(self, **kwargs):
+        self.resources_schemas = kwargs['resources_schemas']
+        self.translator = kwargs['translator']
+        self.connections = kwargs['connections']
+        self.parsers = kwargs['parsers']
+        self.resource_description = kwargs['resource_description']
+
     def get(self, form):
         check_form(form)
+        query_processor = QueryResource(self.resources_schemas, self.translator, self.connections, self.parsers)
+
+        try:
+            query_processor.process_query(request.args)
+        except Exception as error:
+            return render_error(error)
+
         if form == 'atom':
-            return 'this is a atom format'
+            response = AllResourceXMLResponse(Config.namespaces, self.resource_description,
+                                              query_processor, request.url_root)
+            return Response(response.build_response(), mimetype='application/xml',
+                            content_type='text/xml; charset=utf-8')
         if form == 'json':
             return make_response(redirect(url_for('api_resource.schemas')))
 
 
-api.add_resource(AllSearch, '/<string:form>/search')
+api.add_resource(AllSearch, '/<string:form>/search',
+                 resource_class_kwargs={'resources_schemas': storage.resource_schemas,
+                                        'translator': storage.translator,
+                                        'connections': storage.connections,
+                                        'parsers': storage.parsers,
+                                        'resource_description': storage.resource_description})
 
 
 class AllSearchDescription(Resource):
@@ -57,12 +80,14 @@ class AllSearchDescription(Resource):
         return Response(self.description.build_description('ccsi', url),
                         mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
+
 api.add_resource(AllSearchDescription, '/<string:form>/search/description.xml',
                  resource_class_kwargs={'descriptions': storage.description})
 
 
 # response endpoint
 class ResourceSearch(Resource):
+    """Search endpoint returning the occurrences from single registered resources"""
 
     def __init__(self, **kwargs):
         self.schema_builder = kwargs['schema_builder']
@@ -72,8 +97,6 @@ class ResourceSearch(Resource):
         self.parsers = kwargs['parsers']
         self.response_spec = kwargs['response_spec']
 
-
-    """Search endpoint returning the occurrences from single registered resources"""
     def get(self, resource_name, form):
         check_form(form)
         exist(resource_name)

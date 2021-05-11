@@ -3,7 +3,7 @@ from ccsi.resource.parameters import ResourcesParameters, ParamTranslator, Query
 from ccsi.resource.connection import ConnectionContainer, ConnectionSchema
 from ccsi.errors.handlers import Errors
 from ccsi.resource.parser import ParserContainer, ParserSchema
-from ccsi.resource.output import Description, ResponseSpecContainer
+from ccsi.resource.output import Description, ResponseSpecContainer, ResourceDescriptionContainer
 from ccsi.config import Config
 
 
@@ -19,6 +19,7 @@ class Storage(metaclass=Singleton):
     parsers = ParserContainer(ParserSchema())
     description = Description(Config.namespaces, resources_parameters)
     response_specification = ResponseSpecContainer()
+    resource_description = ResourceDescriptionContainer()
 
 
 

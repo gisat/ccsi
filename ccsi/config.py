@@ -18,4 +18,18 @@ class Config:
                   'dc': {'dc': 'http://purl.org/dc/elements/1.1/'}
                   }
 
+    swagger = {
+              "swagger": "2.0",
+              "info": {
+                "title": "Copernicus Core Service Interface",
+                "description": "API for CCSI",
+                "contact": {
+                  "responsibleOrganization": "Gisat s.r.o",
+                  "responsibleDeveloper": "Michal Opletal",
+                  "email": "michal.opletal@gisat.cz",
+                  "url": "www.gisat.cz",
+                },
+                "version": "0.8.0"
+              }
+            }
 
