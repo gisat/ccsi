@@ -1,7 +1,7 @@
-resource_name: mundi_s1
-short_name: Mundi Sentinel 1 endpoint
+resource_name: mundi_s3
+short_name: Mundi Sentinel 3 endpoint
 connection:
-  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel1/opensearch?
+  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel3/opensearch?
   typ: simple_request
 parameters:
   collection:
@@ -9,7 +9,7 @@ parameters:
     name: collections
     tranfunc: identity
     values:
-      - sentinel1
+      - sentinel3
   resource:
     typ: string
     name: resource
@@ -97,28 +97,30 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      sentinel-1: sentinel2
+      sentinel-3: sentinel3
   instrument:
     name: instrument
     typ: option
     tranfunc: identity
     mapping:
-      sar: SAR
+      ocli: OCLI
+      sral: SRAL
+      srlt: SLSTR
+      synergy: SYNERGY
   sensorType:
     name: sensorType
     typ: option
     tranfunc: identity
     mapping:
-      radar: RADAR
+      optic: OPTIC
+      altimetric: ALTIMETRIC
+      sounder: SOUNDER
   sensorMode:
     name: sensorMode
     typ: option
     tranfunc: identity
     mapping:
-      sm: SM_
-      iw: IW_
-      ew: EW_
-      wv: WV_
+      eo: EO
   orbitDirection:
     name: orbitDirection
     typ: option
@@ -131,37 +133,43 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      nominal: NOMINAL
-      calibration: CALIBRATION
-      other: OTHER
-  polarisationChannels:
-      name: polarisationChannels
-      typ: option
-      tranfunc: identity
-      mapping:
-        hh/vv: HH/VV
-        vv/vh: VV/VH
-        hh: HH
-        vv: VV
-        hv: HV
-        vh: VH
+      simple: SIMPLE
+      strip: STRIP
+      caval_ground: CAVAL_GROUND
+      caval_space_moon: CAVAL_SPACE_MOON
+      caval_space_stellar: CAVAL_SPACE_STELLAR
+      caval_ground_night: CAVAL_GROUND_NIGHT
+      caval_ground_snow: CAVAL_GROUND_SNOW
   productType:
     name: productType
     typ: option
     tranfunc: identity
     mapping:
-      raw: RAW
-      ocn: OCN
-      grd: GRD
-      slc: SLC
+      efr: OL_1_EFR___
+      err: OL_1_ERR___
+      lfr: OL_2_LFR___
+      lrr: OL_2_LRR___
+      lst: SL_2_LST___
+      rbt: SL_1_RBT___
+      sra: SR_1_SRA___
+      sra_a: SR_1_SRA_A_
+      sra_bs: SR_1_SRA_BS
+      syn: SY_2_SYN___
+      vg1: SY_2_VG1___
+      vgp: SY_2_VGP___
+      v10: SY_2_V10___
+      wat: SR_2_WAT___
+      wfr: OL_2_WFR___
+      wrr: OL_2_WRR___
+      wst: SL_2_WST___
+      frp: SL_2_FRP___
   processingLevel:
     name: processingLevel
     typ: option
     tranfunc: identity
     mapping:
-      level1: L0_
-      level2: L1_
-      level3: L3_
+      level1: L1_
+      level2: L2_
   processingCenter:
     name: processingCenter
     typ: string
@@ -211,6 +219,13 @@ parser:
       tag_spec: text_to_enclousure
       uri: http://tas/DIAS
       source: text
+    link:
+      tag: link
+      uri: http://www.w3.org/2005/Atom
+      source:
+        attrib:
+          - rel
+          - href
     resolution:
       tag: resolution
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/

@@ -24,10 +24,13 @@ parameters:
     name: title
     typ: string
     tranfunc: identity
-  startindex:
+  startIndex:
     name: startIndex
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      name: offset
+      property:
+        offset: 1
   maxRecords:
     name: maxRecords
     typ: integer

@@ -28,7 +28,7 @@ class Tag:
         self.mapping = mapping
         self.source = source
         self.attrib = {}
-        self.text = None
+        self.text = ''
         self.location = location
 
 
@@ -106,10 +106,9 @@ class XMLSaxHandler(ContentHandler):
                     self.set_entry_tag_attrib(attrs)
 
     def set_entry_tag_attrib(self, attrs):
-        if [name[1] for name in attrs.keys()] == self.current_tag.source['attrib']:
-           for value in self.current_tag.source['attrib']:
-               self.current_tag.attrib.update({value: attrs.getValueByQName(value)})
-
+       for value in self.current_tag.source['attrib']:
+           if value in [name[1] for name in attrs.keys()]:
+            self.current_tag.attrib.update({value: attrs.getValueByQName(value)})
 
     def endElementNS(self, name, qname):
         uri, localname = name
@@ -135,7 +134,7 @@ class XMLSaxHandler(ContentHandler):
     def characters(self, content):
         if self.current_tag and self.current_tag_name == self.current_tag.source_tag:
          if self.current_tag.source == 'text':
-             self.current_tag.text = content
+             self.current_tag.text += content
 
     def parse(self, source):
         self.feed = self._feed()

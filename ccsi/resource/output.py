@@ -182,7 +182,7 @@ class ResourceXMLResponse:
         self.resource_name = resource_name
         self.response = query_processor.feeds.get(resource_name)
         self.total_results = query_processor.feeds.get(resource_name).totalResults
-        self.query = query_processor.valid_query
+        self.query = query_processor.valid_queries.get(resource_name)
         self.base_url = base_url
 
 
@@ -225,14 +225,16 @@ class ResourceXMLResponse:
                                 attrib={"rel": "first", "href": f"{self.base_url}?{self._encode(first_query)}"})
 
         next_query = self.query.copy()
-        next_query['startIndex'] = str(start_index + max_record)
-        self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
-                                attrib={"rel": "next", "href": f"{self.base_url}?{self._encode(next_query)}"})
+        if self.total_results - max_record > 0:
+            next_query['startIndex'] = str(start_index + max_record)
+            self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
+                                    attrib={"rel": "next", "href": f"{self.base_url}?{self._encode(next_query)}"})
 
         last_query = self.query.copy()
-        last_query['startIndex'] = str(self.total_results - max_record)
-        self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
-                                attrib={"rel": "last", "href": f"{self.base_url}?{self._encode(last_query)}"})
+        if self.total_results - max_record >= 0:
+            last_query['startIndex'] = str(self.total_results - max_record)
+            self._create_SubElement(self.feed, f'{{{atom_uri}}}Link',
+                                    attrib={"rel": "last", "href": f"{self.base_url}?{self._encode(last_query)}"})
 
     def _create_body(self):
         atom_uri = self.get_uri('atom')
@@ -274,6 +276,7 @@ class AllResourceXMLResponse:
         self.namespaces = namespaces
         self.resource_description = resource_description
         self.total_results = {resource_name: feed.totalResults for resource_name, feed in query_processor.feeds.items()}
+        self.resource_query = query_processor.valid_queries
         self.query = query_processor.valid_query
         self.base_url = base_url
 
@@ -323,7 +326,7 @@ class AllResourceXMLResponse:
             self._create_SubElement(entry_tag, f'{{{os_uri}}}TotalResults', text=str(total_results))
             self._create_SubElement(entry_tag, f'{{{atom_uri}}}Link',
                                     attrib={"rel": "search", "href": f"{self.base_url}/{resource_name}/atom/search?"
-                                                                     f"{self._encode(self.query)}"})
+                                                                     f"{self._encode(self.resource_query.get(resource_name))}"})
             self.feed.append(entry_tag)
 
     @staticmethod

@@ -84,3 +84,13 @@ def validate_regpars(classchema, parameter, regpars):
     except Exception as e:
         return abort(400, {parameter: str(*e.messages['_schema'])})
     return regpars[parameter]
+
+
+def partial(func, /, *args, **keywords):
+    def newfunc(*fargs, **fkeywords):
+        newkeywords = {**keywords, **fkeywords}
+        return func(*args, *fargs, **newkeywords)
+    newfunc.func = func
+    newfunc.args = args
+    newfunc.keywords = keywords
+    return newfunc

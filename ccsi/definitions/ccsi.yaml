@@ -140,6 +140,9 @@ parameters:
     namespace: eo
     values:
       - sentinel-1
+      - sentinel-2
+      - sentinel-3
+      - clms
   instrument:
     name: instrument
     typ: string
@@ -149,6 +152,10 @@ parameters:
     values:
       - sar
       - msi
+      - ocli
+      - sral
+      - srlt
+      - synergy
   sensorType:
     name: sensorType
     typ: string
@@ -158,6 +165,8 @@ parameters:
     values:
       - radar
       - optic
+      - altimetric
+      - sounder
   sensorMode:
     name: sensorMode
     typ: string
@@ -190,6 +199,7 @@ parameters:
       - calibration
       - other
       - strip
+      - simple
       - caval_ground
       - caval_space_moon
       - caval_space_stellar
@@ -221,6 +231,46 @@ parameters:
       - slc
       - image
       - s2msi2ap
+      - efr
+      - err
+      - lfr
+      - lrr
+      - lst
+      - rbt
+      - sra
+      - sra_a
+      - sra_bs
+      - syn
+      - vg1
+      - vgp
+      - v10
+      - wat
+      - wfr
+      - wrr
+      - wst
+      - frp
+      - paneuropen_clc
+      - paneuropen_lcc
+      - paneuropen_imd
+      - paneuropen_imc
+      - paneuropen_imcc
+      - paneuropen_tcd
+      - paneuropen_dlt
+      - paneuropen_fty
+      - paneuropen_tcdc
+      - paneuropen_fadsl
+      - paneuropen_gra
+      - paneuropen_gravpi
+      - paneuropen_plough
+      - paneuropen_waw
+      - paneuropen_wwpi
+      - local_urban_atlas
+      - local_street_tree_height
+      - local_building_height
+      - local_riparian_lclu
+      - local_riparian_drz
+      - local_riparian_gle
+      - local_n2k
   processingLevel:
     name: processingLevel
     typ: string
@@ -333,6 +383,17 @@ response:
     identifier:
       content: text
       namespace: dc
+    summary:
+      content: text
+      namespace: atom
+    category:
+      content: attrib
+      namespace: atom
+    published:
+      content: text
+      namespace: atom
+
+
 
 
 

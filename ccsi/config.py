@@ -2,7 +2,7 @@ class Config:
 
     response_form = ['atom', 'json']
 
-    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml']
+    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml']
 
     connections_repeat = 3
 

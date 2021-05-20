@@ -1,0 +1,198 @@
+resource_name: mundi_clms
+short_name: Mundi Sentinel CLMS endpoint
+connection:
+  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/LandMonitoring/opensearch?
+  typ: simple_request
+parameters:
+  collection:
+    typ: string
+    name: collections
+    tranfunc: identity
+    values:
+      - clms
+  resource:
+    typ: string
+    name: resource
+    tranfunc: identity
+    values:
+      - mundi
+  searchTerms:
+    name: q
+    typ: string
+    tranfunc: identity
+  title:
+    name: title
+    typ: string
+    tranfunc: identity
+  startIndex:
+    name: startIndex
+    typ: integer
+    tranfunc:
+      name: offset
+      property:
+        offset: 1
+  maxRecords:
+    name: maxRecords
+    typ: integer
+    tranfunc: identity
+  uid:
+    name: uid
+    typ: string
+    tranfunc: identity
+  bbox:
+    name: bbox
+    typ: bbox
+    tranfunc: identity
+  geometry:
+    name: geometry
+    typ: wktgeom
+    tranfunc: identity
+  relation:
+    name: relation
+    typ: option
+    tranfunc: identity
+    mapping:
+      intersects: intersects
+      contains: contains
+      disjoint: disjoint
+  lat:
+    name: lat
+    typ: float
+    tranfunc: identity
+  lon:
+    name: lon
+    typ: float
+    tranfunc: identity
+  radius:
+    name: radius
+    typ: integer
+    tranfunc: identity
+  name:
+    name: name
+    typ: string
+    tranfunc: identity
+  timeStart:
+    name: timeStart
+    typ: datetime
+    tranfunc: identity
+  timeEnd:
+    name: timeEnd
+    typ: datetime
+    tranfunc: identity
+  timeRelation:
+    name: timeRelation
+    typ: option
+    tranfunc: identity
+    mapping:
+      intersects: intersects
+      contains: contains
+      disjoint: disjoint
+      during: during
+  parentIdentifier:
+    name: parentIdentifier
+    typ: string
+    tranfunc: identity
+  platform:
+    name: platform
+    typ: option
+    tranfunc: identity
+    mapping:
+      clms: LandMonitoring
+  productType:
+    name: productType
+    typ: option
+    tranfunc: identity
+    mapping:
+      paneuropen_clc: PANEUROPEAN_CLC_CLC
+      paneuropen_lcc: PANEUROPEAN_CLC_LCC
+      paneuropen_imd: PANEUROPEAN_HRL_IMPREVIOUSNESS_IMD
+      paneuropen_imc: PANEUROPEAN_HRL_IMPREVIOUSNESS_IMC
+      paneuropen_imcc: PANEUROPEAN_HRL_IMPREVIOUSNESS_IMCC
+      paneuropen_tcd: PANEUROPEAN_HRL_FOREST_TCD
+      paneuropen_dlt: PANEUROPEAN_HRL_FOREST_DLT
+      paneuropen_fty: PANEUROPEAN_HRL_FOREST_FTY
+      paneuropen_tcdc: PANEUROPEAN_HRL_FOREST_TCDC
+      paneuropen_fadsl: PANEUROPEAN_HRL_FOREST_FADSL
+      paneuropen_gra: PANEUROPEAN_HRL_GRASS_GRA
+      paneuropen_gravpi: PANEUROPEAN_HRL_GRASS_GRAVPI
+      paneuropen_plough: PANEUROPEAN_HRL_GRASS_PLOUGH
+      paneuropen_waw: PANEUROPEAN_HRL_WATER_WAW
+      paneuropen_wwpi: PANEUROPEAN_HRL_WATER_WWPI
+      local_urban_atlas: LOCAL_UA_URBAN_ATLAS
+      local_street_tree_height: LOCAL_UA_STREET_TREE_HEIGHT
+      local_building_height: LOCAL_UA_BUILDING_HEIGHT
+      local_riparian_lclu: LOCAL_RIPARIAN_ZONES_LCLU
+      local_riparian_drz: LOCAL_RIPARIAN_ZONES_DRZ
+      local_riparian_gle: LOCAL_RIPARIAN_ZONES_GLE
+      local_n2k: LOCAL_N2K_
+  custom:onlineStatus:
+    name: onlineStatus
+    typ: option
+    tranfunc: identity
+    mapping:
+      online: ONLINE
+      offline: OFFLINE
+      notavaliable: NOTAVALIABLE
+      planed: PLANED
+  resolution:
+    name: resolution
+    typ: integer
+    tranfunc: identity
+parser:
+  typ: xmlsax
+  parameters:
+    totalResults:
+      tag: totalResults
+      uri: http://a9.com/-/spec/opensearch/1.1/
+      source: text
+      location: head
+    title:
+      tag: title
+      uri: http://www.w3.org/2005/Atom
+      source: text
+    summary:
+      tag: summary
+      uri: http://www.w3.org/2005/Atom
+      source: text
+    content:
+      tag: content
+      uri: http://search.yahoo.com/mrss/
+      source:
+        attrib:
+          - url
+          - medium
+    link:
+      tag: link
+      uri: http://www.w3.org/2005/Atom
+      source:
+        attrib:
+          - rel
+          - href
+    category:
+      tag: category
+      uri: http://www.w3.org/2005/Atom
+      source:
+        attrib:
+          - term
+    format:
+      tag: format
+      uri: http://purl.org/dc/elements/1.1/
+      source: text
+    identifier:
+      tag: identifier
+      uri: http://purl.org/dc/elements/1.1/
+      source: text
+    platform:
+      tag: platform
+      uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
+      source: text
+    published:
+      tag: published
+      uri: http://www.w3.org/2005/Atom
+      source: text
+
+
+
+
+
+

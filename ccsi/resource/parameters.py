@@ -3,8 +3,8 @@ from marshmallow.validate import OneOf, ContainsOnly
 from shapely import wkt, errors
 from shapely.geometry import box
 from dateutil.parser import isoparse
-from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema
-from functools import partial
+from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, partial
+# from functools import partial
 
 
 # transformation
@@ -12,8 +12,13 @@ def identity(self, value):
     return value
 
 
+def offset(self, value, offset):
+    return value + offset
 
-TRANSFORMATION_FUNC = {'identity': identity}
+
+
+TRANSFORMATION_FUNC = {'identity': identity,
+                       'offset': offset}
 
 
 # parameters & translator
@@ -21,7 +26,7 @@ class Parameter:
 
     def __init__(self, name, typ, tranfunc, definitions):
         self.name = name
-        self.tranfunc = TRANSFORMATION_FUNC[tranfunc].__get__(self)
+        self.tranfunc = tranfunc.__get__(self)
         self.typ = typ
         self.definitions = definitions
 
@@ -150,11 +155,33 @@ class AnyType(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         return value
 
+class TransFunction(fields.Field):
+    """Any type """
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        return
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        try:
+            if value not in TRANSFORMATION_FUNC:
+                raise ValidationError(f"Parameter: {data['name']}: Invalid transformation function specification:{value}")
+        except TypeError:
+            if value['name'] not in TRANSFORMATION_FUNC:
+                raise ValidationError(
+                    f"Parameter: {data['name']}: Invalid transformation function specification:{value}")
+
+        if isinstance(value, str):
+            return TRANSFORMATION_FUNC.get(value)
+        elif isinstance(value, dict):
+            return partial(TRANSFORMATION_FUNC.get(value['name']), **value['property'])
+
+
+
 
 class ParameterSchema(ExcludeSchema):
     typ = fields.Str(required=True, validate=OneOf(PARAM_TYPES))
     name = fields.Str(required=True)
-    tranfunc = fields.Str(required=True, validate=OneOf(TRANSFORMATION_FUNC))
+    tranfunc = TransFunction(required=True)
     mapping = fields.Dict(required=False)
     definitions = fields.Dict(required=True, default=None)
 
