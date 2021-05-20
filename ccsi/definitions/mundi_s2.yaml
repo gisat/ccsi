@@ -1,7 +1,7 @@
-resource_name: mundi_s1
-short_name: Mundi Sentinel 1 endpoint
+resource_name: mundi_s2
+short_name: Mundi Sentinel 2 endpoint
 connection:
-  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel1/opensearch?
+  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel2/opensearch?
   typ: simple_request
 parameters:
   collection:
@@ -9,7 +9,7 @@ parameters:
     name: collections
     tranfunc: identity
     values:
-      - sentinel1
+      - sentinel2
   resource:
     typ: string
     name: resource
@@ -100,22 +100,19 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      sar: SAR
+      msi: MSI
   sensorType:
     name: sensorType
     typ: option
     tranfunc: identity
     mapping:
-      radar: RADAR
+      optic: OPTIC
   sensorMode:
     name: sensorMode
     typ: option
     tranfunc: identity
     mapping:
-      sm: SM_
-      iw: IW_
-      ew: EW_
-      wv: WV_
+      eo: EO
   orbitDirection:
     name: orbitDirection
     typ: option
@@ -128,37 +125,26 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      nominal: NOMINAL
-      calibration: CALIBRATION
-      other: OTHER
-  polarisationChannels:
-      name: polarisationChannels
-      typ: option
-      tranfunc: identity
-      mapping:
-        hh/vv: HH/VV
-        vv/vh: VV/VH
-        hh: HH
-        vv: VV
-        hv: HV
-        vh: VH
+      strip: STRIP
+      caval_ground: CAVAL_GROUND
+      caval_space_moon: CAVAL_SPACE_MOON
+      caval_space_stellar: CAVAL_SPACE_STELLAR
+      caval_ground_night: CAVAL_GROUND_NIGHT
+      caval_ground_snow: CAVAL_GROUND_SNOW
   productType:
     name: productType
     typ: option
     tranfunc: identity
     mapping:
-      raw: RAW
-      ocn: OCN
-      grd: GRD
-      slc: SLC
+      image: IMAGE
+      s2msi2ap: S2MSI2Ap
   processingLevel:
     name: processingLevel
     typ: option
     tranfunc: identity
     mapping:
-      level1: L0_
-      level2: L1_
-      level3: L3_
+      level1: L1C
+      level2: L2A
   processingCenter:
     name: processingCenter
     typ: string
@@ -208,6 +194,13 @@ parser:
       tag_spec: text_to_enclousure
       uri: http://tas/DIAS
       source: text
+    link:
+      tag: link
+      uri: http://www.w3.org/2005/Atom
+      source:
+        attrib:
+          - rel
+          - href
     resolution:
       tag: resolution
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/

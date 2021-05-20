@@ -37,7 +37,7 @@ class Parameter:
             return {self.name: new}
 
     def __repr__(self):
-        return f'<Parameter {self.name}>'
+        return f'Parameter {self.name}'
 
 
 class String(Parameter):

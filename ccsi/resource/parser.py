@@ -106,8 +106,10 @@ class XMLSaxHandler(ContentHandler):
                     self.set_entry_tag_attrib(attrs)
 
     def set_entry_tag_attrib(self, attrs):
-       for value in self.current_tag.source['attrib']:
-           self.current_tag.attrib.update({value: attrs.getValueByQName(value)})
+        if [name[1] for name in attrs.keys()] == self.current_tag.source['attrib']:
+           for value in self.current_tag.source['attrib']:
+               self.current_tag.attrib.update({value: attrs.getValueByQName(value)})
+
 
     def endElementNS(self, name, qname):
         uri, localname = name

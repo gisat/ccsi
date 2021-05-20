@@ -148,6 +148,7 @@ parameters:
     namespace: eo
     values:
       - sar
+      - msi
   sensorType:
     name: sensorType
     typ: string
@@ -156,6 +157,7 @@ parameters:
     namespace: eo
     values:
       - radar
+      - optic
   sensorMode:
     name: sensorMode
     typ: string
@@ -167,6 +169,7 @@ parameters:
       - iw
       - ew
       - wv
+      - eo
   orbitDirection:
     name: orbitDirection
     typ: string
@@ -180,12 +183,18 @@ parameters:
     name: acquisitionType
     typ: string
     tranfunc: identity
-    title: Acquisition orbit direction
+    title: Acquisition mission mode
     namespace: eo
     values:
       - nominal
       - calibration
       - other
+      - strip
+      - caval_ground
+      - caval_space_moon
+      - caval_space_stellar
+      - caval_ground_night
+      - caval_ground_snow
   polarisationChannels:
     name: polarisationChannels
     typ: string
@@ -210,6 +219,8 @@ parameters:
       - ocn
       - grd
       - slc
+      - image
+      - s2msi2ap
   processingLevel:
     name: processingLevel
     typ: string

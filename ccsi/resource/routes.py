@@ -162,7 +162,30 @@ class ParametersResource(Resource):
             return {"parameters": self.parameters.get_item(resource_name).get()}, 200
 
     def post(self, resource_name):
-        """create resource parameter"""
+        """
+        Create parameters set definitions stored in resource parameters container for given resource
+        ---
+        tags:
+          - ParametersResource
+        produces:
+          - application/json
+        parameters:
+          - in: path
+            description: Name of resource
+            name: resource_name
+            type: string
+            required: true
+            schema:
+              type: string
+          - in: body
+            name: parameters
+
+
+
+        responses:
+          200:
+            description: List of resources, which parameters sets are registered
+        """
         parameters = validate_regpars(RoutesParams, 'parameters', parser.parse_args())
         if self.exist(resource_name):
             for parameter_name, properties in parameters.items():

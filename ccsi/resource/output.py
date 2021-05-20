@@ -51,9 +51,12 @@ class Description:
         else:
             for parameter, properties in self.resource_parameters.get_item('ccsi').get().items():
                 if parameter in self.resource_parameters.get_item(self.resource_name).get():
+                    resource_parameter = self.resource_parameters.get_item(self.resource_name).get_parameter(parameter)
                     if parameter == 'resource' or parameter == 'collection':
                         param_property = self.resource_parameters.get_item(self.resource_name).get_parameter(parameter)
                         properties['values'] = param_property.definitions['values']
+                    if hasattr(resource_parameter, 'mapping'):
+                        properties['values'] = resource_parameter.mapping.values()
                     element = DescriptionElementSchema().load(properties)
                     self.feed.append(element)
 

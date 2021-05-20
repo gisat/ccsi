@@ -26,7 +26,8 @@ def error_501(error):
 
 
 class Errors:
-    TYPE_ERRORS = {'ValidationError': '_marshmallow_exceptions'}
+    TYPE_ERRORS = {'ValidationError': '_marshmallow_exceptions',
+                   'ValueError': '_value_error'}
 
     def __init__(self):
         pass
@@ -42,6 +43,15 @@ class Errors:
                 summary += f'Parameter: {key}: {str.lower(*value)}, '
             else:
                 summary += f'Parameter: {key}: {str.lower(value)}, '
+        msg = {'title': title,
+               'summary': summary}
+        return msg, 400
+
+    def _value_error(self, error):
+        title = '(400) Bad Request'
+        summary = 'Parameters validation error report: '
+        for value in error.args:
+                summary += value
         msg = {'title': title,
                'summary': summary}
         return msg, 400

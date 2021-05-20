@@ -2,7 +2,7 @@ class Config:
 
     response_form = ['atom', 'json']
 
-    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml']
+    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml']
 
     connections_repeat = 3
 
@@ -20,6 +20,7 @@ class Config:
 
     swagger = {
               "swagger": "2.0",
+              # "openapi": "3.0.2",
               "info": {
                 "title": "Copernicus Core Service Interface",
                 "description": "API for CCSI",
