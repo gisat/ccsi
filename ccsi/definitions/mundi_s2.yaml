@@ -140,7 +140,7 @@ parameters:
     tranfunc: identity
     mapping:
       image: IMAGE
-      s2msi2ap: S2MSI2Ap
+      msi: S2MSI2Ap
   processingLevel:
     name: processingLevel
     typ: option

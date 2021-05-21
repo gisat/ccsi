@@ -1,7 +1,7 @@
-resource_name: creodias_s1
-short_name: Creodias Sentinel 1 endpoint
+resource_name: creodias_s3
+short_name: Creodias Sentinel 3 endpoint
 connection:
-  url: https://finder.creodias.eu/resto/api/collections/Sentinel1/search.atom?
+  url: https://finder.creodias.eu/resto/api/collections/Sentinel3/search.atom?
   typ: simple_request
 parameters:
   collection:
@@ -9,7 +9,7 @@ parameters:
     name: collections
     tranfunc: identity
     mapping:
-      sentinel1: sentinel1
+      sentinel3: sentinel3
   resource:
     typ: option
     name: resource
@@ -76,19 +76,31 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      card-bs: CARD-BS
-      card-coh6: CARD-COH6
-      raw: RAW
-      ocn: OCN
-      grd: GRD
-      grd-cog: GRD-COG
-      slc: SLC
+      efr: EFR
+      eo: EO
+      err: ERR
+      lan: LAN
+      lfr: LFR
+      lrr: LRR
+      lst: LST
+      rbt: RBT
+      sra: SRA
+      sra_a: SRA_A
+      sra_bs: SRA_BS
+      syn: SY_2_SYN
+      vg1: SY_2_VG1
+      vgp: SY_2_VGP
+      v10: V10
+      wat: WAT
+      wfr: WFR
+      wrr: WRR
+      wst: WST
+      frp: FRP
   processingLevel:
     name: processingLevel
     typ: option
     tranfunc: identity
     mapping:
-      level0: LEVEL0
       level1: LEVEL1
       level2: LEVEL2
   instrument:
@@ -96,7 +108,12 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      sar: SAR
+      ol: OL
+      ocli: OLCI
+      sl: SL
+      slstr: SLSTR
+      sr: SR
+      sral: SRAL
   resolution:
     name: resolution
     typ: integer
@@ -105,15 +122,6 @@ parameters:
     name: orbitNumber
     typ: integer
     tranfunc: identity
-  sensorMode:
-    name: sensorMode
-    typ: option
-    tranfunc: identity
-    mapping:
-      sm: SM
-      iw: IW
-      ew: EW
-      wv: WV
   cloudCover:
     name: cloudCover
     typ: interval

@@ -1,7 +1,7 @@
 resource_name: creodias_s1
 short_name: Creodias Sentinel 1 endpoint
 connection:
-  url: https://finder.creodias.eu/resto/api/collections/Sentinel1/search.atom?
+  url: https://finder.creodias.eu/resto/api/collections/Sentinel2/search.atom?
   typ: simple_request
 parameters:
   collection:
@@ -9,7 +9,7 @@ parameters:
     name: collections
     tranfunc: identity
     mapping:
-      sentinel1: sentinel1
+      sentinel2: sentinel2
   resource:
     typ: option
     name: resource
@@ -43,6 +43,14 @@ parameters:
     name: geometry
     typ: wktgeom
     tranfunc: identity
+  relation:
+    name: relation
+    typ: option
+    tranfunc: identity
+    mapping:
+      intersects: intersects
+      contains: contains
+      disjoint: disjoint
   lat:
     name: lat
     typ: float
@@ -76,13 +84,7 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      card-bs: CARD-BS
-      card-coh6: CARD-COH6
-      raw: RAW
-      ocn: OCN
-      grd: GRD
-      grd-cog: GRD-COG
-      slc: SLC
+      msi: L1C
   processingLevel:
     name: processingLevel
     typ: option
@@ -96,7 +98,7 @@ parameters:
     typ: option
     tranfunc: identity
     mapping:
-      sar: SAR
+      msi: MSI
   resolution:
     name: resolution
     typ: integer

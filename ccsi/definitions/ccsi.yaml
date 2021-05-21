@@ -162,6 +162,9 @@ parameters:
       - sral
       - srlt
       - synergy
+      - ol
+      - sl
+      - sr
   sensorType:
     name: sensorType
     typ: string
@@ -239,7 +242,7 @@ parameters:
       - grd-cog
       - slc
       - image
-      - s2msi2ap
+      - msi
       - efr
       - err
       - lfr

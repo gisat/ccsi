@@ -3,7 +3,7 @@ class Config:
     response_form = ['atom', 'json']
 
     resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml',
-                           'creodias_s1.yaml']
+                           'creodias_s1.yaml', 'creodias_s3.yaml']
 
     connections_repeat = 3
 
