@@ -22,16 +22,16 @@ class QueryResource:
         self._request()
         self._parse()
 
-    def _validate_query(self, schema, query):
-        return schema.dump(schema.load(query))
-
     def _lower_values(self, query):
         return {key: value.lower() if isinstance(value, str) else value for key, value in query.items()}
 
     def _validate_resource(self, resource_name, schema, query):
+        tested_query = schema.load(query)
         try:
-            resource_query = self._validate_query(schema, query)
-            self.valid_queries.update({resource_name: resource_query})
+            self.translator.translate(resource_name, tested_query)
+            self.valid_queries.update({resource_name: schema.dump(tested_query)})
+        except Exception:
+            pass
         finally:
             pass
 

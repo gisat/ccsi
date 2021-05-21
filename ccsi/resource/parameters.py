@@ -4,7 +4,7 @@ from shapely import wkt, errors
 from shapely.geometry import box
 from dateutil.parser import isoparse
 from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, partial
-# from functools import partial
+import re
 
 
 # transformation
@@ -16,9 +16,13 @@ def offset(self, value, offset):
     return value + offset
 
 
+def bracket(self, value):
+    return f'[{value}]'
+
 
 TRANSFORMATION_FUNC = {'identity': identity,
-                       'offset': offset}
+                        'offset': offset,
+                        'bracket': bracket}
 
 
 # parameters & translator
@@ -116,7 +120,6 @@ class DateTime(Parameter):
             raise ValueError(f'{self.__repr__()}: Invalid type of argument {value}, expected Date in 8601 fromat)')
 
 
-
 class Options(Parameter):
     """class for parametr with options. options is defined as dict. """
 
@@ -131,19 +134,36 @@ class Options(Parameter):
             raise ValueError(f'{self.__repr__()}: Invalid argument {value}, expected one of '
                              f'{", ".join([key for key in self.mapping.keys()])}')
 
+
+class Interval(Parameter):
+    """class for parametr with options. options is defined as dict. """
+
+    def __init__(self, name, typ, tranfunc, definitions):
+        super().__init__(name, typ, tranfunc, definitions)
+
+    def validate(self, value):
+        matched = re.match("\d,\d", value)
+        if bool(matched):
+            return True
+        else:
+            raise ValueError(f'{self.__repr__()}: Invalid argument {value}, expected one of '
+                             f'{", ".join([key for key in self.mapping.keys()])}')
+
     def transform(self, value):
-        new = self.tranfunc(value)
-        if self.validate(new):
-            return {self.name: self.mapping[value]}
+        if self.validate(value):
+            new = self.tranfunc(value)
+            return {self.name: new}
+
 
 
 PARAM_TYPES = {'string': String,
-              'integer': Integer,
-              'float': Float,
-              'bbox': Bbox,
-              'wktgeom': WKTGeom,
-              'datetime': DateTime,
-              'option': Options}
+               'integer': Integer,
+               'float': Float,
+               'bbox': Bbox,
+               'wktgeom': WKTGeom,
+               'datetime': DateTime,
+               'option': Options,
+               'interval': Interval}
 
 
 class AnyType(fields.Field):
@@ -155,8 +175,8 @@ class AnyType(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         return value
 
+
 class TransFunction(fields.Field):
-    """Any type """
 
     def _serialize(self, value, attr, obj, **kwargs):
         return
@@ -174,8 +194,6 @@ class TransFunction(fields.Field):
             return TRANSFORMATION_FUNC.get(value)
         elif isinstance(value, dict):
             return partial(TRANSFORMATION_FUNC.get(value['name']), **value['property'])
-
-
 
 
 class ParameterSchema(ExcludeSchema):
@@ -266,6 +284,12 @@ class ParamTranslator:
     def get_mapped_pairs(self, resource_name):
         return self.resources_parameters.get_item(resource_name).get_mapped_pairs()
 
+    def validate(self, resource_name, query: dict):
+        """validate from one set of api parameters to another"""
+        for key, value in query.items():
+            self.resources_parameters.get_item(resource_name).get_parameter(key).validate(value)
+
+
 
 #  parameters schemas
 # validations
@@ -291,7 +315,8 @@ class QuerySchemaBuilder:
                     'bbox': fields.String,
                     'wktgeom': fields.String,
                     'datetime': fields.String,
-                    'option': fields.String}
+                    'option': fields.String,
+                    'interval': fields.String}
 
     @staticmethod
     def build_schema(parameters, resource_name):

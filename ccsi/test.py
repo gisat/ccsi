@@ -22,6 +22,7 @@ class AllSearch:
         self.connections = storage.connections
         self.parsers = storage.parsers
         self.resource_description = storage.resource_description
+        self.response_spec = storage.response_specification
 
 
     def get(self, form, request):
@@ -60,13 +61,14 @@ class FakeRequest:
 
 if __name__ == '__main__':
     init_app()
-    query = {'orbitNumber': '106',
-             'timeStart': '2017-10-10'}
+    query = {
+             'timeStart': '2017-10-10',
+             'resource': 'creodias'}
 
     request = FakeRequest(query)
     search = AllSearch()
-    search.get('atom', request)
-    search.get_resource('mundi_clms', 'atom', request)
+    # search.get('atom', request)
+    search.get_resource('creodias_s1', 'atom', request)
 
 #efr EFR OL_1_EFR___
 #eo EO

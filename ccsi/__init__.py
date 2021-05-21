@@ -70,6 +70,7 @@ def register_namespaces(namespace):
             register_namespace(prefix, uri)
 
 
+
 def init_app():
     for file in Config.resource_definition:
         path = Path(__file__).parent.joinpath('definitions', file)

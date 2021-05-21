@@ -58,7 +58,7 @@ class AllSearch(Resource):
             return Response(response.build_response(), mimetype='application/xml',
                             content_type='text/xml; charset=utf-8')
         if form == 'json':
-            return make_response(redirect(url_for('api_resource.schemas')))
+            return abort(400, 'Json format temporary disabled')
 
 
 api.add_resource(AllSearch, '/<string:form>/search',
@@ -112,6 +112,8 @@ class ResourceSearch(Resource):
                                            Config.namespaces, query_processor, url, resource_name)
             return Response(response.build_response(), mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
+        elif form == 'json':
+            return abort(400, 'Json format temporary disabled')
 
 api.add_resource(ResourceSearch, '/<string:resource_name>/<string:form>/search',
                  resource_class_kwargs={'schema_builder': storage.query_schema_builder,

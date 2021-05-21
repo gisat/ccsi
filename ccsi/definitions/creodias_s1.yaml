@@ -1,7 +1,7 @@
-resource_name: mundi_s2
-short_name: Mundi Sentinel 2 endpoint
+resource_name: creodias_s1
+short_name: Creodias Sentinel 1 endpoint
 connection:
-  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel2/opensearch?
+  url: https://finder.creodias.eu/resto/api/collections/Sentinel1/search.atom?
   typ: simple_request
 parameters:
   collection:
@@ -9,23 +9,19 @@ parameters:
     name: collections
     tranfunc: identity
     mapping:
-      sentinel2: sentinel2
+      sentinel1: sentinel1
   resource:
     typ: option
     name: resource
     tranfunc: identity
     mapping:
-      mundi: mundi
+      creodias: creodias
   searchTerms:
     name: q
     typ: string
     tranfunc: identity
-  title:
-    name: title
-    typ: string
-    tranfunc: identity
   startIndex:
-    name: startIndex
+    name: index
     typ: integer
     tranfunc:
       name: offset
@@ -36,7 +32,7 @@ parameters:
     typ: integer
     tranfunc: identity
   uid:
-    name: uid
+    name: identifier
     typ: string
     tranfunc: identity
   bbox:
@@ -67,104 +63,48 @@ parameters:
     name: radius
     typ: integer
     tranfunc: identity
-  name:
-    name: name
-    typ: string
-    tranfunc: identity
   timeStart:
-    name: timeStart
+    name: publishedAfter
     typ: datetime
     tranfunc: identity
   timeEnd:
-    name: timeEnd
+    name: publishedBefore
     typ: datetime
     tranfunc: identity
-  timeRelation:
-    name: timeRelation
-    typ: option
-    tranfunc: identity
-    mapping:
-      intersects: intersects
-      contains: contains
-      disjoint: disjoint
-      during: during
   parentIdentifier:
     name: parentIdentifier
     typ: string
     tranfunc: identity
-  platform:
-    name: platform
-    typ: option
+  productIdentifie:
+    name: productIdentifie
+    typ: string
     tranfunc: identity
-    mapping:
-      sentinel-2: sentinel2
-  instrument:
-    name: instrument
-    typ: option
-    tranfunc: identity
-    mapping:
-      msi: MSI
-  sensorType:
-    name: sensorType
-    typ: option
-    tranfunc: identity
-    mapping:
-      optic: OPTIC
-  sensorMode:
-    name: sensorMode
-    typ: option
-    tranfunc: identity
-    mapping:
-      eo: EO
-  orbitDirection:
-    name: orbitDirection
-    typ: option
-    tranfunc: identity
-    mapping:
-      ascending: ASCENDING
-      descending: DESCENDING
-  acquisitionType:
-    name: acquisitionType
-    typ: option
-    tranfunc: identity
-    mapping:
-      strip: STRIP
-      caval_ground: CAVAL_GROUND
-      caval_space_moon: CAVAL_SPACE_MOON
-      caval_space_stellar: CAVAL_SPACE_STELLAR
-      caval_ground_night: CAVAL_GROUND_NIGHT
-      caval_ground_snow: CAVAL_GROUND_SNOW
   productType:
     name: productType
     typ: option
     tranfunc: identity
     mapping:
-      image: IMAGE
-      s2msi2ap: S2MSI2Ap
+      card-bs: CARD-BS
+      card-coh6: CARD-COH6
+      raw: RAW
+      ocn: OCN
+      grd: GRD
+      grd-cog: GRD-COG
+      slc: SLC
   processingLevel:
     name: processingLevel
     typ: option
     tranfunc: identity
     mapping:
-      level1: L1C
-      level2: L2A
-  processingCenter:
-    name: processingCenter
-    typ: string
-    tranfunc: identity
-  processingDate:
-    name: processingDate
-    typ: datetime
-    tranfunc: identity
-  custom:onlineStatus:
-    name: onlineStatus
+      level0: LEVEL0
+      level1: LEVEL1
+      level2: LEVEL2
+  instrument:
+    name: instrument
     typ: option
     tranfunc: identity
     mapping:
-      online: ONLINE
-      offline: OFFLINE
-      notavaliable: NOTAVALIABLE
-      planed: PLANED
+      sar: SAR
   resolution:
     name: resolution
     typ: integer
@@ -173,8 +113,63 @@ parameters:
     name: orbitNumber
     typ: integer
     tranfunc: identity
+  sensorMode:
+    name: sensorMode
+    typ: option
+    tranfunc: identity
+    mapping:
+      sm: SM
+      iw: IW
+      ew: EW
+      wv: WV
+  cloudCover:
+    name: cloudCover
+    typ: interval
+    tranfunc: bracket
+  snowCover:
+    name: snowCover
+    typ: interval
+    tranfunc: bracket
+  custom:cultivatedCover:
+    name: cultivatedCover
+    typ: interval
+    tranfunc: bracket
+  custom:desertCover:
+    name: desertCover
+    typ: interval
+    tranfunc: bracket
+  custom:floodCover:
+    name: floodedCover
+    typ: interval
+    tranfunc: bracket
+  custom:forestCover:
+    name: forestCover
+    typ: interval
+    tranfunc: bracket
+  custom:herbaceousCover:
+    name: herbaceousCover
+    typ: interval
+    tranfunc: bracket
+  custom:iceCover:
+    name: iceCover
+    typ: interval
+    tranfunc: bracket
+  custom:urbanCover:
+    name: iceCover
+    typ: interval
+    tranfunc: bracket
+  custom:waterCover:
+    name: waterCover
+    typ: interval
+    tranfunc: bracket
+  custom:onlineStatus:
+    name: onlineStatus
+    typ: option
+    tranfunc: identity
+    mapping:
+      online: 0
 parser:
-  typ: xmlsax
+  typ: xmlsax_creo
   parameters:
     totalResults:
       tag: totalResults
@@ -192,18 +187,6 @@ parser:
         attrib:
           - url
           - medium
-    imagePatternURI:
-      tag: link
-      tag_spec: text_to_enclousure
-      uri: http://tas/DIAS
-      source: text
-    link:
-      tag: link
-      uri: http://www.w3.org/2005/Atom
-      source:
-        attrib:
-          - rel
-          - href
     resolution:
       tag: resolution
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
@@ -271,6 +254,17 @@ parser:
     identifier:
       tag: identifier
       uri: http://purl.org/dc/elements/1.1/
+      source: text
+    link:
+      tag: link
+      uri: http://www.w3.org/2005/Atom
+      source:
+        attrib:
+          - rel
+          - href
+    summary:
+      tag: summary
+      uri: http://www.w3.org/2005/Atom
       source: text
 
 

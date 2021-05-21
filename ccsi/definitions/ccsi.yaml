@@ -126,11 +126,17 @@ parameters:
       - contains
       - disjoint
       - during
+  productIdentifier:
+    name: productIdentifier
+    typ: string
+    tranfunc: identity
+    title: EO data product identifier
+    namespace: eo
   parentIdentifier:
     name: parentIdentifier
     typ: string
     tranfunc: identity
-    title: EO data parent ressources identifier
+    title: EO data parent resources identifier
     namespace: eo
   platform:
     name: platform
@@ -225,9 +231,12 @@ parameters:
     title: EO product type
     namespace: eo
     values:
+      - card-bs
+      - card-coh6
       - raw
       - ocn
       - grd
+      - grd-cog
       - slc
       - image
       - s2msi2ap
@@ -278,6 +287,7 @@ parameters:
     title: EO product processing level
     namespace: eo
     values:
+      - level0
       - level1
       - level2
       - level3
@@ -316,6 +326,66 @@ parameters:
     tranfunc: identity
     title: Acquisition orbit number
     namespace: eo
+  cloudCover:
+    name: cloudCover
+    typ: interval
+    tranfunc: identity
+    title: Cloud cover interval expressed in percent eg 1,20
+    namespace: eo
+  snowCover:
+    name: snowCover
+    typ: interval
+    tranfunc: identity
+    title: Snow cover interval expressed in percent eg 1,20
+    namespace: eo
+  custom:cultivatedCover:
+    name: custom:cultivatedCover
+    typ: interval
+    tranfunc: identity
+    title: Cultivated area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:desertCover:
+    name: custom:desertCover
+    typ: interval
+    tranfunc: identity
+    title: Desert area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:floodtCover:
+    name: custom:floodCover
+    typ: interval
+    tranfunc: identity
+    title: Flooded area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:forestCover:
+    name: custom:forestCover
+    typ: interval
+    tranfunc: identity
+    title: Forest area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:herbaceousCover:
+    name: custom:herbaceousCover
+    typ: interval
+    tranfunc: identity
+    title: Herbaceous area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:iceCover:
+    name: custom:iceCover
+    typ: interval
+    tranfunc: identity
+    title: Ice area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:urbanCover:
+    name: custom:urbanCover
+    typ: interval
+    tranfunc: identity
+    title: Urban area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:waterCover:
+    name: custom:waterCover
+    typ: interval
+    tranfunc: identity
+    title: Water area interval expressed in percent eg 1,20
+    namespace: ccsi
 parser:
   typ: null
 response:

@@ -5,17 +5,17 @@ connection:
   typ: simple_request
 parameters:
   collection:
-    typ: string
+    typ: option
     name: collections
     tranfunc: identity
-    values:
-      - clms
+    mapping:
+      clms: clms
   resource:
-    typ: string
+    typ: option
     name: resource
     tranfunc: identity
-    values:
-      - mundi
+    mapping:
+      mundi: mundi
   searchTerms:
     name: q
     typ: string

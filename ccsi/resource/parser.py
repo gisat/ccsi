@@ -1,12 +1,10 @@
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import make_parser
+from lxml import etree
 from io import StringIO, BytesIO
 from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
-
-
 from ccsi.base import Container, ExcludeSchema
-
 
 class Tag:
 
@@ -77,9 +75,10 @@ class FeedSchema(ExcludeSchema):
 # SAX parser
 class XMLSaxHandler(ContentHandler):
     
-    def __init__(self, parameters, feed: Feed, entry: Entry, **ignore):
+    def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
         super(XMLSaxHandler, self).__init__()
         self.parameters = parameters
+        self._preprocessor = preprocessor
         self._feed = feed
         self._entry = entry
         self.current_tag_name = None
@@ -152,7 +151,31 @@ class XMLSaxHandler(ContentHandler):
             return StringIO(source)
 
 
-PARSER_TYPES = {'xmlsax': XMLSaxHandler}
+class XMLSaxHandlerCreo(XMLSaxHandler):
+
+    def parse(self, source):
+        self.feed = self._feed()
+        parser = make_parser()
+        parser.setContentHandler(self)
+        parser.setFeature(feature_namespaces, 1)
+        source = self.remove_resto(source)
+        stream = self.stream(source)
+        parser.parse(stream)
+        return self.feed
+
+    def remove_resto(self, source):
+        parser = etree.XMLParser(recover=True)
+        tree = etree.fromstring(source, parser)
+        resto = tree.findall('{http://a9.com/-/spec/opensearch/1.1/}Query')
+        for item in resto:
+            item.getparent().remove(item)
+        return etree.tostring(tree)
+
+
+
+
+PARSER_TYPES = {'xmlsax': XMLSaxHandler,
+                'xmlsax_creo': XMLSaxHandlerCreo}
 
 
 class ParserSchema(ExcludeSchema):

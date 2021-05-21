@@ -2,7 +2,8 @@ class Config:
 
     response_form = ['atom', 'json']
 
-    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml']
+    resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml',
+                           'creodias_s1.yaml']
 
     connections_repeat = 3
 
@@ -15,7 +16,8 @@ class Config:
                   'param': {'param': 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/'},
                   'media': {'media': 'http://search.yahoo.com/mrss/'},
                   'georss': {'georss': 'http://www.georss.org/georss'},
-                  'dc': {'dc': 'http://purl.org/dc/elements/1.1/'}
+                  'dc': {'dc': 'http://purl.org/dc/elements/1.1/'},
+                  'resto': {'resto': "http://mapshup.info/-/resto/2.0/"}
                   }
 
     swagger = {
