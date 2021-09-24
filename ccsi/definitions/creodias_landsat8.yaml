@@ -1,41 +1,35 @@
-resource_name: mundi_s1
-short_name: Mundi Sentinel 1 endpoint
+resource_name: creodias_landsat8
+short_name: Creodias Landsat 8 endpoint
 connection:
-  url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel1/opensearch?
+  url: https://finder.creodias.eu/resto/api/collections/Landsat8/search.atom?
   typ: simple_request
 translator:
   typ: basic
 parameters:
   collection:
-    typ: option
     name: collections
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      sentinel-1: sentinel-1
-  resource:
     typ: option
-    name: resource
     tranfunc:
       - name: get_mapped_pair
         property:
     mapping:
-      mundi: mundi
+      landsat-8: landsat-8
+  resource:
+    name: resource
+    typ: option
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      creodias: creodias
   searchTerms:
     name: q
     typ: string
     tranfunc:
       - name: identity
         property:
-  title:
-    name: title
-    typ: string
-    tranfunc:
-      - name: identity
-        property:
   startIndex:
-    name: startIndex
+    name: index
     typ: integer
     tranfunc:
       - name: offset
@@ -48,13 +42,13 @@ parameters:
       - name: identity
         property:
   uid:
-    name: uid
+    name: identifier
     typ: string
     tranfunc:
       - name: identity
         property:
   bbox:
-    name: bbox
+    name: box
     typ: bbox
     tranfunc:
       - name: identity
@@ -65,16 +59,6 @@ parameters:
     tranfunc:
       - name: identity
         property:
-  relation:
-    name: relation
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      intersects: intersects
-      contains: contains
-      disjoint: disjoint
   lat:
     name: lat
     typ: float
@@ -93,109 +77,30 @@ parameters:
     tranfunc:
       - name: identity
         property:
-  name:
-    name: name
-    typ: string
-    tranfunc:
-      - name: identity
-        property:
   timeStart:
-    name: timeStart
+    name: publishedAfter
     typ: datetime
     tranfunc:
-      - name: utc_time_format
+      - name: rfc_time_format
         property:
   timeEnd:
-    name: timeEnd
+    name: publishedBefore
     typ: datetime
     tranfunc:
-      - name: utc_time_format
+      - name: rfc_time_format
         property:
-  timeRelation:
-    name: timeRelation
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      intersects: intersects
-      contains: contains
-      disjoint: disjoint
-      during: during
   parentIdentifier:
     name: parentIdentifier
     typ: string
     tranfunc:
       - name: identity
         property:
-  platform:
-    name: platform
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      sentinel-1: sentinel1
-  instrument:
-    name: instrument
-    typ: option
+  productIdentifie:
+    name: productIdentifie
+    typ: string
     tranfunc:
       - name: identity
         property:
-    mapping:
-      sar: SAR
-  sensorType:
-    name: sensorType
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      radar: RADAR
-  sensorMode:
-    name: sensorMode
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      sm: SM_
-      iw: IW_
-      ew: EW_
-      wv: WV_
-  orbitDirection:
-    name: orbitDirection
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      ascending: ASCENDING
-      descending: DESCENDING
-  acquisitionType:
-    name: acquisitionType
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      nominal: NOMINAL
-      calibration: CALIBRATION
-      other: OTHER
-  polarisationChannels:
-      name: polarisationChannels
-      typ: option
-      tranfunc:
-        - name: get_mapped_pair
-          property:
-      mapping:
-        hh/hv: HH/HV
-        hh/vv: HH/VV
-        vv/vh: VV/VH
-        hh: HH
-        vv: VV
-        hv: HV
-        vh: VH
   productType:
     name: productType
     typ: option
@@ -203,31 +108,90 @@ parameters:
       - name: get_mapped_pair
         property:
     mapping:
-      raw: RAW
-      ocn: OCN
-      grd: GRD
-      slc: SLC
-  processingLevel:
-    name: processingLevel
+      l1gt: L1GT
+      l1t: L1T
+      l1tp: L1TP
+  instrument:
+    name: instrument
     typ: option
     tranfunc:
       - name: get_mapped_pair
         property:
     mapping:
-      level1: L0_
-      level2: L1_
-      level3: L3_
-  processingCenter:
-    name: processingCenter
-    typ: string
+      oli: OLI
+      oli_tirs: OLI_TIRS
+      tirs: TIRS
+  resolution:
+    name: resolution
+    typ: integer
     tranfunc:
       - name: identity
         property:
-  processingDate:
-    name: processingDate
-    typ: datetime
+  orbitNumber:
+    name: orbitNumber
+    typ: integer
     tranfunc:
       - name: identity
+        property:
+  cloudCover:
+    name: cloudCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  snowCover:
+    name: snowCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:cultivatedCover:
+    name: cultivatedCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:desertCover:
+    name: desertCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:floodCover:
+    name: floodedCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:forestCover:
+    name: forestCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:herbaceousCover:
+    name: herbaceousCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:iceCover:
+    name: iceCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:urbanCover:
+    name: iceCover
+    typ: interval
+    tranfunc:
+      - name: bracket
+        property:
+  custom:waterCover:
+    name: waterCover
+    typ: interval
+    tranfunc:
+      - name: bracket
         property:
   custom:onlineStatus:
     name: onlineStatus
@@ -236,24 +200,21 @@ parameters:
       - name: get_mapped_pair
         property:
     mapping:
-      online: ONLINE
-      offline: OFFLINE
-      notavaliable: NOTAVALIABLE
-      planed: PLANED
-  resolution:
-    name: resolution
+      online: 0
+  custom:sunAzimuth:
+    name: sunAzimuth
     typ: integer
     tranfunc:
       - name: identity
         property:
-  relativeOrbitNumber:
-    name: orbitNumber
+  custom:sunElevation:
+    name: sunElevation
     typ: integer
     tranfunc:
       - name: identity
         property:
 parser:
-  typ: xmlsax
+  typ: xmlsax_creo
   parameters:
     totalResults:
       tag: totalResults
@@ -271,11 +232,6 @@ parser:
         attrib:
           - url
           - medium
-    imagePatternURI:
-      tag: link
-      tag_spec: text_to_enclousure
-      uri: http://tas/DIAS
-      source: text
     resolution:
       tag: resolution
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
@@ -296,7 +252,7 @@ parser:
       tag: orbitDirection
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
       source: text
-    relativeOrbitNumber:
+    orbitNumber:
       tag: orbitNumber
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
       source: text
@@ -351,6 +307,10 @@ parser:
         attrib:
           - rel
           - href
+    summary:
+      tag: summary
+      uri: http://www.w3.org/2005/Atom
+      source: text
 
 
 

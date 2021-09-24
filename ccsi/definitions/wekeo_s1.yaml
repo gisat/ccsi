@@ -1,0 +1,175 @@
+resource_name: wekeo_s1
+short_name: Wekeo Sentinel 1 endpoint
+connection:
+  url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
+  typ: wekeo_connection
+translator:
+  typ: wekeo
+parameters:
+  collection:
+    typ: option
+    name: collection
+    target: wekeo_dataset_id
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+    mapping:
+      sentinel-1: "EO:ESA:DAT:SENTINEL-1:SAR"
+    missing:
+      sentinel-1
+  resource:
+    typ: option
+    name: resource
+    tranfunc:
+     - name: identity
+       property:
+    mapping:
+      wekeo: wekeo
+  productType:
+    name: productType
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_parameter_form
+       property:
+    mapping:
+      grd: GRD
+      card-bs: BS
+      grd-cog: GRD-COG
+      raw: RAW
+      card-coh6: CARD-COH6
+      ocn: OCN
+      slc: SLC
+  processingLevel:
+    name: processingLevel
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_parameter_form
+       property:
+    mapping:
+      level1: LEVEL1
+      level2: LEVEL2
+  startIndex:
+    name: page
+    typ: integer
+    target: query_params
+    tranfunc:
+      - name: offset
+        property:
+         offset: 0
+  maxRecords:
+    name: size
+    typ: integer
+    target: query_params
+    tranfunc:
+     - name: identity
+       property:
+  bbox:
+    name: bbox
+    typ: bbox
+    target: boundingBoxValues
+    tranfunc:
+      - name: wekeo_bbox
+        property:
+      - name: wekeo_bbox_form
+        property:
+  timeStart:
+    name: start
+    typ: datetime
+    target: dateRangeSelectValues
+    tranfunc:
+      - name: rfc_time_format
+        property:
+      - name: wekeo_time_parameter_form
+        property:
+    missing: "2014-10-06T00:00:00.000Z"
+  timeEnd:
+    name: end
+    typ: datetime
+    target: dateRangeSelectValues
+    tranfunc:
+     - name: identity
+       property:
+     - name: rfc_time_format
+       property:
+     - name: wekeo_time_parameter_form
+       property:
+  sensorMode:
+    name: sensorMode
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_parameter_form
+       property:
+    mapping:
+      sm: SM
+      iw: IW
+      ew: EW
+      wv: WV
+      hr: HR
+  polarisationChannels:
+    name: polarisation
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_parameter_form
+       property:
+    mapping:
+      hh/hv: HH+HV
+      vv/vh: VV+VH
+      hh: HH
+      vv: VV
+      hv: HV
+      vh: VH
+  orbitDirection:
+    name: orbit_direction
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_parameter_form
+       property:
+    mapping:
+      ascending : ascending
+      descending: descending
+parser:
+  typ: wekeo
+  preprocessor: prodInfo2content
+  parameters:
+    totItems:
+      tag: totalResults
+      location: head
+    downloadUri:
+      tag: link
+      tag_spec: text_to_enclousure
+    filename:
+      tag: title
+    datasetId:
+      tag: dataset
+    productStartDate:
+      tag: published
+    url:
+      tag: link
+      tag_spec: text_to_path
+
+
+
+
+
+
+
+
+
+
+
+

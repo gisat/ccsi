@@ -3,76 +3,101 @@ short_name: Copernicus core service interface
 connection:
   url: null
   typ: null
+translator:
+  typ: basic
 parameters:
   collection:
     typ: string
     name: collections
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Registred data collections endpoints
     namespace: ccsi
     values:
-      - sentinel1
-      - sentinel2
-      - sentinel3
+      - sentinel-1
+      - sentinel-2
+      - sentinel-3
+      - sentinel-5p
       - clms
+      - landsat-8
   resource:
     typ: string
     name: resource
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Registred data resources providers
     namespace: ccsi
     values:
       - mundi
       - scihub
       - creodis
+      - wekeo
   searchTerms:
     name: searchTerms
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Free text search
     namespace: os
   title:
     name: title
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: A name given to the eo resource
     namespace: eo
   startIndex:
     name: startIndex
     typ: integer
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     missing: 0
     title: Start index of results
     namespace: os
   maxRecords:
     name: maxRecords
     typ: integer
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     missing: 50
     title: Maximum results per page
     namespace: os
   uid:
     name: uid
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product unique identifier
     namespace: geo
   bbox:
     name: bbox
     typ: bbox
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Region of Interest defined by 'west, south, east, north' coordinates of longitude, latitude, in decimal degrees (EPSG:4326)
     namespace: geo
   geometry:
     name: geometry
     typ: wktgeom
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Region of Interest defined in Well Known Text standard (WKT) with coordinates in decimal degrees (EPSG:4326)
     namespace: geo
   relation:
     name: relation
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Geometry search relation
     namespace: geo
     values:
@@ -82,43 +107,57 @@ parameters:
   lat:
     name: lat
     typ: float
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Circle center latitude
     namespace: geo
   lon:
     name: lon
     typ: float
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Circle center longitude
     namespace: geo
   radius:
     name: radius
     typ: integer
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Circle radius in m
     namespace: geo
   name:
     name: name
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Geoname location intersecting product footprint
     namespace: geo
   timeStart:
     name: timeStart
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Search interval start time
     namespace: time
   timeEnd:
     name: timeEnd
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Search interval end time
     namespace: time
   timeRelation:
     name: timeRelation
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Applied time relation
     namespace: time
     values:
@@ -129,30 +168,40 @@ parameters:
   productIdentifier:
     name: productIdentifier
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO data product identifier
     namespace: eo
   parentIdentifier:
     name: parentIdentifier
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO data parent resources identifier
     namespace: eo
   platform:
     name: platform
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product platform collection
     namespace: eo
     values:
       - sentinel-1
       - sentinel-2
       - sentinel-3
+      - sentinel-5p
       - clms
+      - landsat-8
   instrument:
     name: instrument
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO platform instrument name
     namespace: eo
     values:
@@ -165,10 +214,16 @@ parameters:
       - ol
       - sl
       - sr
+      - tropmi
+      - oli
+      - oli_tirs
+      - tirs
   sensorType:
     name: sensorType
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product sensor type
     namespace: eo
     values:
@@ -179,7 +234,9 @@ parameters:
   sensorMode:
     name: sensorMode
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product sensor mode
     namespace: eo
     values:
@@ -188,10 +245,13 @@ parameters:
       - ew
       - wv
       - eo
+      - hr
   orbitDirection:
     name: orbitDirection
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Acquisition orbit direction
     namespace: eo
     values:
@@ -200,7 +260,9 @@ parameters:
   acquisitionType:
     name: acquisitionType
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Acquisition mission mode
     namespace: eo
     values:
@@ -217,11 +279,15 @@ parameters:
   polarisationChannels:
     name: polarisationChannels
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Polarisation channel(s)
     namespace: eo
     values:
+      - hh/hv
       - hh/vv
+      - vh/vv
       - vv/vh
       - hh
       - vv
@@ -230,7 +296,9 @@ parameters:
   productType:
     name: productType
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product type
     namespace: eo
     values:
@@ -283,10 +351,34 @@ parameters:
       - local_riparian_drz
       - local_riparian_gle
       - local_n2k
+      - ra_bd1
+      - ra_bd2
+      - ra_bd3
+      - ra_bd4
+      - ra_bd5
+      - ra_bd6
+      - ra_bd7
+      - ra_bd8
+      - aer_ai
+      - ch4
+      - cloud
+      - co
+      - hcho
+      - no2
+      - np_bd3
+      - np_bd6
+      - np_bd7
+      - o3
+      - so2
+      - l1gt
+      - l1t
+      - l1tp
   processingLevel:
     name: processingLevel
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product processing level
     namespace: eo
     values:
@@ -297,19 +389,25 @@ parameters:
   processingCenter:
     name: processingCenter
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product processing center
     namespace: eo
   processingDate:
     name: processingDate
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product processing center
     namespace: eo
   custom:onlineStatus:
     name: custom:onlineStatus
     typ: string
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Archive product on-line status. Resource specific
     namespace: ccsi
     values:
@@ -320,74 +418,122 @@ parameters:
   resolution:
     name: resolution
     typ: integer
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: EO product meter resolution
     namespace: eo
-  orbitNumber:
-    name: orbitNumber
+  absoluteOrbitNumber:
+    name: absoluteOrbitNumber
     typ: integer
-    tranfunc: identity
-    title: Acquisition orbit number
+    tranfunc:
+     - name: identity
+       property:
+    title: Absolute orbit number of acquisition
+    namespace: eo
+  relativeOrbitNumber:
+    name: relativeOrbitNumber
+    typ: integer
+    tranfunc:
+     - name: identity
+       property:
+    title: Relative orbit number of acquisition
     namespace: eo
   cloudCover:
     name: cloudCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Cloud cover interval expressed in percent eg 1,20
     namespace: eo
   snowCover:
     name: snowCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Snow cover interval expressed in percent eg 1,20
     namespace: eo
   custom:cultivatedCover:
     name: custom:cultivatedCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Cultivated area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:desertCover:
     name: custom:desertCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Desert area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:floodtCover:
     name: custom:floodCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Flooded area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:forestCover:
     name: custom:forestCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Forest area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:herbaceousCover:
     name: custom:herbaceousCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Herbaceous area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:iceCover:
     name: custom:iceCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Ice area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:urbanCover:
     name: custom:urbanCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Urban area interval expressed in percent eg 1,20
     namespace: ccsi
   custom:waterCover:
     name: custom:waterCover
     typ: interval
-    tranfunc: identity
+    tranfunc:
+     - name: identity
+       property:
     title: Water area interval expressed in percent eg 1,20
+    namespace: ccsi
+  custom:sunAzimuth:
+    name: custom:sunAzimuth
+    typ: integer
+    tranfunc:
+     - name: identity
+       property:
+    title: Sun azimuth
+    namespace: ccsi
+  custom:sunElevation:
+    name: custom:sunElevation
+    typ: integer
+    tranfunc:
+     - name: identity
+       property:
+    title: Elevation of the sun
     namespace: ccsi
 parser:
   typ: null
@@ -465,9 +611,8 @@ response:
     published:
       content: text
       namespace: atom
-
-
-
-
+    dataset:
+      content: text
+      namespace: ccsi
 
 

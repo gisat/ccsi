@@ -4,6 +4,7 @@ from marshmallow import fields, post_load
 from ccsi.base import ExcludeSchema, Container
 from ccsi.config import Config
 from datetime import datetime
+from collections import OrderedDict
 
 
 class Description:
@@ -54,9 +55,9 @@ class Description:
                     resource_parameter = self.resource_parameters.get_item(self.resource_name).get_parameter(parameter)
                     if parameter == 'resource' or parameter == 'collection':
                         param_property = self.resource_parameters.get_item(self.resource_name).get_parameter(parameter)
-                        properties['values'] = param_property.definitions['values']
+                        properties['values'] = param_property.definitions['mapping']
                     if hasattr(resource_parameter, 'mapping'):
-                        properties['values'] = resource_parameter.mapping.values()
+                        properties['values'] = resource_parameter.mapping.keys()
                     element = DescriptionElementSchema().load(properties)
                     self.feed.append(element)
 
@@ -126,12 +127,22 @@ class ResponseSpecContainer(Container):
         for parameter, properties in parameters.items():
             self.update(parameter, properties)
 
+
 # tag_spec_func
 def text2enclousure(text, **ignore):
-    return None, {"rel":"enclosure", "type":"application/unknown", "href": text}
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": text}
 
 
-TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure}
+def find_in_dict(text, **ignore):
+    return None
+
+def text_to_path(text, **ignore):
+    return None, {"rel": "path", "type": "application/unknown", "href": text}
+
+
+TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
+                'text_to_path': text_to_path,
+                'find_in_dict': find_in_dict}
 
 # schema
 class ResponseXMLTagSchema(ExcludeSchema):
@@ -184,7 +195,6 @@ class ResourceXMLResponse:
         self.total_results = query_processor.feeds.get(resource_name).totalResults
         self.query = query_processor.valid_queries.get(resource_name)
         self.base_url = base_url
-
 
     def build_response(self):
         self._create_head()
@@ -358,3 +368,15 @@ class ResourceDescriptionContainer(Container):
 
     def create(self, resource_name, description):
         self.update(resource_name, description)
+
+
+class ResourceJsonResponse:
+
+    def __init__(self, feed_schema, query_processor):
+        self.feed_schema = feed_schema()
+        self.query_processor = query_processor
+
+    def build_response(self):
+        return [self.feed_schema.dump(feed) for _, feed in self.query_processor.feeds.items()]
+
+

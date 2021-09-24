@@ -1,6 +1,7 @@
 from ccsi.base import Singleton
-from ccsi.resource.parameters import ResourcesParameters, ParamTranslator, QuerySchemaBuilder, ResourceSchemasContainer
+from ccsi.resource.parameters import ResourcesParameters, QuerySchemaBuilder, ResourceSchemasContainer
 from ccsi.resource.connection import ConnectionContainer, ConnectionSchema
+from ccsi.resource.translators import TranslatorContainer, TranslatorSchema
 from ccsi.errors.handlers import Errors
 from ccsi.resource.parser import ParserContainer, ParserSchema
 from ccsi.resource.output import Description, ResponseSpecContainer, ResourceDescriptionContainer
@@ -13,7 +14,7 @@ class Storage(metaclass=Singleton):
     resources_parameters = ResourcesParameters()
     query_schema_builder = QuerySchemaBuilder()
     resource_schemas = ResourceSchemasContainer()
-    translator = ParamTranslator(resources_parameters)
+    translator = TranslatorContainer(TranslatorSchema)
     connections = ConnectionContainer(ConnectionSchema)
     errors = Errors()
     parsers = ParserContainer(ParserSchema())

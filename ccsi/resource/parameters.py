@@ -3,8 +3,9 @@ from marshmallow.validate import OneOf, ContainsOnly
 from shapely import wkt, errors
 from shapely.geometry import box
 from dateutil.parser import isoparse
-from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, partial
+from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, WekeoQuerySchema, partial
 import re
+from abc import ABC, abstractmethod
 
 
 # transformation
@@ -16,21 +17,63 @@ def offset(self, value, offset):
     return value + offset
 
 
+def default(self, value, default):
+    return default
+
+
 def bracket(self, value):
     return f'[{value}]'
 
 
+def get_mapped_pair(self, value):
+    return self.mapping[value]
+
+
+def utc_time_format(self, value):
+    return isoparse(value).strftime("%Y-%m-%dT%H:%M:%S0Z")
+
+
+def rfc_time_format(self, value):
+    return isoparse(value).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def wekeo_parameter_form(self, value):
+    return {'name': self.name, 'value': value}
+
+
+def wekeo_bbox_form(self, value):
+    return {'name': self.name, 'bbox': value}
+
+
+def wekeo_time_parameter_form(self, value):
+    return {'name': 'position', self.name: value}
+
+
+def wekeo_bbox(self, value: str):
+    return [float(item) for item in value.split(',')]
+
+
 TRANSFORMATION_FUNC = {'identity': identity,
-                        'offset': offset,
-                        'bracket': bracket}
+                       'offset': offset,
+                       'bracket': bracket,
+                       'default': default,
+                       'utc_time_format': utc_time_format,
+                       'rfc_time_format': rfc_time_format,
+                       'get_mapped_pair':  get_mapped_pair,
+                       'wekeo_parameter_form': wekeo_parameter_form,
+                       'wekeo_bbox_form': wekeo_bbox_form,
+                       'wekeo_time_parameter_form': wekeo_time_parameter_form,
+                       'wekeo_bbox': wekeo_bbox}
 
 
 # parameters & translator
 class Parameter:
 
-    def __init__(self, name, typ, tranfunc, definitions):
+    def __init__(self, name: str, typ: str, tranfunc: list, definitions: dict):
         self.name = name
-        self.tranfunc = tranfunc.__get__(self)
+        for item in tranfunc:
+            setattr(self, item.__name__, item.__get__(self))
+        self.tranfunc = [item.__name__ for item in tranfunc]
         self.typ = typ
         self.definitions = definitions
 
@@ -41,9 +84,10 @@ class Parameter:
             raise ValueError(f'{self.__repr__()}: Invalid type of argument {value}, expected {self.__class__.__name__}')
 
     def transform(self, value):
-        new = self.tranfunc(value)
-        if self.validate(new):
-            return {self.name: new}
+        parameter_value = value
+        for fun in self.tranfunc:
+            parameter_value = self.__getattribute__(fun)(parameter_value)
+        return {self.name: parameter_value}
 
     def __repr__(self):
         return f'Parameter {self.name}'
@@ -182,18 +226,17 @@ class TransFunction(fields.Field):
         return
 
     def _deserialize(self, value, attr, data, **kwargs):
-        try:
-            if value not in TRANSFORMATION_FUNC:
-                raise ValidationError(f"Parameter: {data['name']}: Invalid transformation function specification:{value}")
-        except TypeError:
-            if value['name'] not in TRANSFORMATION_FUNC:
-                raise ValidationError(
-                    f"Parameter: {data['name']}: Invalid transformation function specification:{value}")
-
-        if isinstance(value, str):
-            return TRANSFORMATION_FUNC.get(value)
-        elif isinstance(value, dict):
-            return partial(TRANSFORMATION_FUNC.get(value['name']), **value['property'])
+        if all(item['name'] in TRANSFORMATION_FUNC for item in value):
+            fun_sequence = []
+            for item in value:
+                if item['property'] is None:
+                    fun_sequence.append(TRANSFORMATION_FUNC.get(item['name']))
+                else:
+                    fun_sequence.append(partial(TRANSFORMATION_FUNC.get(item['name']), **item['property']))
+            return fun_sequence
+        else:
+            raise ValidationError(f"Parameter: {data['name']}: "
+                                  f"Transformation function specification contain unknown function name")
 
 
 class ParameterSchema(ExcludeSchema):
@@ -268,29 +311,6 @@ class ResourcesParameters(Container):
             self.items[resource_name].update(name, properties)
 
 
-class ParamTranslator:
-    """ class responsible for translation from ccsi set o api params to resource api params"""
-
-    def __init__(self, resources_parameters: ResourcesParameters):
-        self.resources_parameters = resources_parameters
-
-    def translate(self, resource_name, query: dict):
-        """translate from one set of api parameters to another"""
-        new_query = {}
-        for key, value in query.items():
-            new_query.update(self.resources_parameters.get_item(resource_name).get_parameter(key).transform(value))
-        return new_query
-
-    def get_mapped_pairs(self, resource_name):
-        return self.resources_parameters.get_item(resource_name).get_mapped_pairs()
-
-    def validate(self, resource_name, query: dict):
-        """validate from one set of api parameters to another"""
-        for key, value in query.items():
-            self.resources_parameters.get_item(resource_name).get_parameter(key).validate(value)
-
-
-
 #  parameters schemas
 # validations
 def validate_choises(value, choises):
@@ -324,6 +344,8 @@ class QuerySchemaBuilder:
                            parameters.items()}
         if resource_name == 'ccsi':
             schema = type('Schema', (CCSIQuerySchema,), resource_fileds)
+        elif resource_name.__contains__('wekeo'):
+            schema = type('Schema', (WekeoQuerySchema,), resource_fileds)
         else:
             schema = type('Schema', (ResourceQuerySchema,), resource_fileds)
         return schema()
