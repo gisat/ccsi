@@ -34,7 +34,12 @@ class Errors:
 
     def process_error(self, error):
         exception_class_name = error.__class__.__name__
-        return self.__getattribute__(self.TYPE_ERRORS[exception_class_name]).__call__(error)
+        try:
+            return self.__getattribute__(self.TYPE_ERRORS[exception_class_name]).__call__(error)
+        except KeyError:
+            return {'title': '(500) Internal Server Error',
+                    'summary': error}, 500
+
     def _marshmallow_exceptions(self, error):
         title = '(400) Bad Request'
         summary = 'Parameters validation error report: '

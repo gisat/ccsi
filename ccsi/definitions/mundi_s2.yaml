@@ -3,54 +3,74 @@ short_name: Mundi Sentinel 2 endpoint
 connection:
   url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel2/opensearch?
   typ: simple_request
+translator:
+  typ: basic
 parameters:
   collection:
     typ: option
     name: collections
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
-      sentinel2: sentinel2
+      sentinel-2: sentinel-2
   resource:
     typ: option
     name: resource
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       mundi: mundi
   searchTerms:
     name: q
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   title:
     name: title
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   startIndex:
     name: startIndex
     typ: integer
     tranfunc:
-      name: offset
-      property:
-        offset: 1
+      - name: offset
+        property:
+          offset: 1
   maxRecords:
     name: maxRecords
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   uid:
     name: uid
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   bbox:
     name: bbox
     typ: bbox
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   geometry:
     name: geometry
     typ: wktgeom
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   relation:
     name: relation
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       intersects: intersects
       contains: contains
@@ -58,31 +78,45 @@ parameters:
   lat:
     name: lat
     typ: float
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   lon:
     name: lon
     typ: float
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   radius:
     name: radius
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   name:
     name: name
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   timeStart:
     name: timeStart
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+      - name: utc_time_format
+        property:
   timeEnd:
     name: timeEnd
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+      - name: utc_time_format
+        property:
   timeRelation:
     name: timeRelation
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       intersects: intersects
       contains: contains
@@ -91,42 +125,56 @@ parameters:
   parentIdentifier:
     name: parentIdentifier
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   platform:
     name: platform
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       sentinel-2: sentinel2
   instrument:
     name: instrument
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
     mapping:
       msi: MSI
   sensorType:
     name: sensorType
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       optic: OPTIC
   sensorMode:
     name: sensorMode
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       eo: EO
   orbitDirection:
     name: orbitDirection
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       ascending: ASCENDING
       descending: DESCENDING
   acquisitionType:
     name: acquisitionType
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       strip: STRIP
       caval_ground: CAVAL_GROUND
@@ -137,29 +185,39 @@ parameters:
   productType:
     name: productType
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       image: IMAGE
       msi: S2MSI2Ap
   processingLevel:
     name: processingLevel
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       level1: L1C
       level2: L2A
   processingCenter:
     name: processingCenter
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   processingDate:
     name: processingDate
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   custom:onlineStatus:
     name: onlineStatus
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       online: ONLINE
       offline: OFFLINE
@@ -168,11 +226,15 @@ parameters:
   resolution:
     name: resolution
     typ: integer
-    tranfunc: identity
-  orbitNumber:
+    tranfunc:
+      - name: identity
+        property:
+  relativeOrbitNumber:
     name: orbitNumber
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
 parser:
   typ: xmlsax
   parameters:

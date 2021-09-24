@@ -6,12 +6,12 @@ from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
 from ccsi.base import Container, ExcludeSchema
 
+
 class Tag:
 
     def __init__(self, source_tag, tag, tag_spec=None, source=None, uri=None,
                  mapping=None, location='entry'):
         """
-
         :param source_tag: name o tag at original source
         :param tag: name of the mapped tag
         :param tag_spec: additional mapped tag specification
@@ -172,21 +172,68 @@ class XMLSaxHandlerCreo(XMLSaxHandler):
         return etree.tostring(tree)
 
 
+class WekeoParser:
+
+    def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
+        self.parameters = parameters
+        self._preprocessor = preprocessor
+        self._feed = feed
+        self._entry = entry
+        self.feed = None
+        self.entry = None
+
+    def parse(self, response):
+        self.feed = self._feed()
+        self._parse_head(response)
+        self._parse_entries(response['content'])
+        return self.feed
+
+    def _parse_head(self, response):
+        for parameter_name in self.parameters:
+            tag = Tag(parameter_name, **self.parameters[parameter_name])
+            if tag.location == 'head':
+                tag.text = response[parameter_name]
+                self.feed.add_to_head(tag)
+
+    def _parse_entries(self, contents):
+        for content in contents:
+            content = self._preprocessor(content)
+            entry = self._entry()
+            for parameter_name in self.parameters:
+                tag = Tag(parameter_name, **self.parameters[parameter_name])
+                if tag.location == 'entry':
+                    tag.text = content[parameter_name]
+                    entry.add_tag(tag)
+            self.feed.add_entry(entry)
+
+
+def prodInfo2content(content):
+    for k, v in content['productInfo'].items():
+        content.update({k: v})
+    return content
+
+
+
+
 
 
 PARSER_TYPES = {'xmlsax': XMLSaxHandler,
-                'xmlsax_creo': XMLSaxHandlerCreo}
+                'xmlsax_creo': XMLSaxHandlerCreo,
+                'wekeo': WekeoParser}
 
+PREPRCESSORS = {'prodInfo2content': prodInfo2content}
 
 class ParserSchema(ExcludeSchema):
     typ = fields.String(required=True, validate=OneOf(PARSER_TYPES), allow_none=True)
     parameters = fields.Dict(required=False)
+    preprocessor = fields.String(required=False)
 
     @post_load()
     def make_parser(self, data, **ignore):
         if data['typ']:
             data['feed'] = Feed
             data['entry'] = Entry
+            data['preprocessor'] = PREPRCESSORS.get(data.get('preprocessor'))
             parser = PARSER_TYPES.get(data['typ'])
             return parser(**data)
         else:

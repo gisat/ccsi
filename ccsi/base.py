@@ -55,6 +55,20 @@ class ResourceQuerySchema(Schema):
         unknown = EXCLUDE
         load_only = ['resource', 'collection']
 
+class WekeoQuerySchema(Schema):
+    """base schema for query processing"""
+
+    @post_dump()
+    def remove_skip_values(self, data, **kwargs):
+        return {
+            key: value for key, value in data.items()
+            if value is not None
+        }
+
+    class Meta:
+        unknown = EXCLUDE
+        load_only = ['resource']
+
 
 class CCSIQuerySchema(Schema):
     """base schema for query processing"""

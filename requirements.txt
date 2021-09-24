@@ -25,3 +25,4 @@ pyproj==3.0.0.post1
 pyyaml==5.4.1
 flasgger==0.9.5
 beautifulsoup4==4.9.3
+hda==0.2.1

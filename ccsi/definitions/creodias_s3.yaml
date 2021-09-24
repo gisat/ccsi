@@ -3,78 +3,110 @@ short_name: Creodias Sentinel 3 endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Sentinel3/search.atom?
   typ: simple_request
+translator:
+  typ: basic
 parameters:
   collection:
     typ: option
     name: collections
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
-      sentinel3: sentinel3
+      sentinel-3: sentinel-3
   resource:
     typ: option
     name: resource
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       creodias: creodias
   searchTerms:
     name: q
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   startIndex:
     name: index
     typ: integer
     tranfunc:
-      name: offset
-      property:
-        offset: 1
+      - name: offset
+        property:
+          offset: 1
   maxRecords:
     name: maxRecords
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   uid:
     name: identifier
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   bbox:
-    name: bbox
+    name: box
     typ: bbox
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   geometry:
     name: geometry
     typ: wktgeom
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   lat:
     name: lat
     typ: float
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   lon:
     name: lon
     typ: float
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   radius:
     name: radius
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   timeStart:
-    name: publishedAfter
+    name: startDate
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+      - name: rfc_time_format
+        property:
   timeEnd:
-    name: publishedBefore
+    name: completionDate
     typ: datetime
-    tranfunc: identity
+    tranfunc:
+      - name: rfc_time_format
+        property:
   parentIdentifier:
     name: parentIdentifier
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   productIdentifie:
     name: productIdentifie
     typ: string
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   productType:
     name: productType
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       efr: EFR
       eo: EO
@@ -99,14 +131,18 @@ parameters:
   processingLevel:
     name: processingLevel
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       level1: LEVEL1
       level2: LEVEL2
   instrument:
     name: instrument
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       ol: OL
       ocli: OLCI
@@ -117,55 +153,81 @@ parameters:
   resolution:
     name: resolution
     typ: integer
-    tranfunc: identity
-  orbitNumber:
+    tranfunc:
+      - name: identity
+        property:
+  absoluteOrbitNumber:
     name: orbitNumber
     typ: integer
-    tranfunc: identity
+    tranfunc:
+      - name: identity
+        property:
   cloudCover:
     name: cloudCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   snowCover:
     name: snowCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:cultivatedCover:
     name: cultivatedCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:desertCover:
     name: desertCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:floodCover:
     name: floodedCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:forestCover:
     name: forestCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:herbaceousCover:
     name: herbaceousCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:iceCover:
     name: iceCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:urbanCover:
     name: iceCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:waterCover:
     name: waterCover
     typ: interval
-    tranfunc: bracket
+    tranfunc:
+      - name: bracket
+        property:
   custom:onlineStatus:
     name: onlineStatus
     typ: option
-    tranfunc: identity
+    tranfunc:
+      - name: get_mapped_pair
+        property:
     mapping:
       online: 0
 parser:

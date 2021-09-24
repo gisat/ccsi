@@ -1,10 +1,10 @@
-from flask import Response, request, abort, render_template, make_response, Blueprint, redirect, url_for
+from flask import Response, request, abort, render_template, make_response, Blueprint, redirect, url_for, jsonify
 from flask_restful import Resource, Api
 from ccsi.config import Config
 from ccsi.storage import storage
 from ccsi.resource.query import QueryResource
 from ccsi.resource.parser import FeedSchema
-from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse
+from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse, ResourceJsonResponse
 import datetime
 
 api_search = Blueprint('api_search', __name__)
@@ -37,7 +37,7 @@ class AllSearch(Resource):
     """Search endpoint returning number of occurrences across all registered resources"""
 
     def __init__(self, **kwargs):
-        self.resources_schemas = kwargs['resources_schemas']
+        self.resource_schemas = kwargs['resource_schemas']
         self.translator = kwargs['translator']
         self.connections = kwargs['connections']
         self.parsers = kwargs['parsers']
@@ -45,7 +45,7 @@ class AllSearch(Resource):
 
     def get(self, form):
         check_form(form)
-        query_processor = QueryResource(self.resources_schemas, self.translator, self.connections, self.parsers)
+        query_processor = QueryResource(self.resource_schemas, self.translator, self.connections, self.parsers)
 
         try:
             query_processor.process_query(request.args)
@@ -58,11 +58,12 @@ class AllSearch(Resource):
             return Response(response.build_response(), mimetype='application/xml',
                             content_type='text/xml; charset=utf-8')
         if form == 'json':
-            return abort(400, 'Json format temporary disabled')
+            response = ResourceJsonResponse(FeedSchema, query_processor)
+            return jsonify(response.build_response())
 
 
 api.add_resource(AllSearch, '/<string:form>/search',
-                 resource_class_kwargs={'resources_schemas': storage.resource_schemas,
+                 resource_class_kwargs={'resource_schemas': storage.resource_schemas,
                                         'translator': storage.translator,
                                         'connections': storage.connections,
                                         'parsers': storage.parsers,
@@ -91,7 +92,7 @@ class ResourceSearch(Resource):
 
     def __init__(self, **kwargs):
         self.schema_builder = kwargs['schema_builder']
-        self.resources_schemas= kwargs['resources_schemas']
+        self.resource_schemas = kwargs['resource_schemas']
         self.translator = kwargs['translator']
         self.connections = kwargs['connections']
         self.parsers = kwargs['parsers']
@@ -100,24 +101,26 @@ class ResourceSearch(Resource):
     def get(self, resource_name, form):
         check_form(form)
         exist(resource_name)
-        query_processor = QueryResource(self.resources_schemas, self.translator, self.connections, self.parsers)
+        query_processor = QueryResource(self.resource_schemas, self.translator, self.connections, self.parsers)
+
+        try:
+            query_processor.process_query(request.args, resource_name)
+        except Exception as error:
+            return render_error(error)
 
         if form == 'atom':
-            try:
-                query_processor.process_query(request.args, resource_name)
-            except Exception as error:
-                return render_error(error)
             url = f'{request.url_root}{resource_name}/{form}/search'
             response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, self.response_spec,
                                            Config.namespaces, query_processor, url, resource_name)
             return Response(response.build_response(), mimetype='application/xml', content_type='text/xml; charset=utf-8')
-
         elif form == 'json':
-            return abort(400, 'Json format temporary disabled')
+            response = ResourceJsonResponse(FeedSchema, query_processor)
+            return jsonify(response.build_response())
+
 
 api.add_resource(ResourceSearch, '/<string:resource_name>/<string:form>/search',
                  resource_class_kwargs={'schema_builder': storage.query_schema_builder,
-                                        'resources_schemas': storage.resource_schemas,
+                                        'resource_schemas': storage.resource_schemas,
                                         'translator': storage.translator,
                                         'connections': storage.connections,
                                         'parsers': storage.parsers,

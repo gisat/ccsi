@@ -33,6 +33,14 @@ def init_schemas(definitions, resource_name):
         storage.resource_schemas.update(resource_name, schema)
 
 
+def init_translators(definitions, resource_name):
+    parameters = definitions['translator']
+    try:
+        storage.translator.create(resource_name, parameters, storage.resources_parameters.get_item(resource_name))
+    except Exception as e:
+        raise RuntimeError(f'Initialization of translator failed: {resource_name}, {e}')
+
+
 def init_connections(definitions, resource_name):
         try:
             storage.connections.create(resource_name, definitions['connection'])
@@ -80,6 +88,7 @@ def init_app():
         init_params_container(resource_name)
         init_params(definitions, resource_name)
         init_schemas(definitions, resource_name)
+        init_translators(definitions, resource_name)
         init_connections(definitions, resource_name)
         init_parsers(definitions, resource_name)
         init_response_spec(definitions, resource_name)

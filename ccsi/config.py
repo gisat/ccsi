@@ -2,8 +2,10 @@ class Config:
 
     response_form = ['atom', 'json']
 
+
     resource_definition = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml',
-                           'creodias_s1.yaml', 'creodias_s3.yaml']
+                           'creodias_s1.yaml', 'creodias_s3.yaml', 'creodias_s5.yaml',  'creodias_landsat8.yaml', 'wekeo_s1.yaml']
+
 
     connections_repeat = 3
 
@@ -36,3 +38,6 @@ class Config:
               }
             }
 
+    wekeo_datasets = ["EO:ESA:DAT:SENTINEL-1:SAR"]
+
+    wekeo_api_key = 'bW9wbGV0YWw6U0ZSeWZ2bTdWMzZT'

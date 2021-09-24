@@ -37,7 +37,6 @@ class Parameters(Resource):
             return {"message": f"Failed to {msg} Resource Parameters container for {resource_name}"}, 400
         return {"message": f" Parameters container {resource_name} successfully {msg}"}, 201
 
-
     def get(self):
         """
         Return registered resources parameters set as list of resources names
@@ -242,7 +241,7 @@ class ResourceTranslator(Resource):
         if self.exist(resource_name):
             query = validate_regpars(RoutesParams, 'query', parser.parse_args())
             try:
-                response = self.translator.translate(resource_name, query)
+                response = self.translator.translate(resource_name, )
             except Exception as e:
                 return abort(400, e)
             return response, 200

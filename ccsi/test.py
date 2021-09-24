@@ -5,52 +5,6 @@ from ccsi.resource.output import AllResourceXMLResponse, ResourceXMLResponse, Re
 from ccsi.config import Config
 from ccsi.resource.parser import FeedSchema
 
-def render_error(error):
-    msg, status_code = storage.errors.process_error(error)
-    # template = render_template('errors/error.xml', msg=msg)
-    # response = make_response(template)
-    # response.headers['Content-Type'] = 'application/xml'
-    # return response
-
-
-class AllSearch:
-    """Search endpoint returning number of occurrences across all registered resources"""
-
-    def __init__(self, **kwargs):
-        self.resources_schemas = storage.resource_schemas
-        self.translator = storage.translator
-        self.connections = storage.connections
-        self.parsers = storage.parsers
-        self.resource_description = storage.resource_description
-        self.response_spec = storage.response_specification
-
-
-    def get(self, form, request):
-
-        query_processor = QueryResource(self.resources_schemas, self.translator, self.connections, self.parsers)
-
-        try:
-            query_processor.process_query(request.args)
-        except Exception as error:
-            return render_error(error)
-
-        if form == 'atom':
-            response = AllResourceXMLResponse(Config.namespaces, self.resource_description,
-                                              query_processor, request.url_root)
-            return response.build_response()
-
-    def get_resource(self, resource_name, form, request):
-        query_processor = QueryResource(self.resources_schemas, self.translator, self.connections, self.parsers)
-
-        if form == 'atom':
-            try:
-                query_processor.process_query(request.args, resource_name)
-            except Exception as error:
-                return render_error(error)
-            url = f'{request.url_root}{resource_name}/{form}/search'
-            response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, self.response_spec,
-                                           Config.namespaces, query_processor, url, resource_name)
-            return response.build_response()
 
 class FakeRequest:
 
@@ -62,12 +16,98 @@ class FakeRequest:
 if __name__ == '__main__':
     init_app()
     query = {
+             'sensorMode': 'ew',
+             'polarisationChannels': 'hh/hv',
+             'orbitDirection': 'ascending',
              'timeStart': '2017-10-10',
-             'resource': 'creodias',
-            'cloudCover': '0,10'}
+             'timeEnd': '2018-10-10',
+             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+             'collection': 'sentinel-1',
+             'productType': 'grd',
+             'processingLevel': 'level1'}
+
+    query = {
+             'timeStart': '2017-10-10',
+             'timeEnd': '2018-10-10',
+             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+             'productType': 'grd'}
+    #
+    # query = {
+    #          'timeStart': '2017-10-10',
+    #          'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+    #          'collection': 'sentinel-1',
+    #          'productType': 'grd'}
+
 
     request = FakeRequest(query)
-    search = AllSearch()
-    # search.get('atom', request)
-    search.get_resource('creodias_s1', 'atom', request)
+    resource_name = 'wekeo_s1'
 
+    # resource
+    from ccsi.storage import storage
+    from ccsi.resource.output import ResourceJsonResponse, ResourceXMLResponse
+    query_processor = QueryResource(storage.resource_schemas, storage.translator, storage.connections, storage.parsers)
+    query_processor.process_query(request.args)
+    # import json
+    # with open("C:\michal\gisat\projects\Cure\junk\wekeo_content.json", 'r') as file:
+    #     content = json.load(file)
+    #
+    # query_processor.responses.update({'wekeo_s1': content})
+    # query_processor._parse()
+    response = ResourceJsonResponse(FeedSchema, query_processor)
+    response.build_response()
+    response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, storage.response_specification,
+                                   Config.namespaces, query_processor, 'url', resource_name)
+    response.build_response()
+
+    #
+
+    # all
+    #
+    # feed_schema=FeedSchema()
+
+
+    # try:
+    #     query_processor.process_query(request.args)
+    # except Exception as error:
+    #     print(error)
+    # response = JsonResponse(FeedSchema, query_processor)
+    # response.build_response()
+    #
+    #     from ccsi.storage import storage
+    #     new = storage.translator.get_item(resource_name).translate(query, )
+    #     print(new)
+    #     pass
+    #
+    #     from ccsi.storage import storage
+    #     wekeo = storage.connections.get_item('wekeo_s1')
+    #
+    #     body = {
+    #   "datasetId": "EO:ESA:DAT:SENTINEL-1:SAR",
+    #   "boundingBoxValues": [
+    #     {
+    #       "name": "bbox",
+    #       "bbox": [
+    #         14.295344355809593,
+    #         49.999634756552354,
+    #         14.635223520987124,
+    #         50.15458581416696
+    #       ]
+    #     }
+    #   ],
+    #   "dateRangeSelectValues": [
+    #     {
+    #       "name": "position",
+    #       "start": "2014-10-06T00:00:00.000Z",
+    #       "end": "2021-04-18T00:00:00.000Z"
+    #     }
+    #   ],
+    #   "stringChoiceValues": [
+    #     {
+    #       "name": "productType",
+    #       "value": "GRD"
+    #     }
+    #   ]
+    # }
+    #
+    #     response = wekeo.send_query(body)
+    #     pass
