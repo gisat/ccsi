@@ -130,34 +130,10 @@ Startindex parameter defines from which index the entries will be returned. Mini
 
 ```<hostname>/<path>/<recourse>/<response from>/search?startindex=5```
 
-*page*
-  
-Page parameter defines from which page will be returned. Minimum value is 0
-
-```<hostname>/<path>/<recourse>/<response from>/search?page=5```
 
 ##### 2.3.6 Entries sorting
 
-Response entries sorting can be provided by three parameters:
-
-*sortorder*
-
-Sortorder parameter define if the entries will be sorted in ascending or descending order.  Parameter sortorder is option parameter and accepted values are:  asc,desc or ascending,descending. Default value is descending
-
-```<hostname>/<path>/<recourse>/<response from>/search?sortorder=desc```
-
-*sortby*
-
-Sortby parameter define which parameters will be used for sorting.  Parameter is a multi-value parameter when multiple values are separated by “,”.  When multiple values are used, they are treated as an order in which entries will be displayed 
-Default sort key is starttime 
-
-```<hostname>/<path>/<recourse>/<response from>/search?sortby=startime,custom:resolution```
-
-*preferdrecourse*
-
-CCSI provides access to multiple resources. Parameter preferdrecourse defines from which resource the entries will be displayed first. Parameter is a multi-value parameter when multiple values are separated by “,”.  When multiple values are used, they are treated as an order in which entries will be displayed 
-
-```<hostname>/<path>/<recourse>/<response from>/search?preferdrecourse=creodias,mundi,```
+Temporary disabled
 
 ##### 2.3.7 Special parameters
 *custom*
