@@ -1,5 +1,5 @@
 from ccsi.base import Container, ExcludeSchema
-from ccsi.resource.parameters import ResourcesParameters
+from ccsi.resource.parameters import ResourcesParametersContainer
 from ccsi.config import Config
 
 from abc import ABC, abstractmethod
@@ -25,7 +25,7 @@ class Translator(ABC):
 class BasicTranslator(Translator):
     """ class responsible for translation from ccsi set o api params to resource api params"""
 
-    def __init__(self, resources_parameters: ResourcesParameters):
+    def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
 
     def translate(self, query: dict, **kwargs):
@@ -48,7 +48,7 @@ class BasicTranslator(Translator):
 
 
 class WekeoTranslator(Translator):
-    def __init__(self, resources_parameters: ResourcesParameters):
+    def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
 
     def translate(self, query: dict, **kwargs):
@@ -96,25 +96,11 @@ class WekeoTranslator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
-
-
-TRANSLATORS_TYPES = {'basic': BasicTranslator,
-                     'wekeo': WekeoTranslator}
-
 class TranslatorSchema(ExcludeSchema):
-    typ = fields.Str(required=True, validate=OneOf(TRANSLATORS_TYPES))
+    TYPES = {'basic': BasicTranslator,
+             'wekeo': WekeoTranslator}
+    typ = fields.Str(required=True, validate=OneOf(TYPES))
 
     @post_load(pass_original=True)
     def make_parameter(self, data, original_data, **kwargs):
-        return TRANSLATORS_TYPES.get(data['typ'])
-
-
-class TranslatorContainer(Container):
-    """container for translators"""
-    def __init__(self, translator_schema):
-        super(TranslatorContainer, self).__init__()
-        self.translator_schema = translator_schema
-
-    def create(self, resource_name, parameters, resources_parameters):
-        translator = self.translator_schema().load(parameters)
-        self.update(resource_name, translator(resources_parameters))
+        return self.TYPES.get(data['typ'])

@@ -1,6 +1,7 @@
 import yaml
 from marshmallow import Schema, EXCLUDE, post_dump, RAISE
 from flask import abort
+from typing import Callable
 
 
 class Singleton(type):
@@ -15,24 +16,41 @@ class Singleton(type):
 class Container(metaclass=Singleton):
     """container for items"""
 
-    def __init__(self, items=None):
+    def __init__(self, items=None ):
         if items is None:
             self.items = {}
         else:
             self.items = items
 
-    def get_item(self, item_name):
+    def get_item(self, item_name: str):
         return self.items[item_name]
 
-    def get_item_list(self):
+    def get_item_list(self) -> dict:
         return {"items": [item_name for item_name in self.items.keys()]}
 
-    def update(self, item_name, item):
+    def update(self, item_name: str, item) -> None:
         """update or create resource parameters from definitions"""
         self.items.update({item_name: item})
 
-    def delete(self, item_name):
+    def delete(self, item_name: str) -> None:
         self.items.pop(item_name)
+
+    def create_item(self, resource_name, parameters, schema, *args) -> None:
+        if schema is None:
+            item = parameters
+        else:
+            item = schema().load(parameters)
+        try:
+            self.update(resource_name, item(*args))
+        except TypeError:
+            self.update(resource_name, item)
+
+
+class ContainerFactory:
+
+    @staticmethod
+    def create(container: Container, container_type) -> Container:
+        return type(container_type, (container,), {})()
 
 
 class ExcludeSchema(Schema):
@@ -54,6 +72,7 @@ class ResourceQuerySchema(Schema):
     class Meta:
         unknown = EXCLUDE
         load_only = ['resource', 'collection']
+
 
 class WekeoQuerySchema(Schema):
     """base schema for query processing"""

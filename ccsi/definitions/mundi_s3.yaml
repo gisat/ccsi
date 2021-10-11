@@ -1,5 +1,6 @@
 resource_name: mundi_s3
-short_name: Mundi Sentinel 3 endpoint
+resource_description:
+  name: Mundi Sentinel 3 endpoint
 connection:
   url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel3/opensearch?
   typ: simple_request

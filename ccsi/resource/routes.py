@@ -179,8 +179,6 @@ class ParametersResource(Resource):
           - in: body
             name: parameters
 
-
-
         responses:
           200:
             description: List of resources, which parameters sets are registered
@@ -241,7 +239,7 @@ class ResourceTranslator(Resource):
         if self.exist(resource_name):
             query = validate_regpars(RoutesParams, 'query', parser.parse_args())
             try:
-                response = self.translator.translate(resource_name, )
+                response = self.translator.translate(resource_name, query)
             except Exception as e:
                 return abort(400, e)
             return response, 200

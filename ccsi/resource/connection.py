@@ -10,6 +10,7 @@ from time import sleep
 import json
 from functools import partial
 
+
 class Connection(ABC):
 
     @abstractmethod
@@ -91,7 +92,6 @@ class WekeoConnection(Connection):
             resluts[i]['downloadUri'] = f'{self.url}/dataorder/download/{self.send_order(body)}'
         return resluts
 
-
     def send_order(self, order):
         response = post(self.url + '/dataorder', headers=self.auth, json=order)
         if response.status_code == 200:
@@ -101,7 +101,7 @@ class WekeoConnection(Connection):
             return self.send_order(order)
 
     def get_authorization_header(self) -> dict:
-        headers = {'Authorization': f'Basic {Config.wekeo_api_key}'}
+        headers = {'Authorization': f'Basic {Config.WEKEO_API_KEY}'}
         response = get(self.url + '/gettoken', headers=headers)
         if response.status_code == 200:
             access_token = json.loads(response.text)['access_token']
@@ -124,17 +124,6 @@ class ConnectionSchema(ExcludeSchema):
             return typ(**data)
         else:
             return None
-
-
-class ConnectionContainer(Container):
-
-    def __init__(self, connections_schema):
-        super(ConnectionContainer, self).__init__()
-        self.connection_schema = connections_schema
-
-    def create(self, resource_name, parameters):
-        connections = self.connection_schema().load(parameters)
-        self.update(resource_name, connections)
 
 
 

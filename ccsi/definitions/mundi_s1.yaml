@@ -1,5 +1,6 @@
 resource_name: mundi_s1
-short_name: Mundi Sentinel 1 endpoint
+resource_description:
+  name: Mundi Sentinel 1 endpoint
 connection:
   url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel1/opensearch?
   typ: simple_request

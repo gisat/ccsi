@@ -1,5 +1,6 @@
 resource_name: creodias_s5
-short_name: Creodias Sentinel 5P endpoint
+resource_description:
+  name: Creodias Sentinel 5P endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Sentinel5P/search.atom?
   typ: simple_request

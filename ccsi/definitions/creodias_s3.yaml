@@ -1,5 +1,6 @@
 resource_name: creodias_s3
-short_name: Creodias Sentinel 3 endpoint
+resource_description:
+  name: Creodias Sentinel 3 endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Sentinel3/search.atom?
   typ: simple_request

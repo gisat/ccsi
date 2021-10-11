@@ -1,5 +1,6 @@
-resource_name: creodias_s1
-short_name: Creodias Sentinel 1 endpoint
+resource_name: creodias_s2
+resource_description:
+  name: Creodias Sentinel 2 endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Sentinel2/search.atom?
   typ: simple_request
@@ -15,8 +16,8 @@ parameters:
     mapping:
       sentine-2: sentinel-2
   resource:
+    typ: option
     name: resource
-        typ: option
     tranfunc:
       - name: get_mapped_pair
         property:
@@ -111,14 +112,6 @@ parameters:
     tranfunc:
       - name: identity
         property:
-  productType:
-    name: productType
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      msi: L1C
   processingLevel:
     name: processingLevel
     typ: option
@@ -126,9 +119,9 @@ parameters:
       - name: get_mapped_pair
         property:
     mapping:
-      level0: LEVEL0
-      level1: LEVEL1
-      level2: LEVEL2
+      level1c: LEVEL1C
+      level2a: LEVEL2A
+      level2ap: LEVEL2AP
   instrument:
     name: instrument
     typ: option
@@ -149,17 +142,6 @@ parameters:
     tranfunc:
       - name: identity
         property:
-  sensorMode:
-    name: sensorMode
-    typ: option
-    tranfunc:
-      - name: get_mapped_pair
-        property:
-    mapping:
-      sm: SM
-      iw: IW
-      ew: EW
-      wv: WV
   cloudCover:
     name: cloudCover
     typ: interval

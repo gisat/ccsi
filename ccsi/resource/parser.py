@@ -213,15 +213,12 @@ def prodInfo2content(content):
     return content
 
 
-
-
-
-
 PARSER_TYPES = {'xmlsax': XMLSaxHandler,
                 'xmlsax_creo': XMLSaxHandlerCreo,
                 'wekeo': WekeoParser}
 
 PREPRCESSORS = {'prodInfo2content': prodInfo2content}
+
 
 class ParserSchema(ExcludeSchema):
     typ = fields.String(required=True, validate=OneOf(PARSER_TYPES), allow_none=True)
@@ -238,13 +235,3 @@ class ParserSchema(ExcludeSchema):
             return parser(**data)
         else:
             return None
-
-
-class ParserContainer(Container):
-
-    def __init__(self, parser_schema):
-        super(ParserContainer, self).__init__()
-        self.parser_schema = parser_schema
-
-    def create(self, resource_name, parameters):
-        self.update(resource_name, self.parser_schema.load(parameters))

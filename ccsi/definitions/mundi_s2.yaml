@@ -1,5 +1,6 @@
 resource_name: mundi_s2
-short_name: Mundi Sentinel 2 endpoint
+resource_description:
+  name: Mundi Sentinel 2 endpoint
 connection:
   url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/Sentinel2/opensearch?
   typ: simple_request
@@ -198,8 +199,10 @@ parameters:
       - name: get_mapped_pair
         property:
     mapping:
-      level1: L1C
-      level2: L2A
+      level1a: L1A
+      level1b: L1B
+      level1c: L1c
+      level2A: L2A
   processingCenter:
     name: processingCenter
     typ: string

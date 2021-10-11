@@ -14,7 +14,7 @@ api = Api(api_search)
 # helpers function
 def check_form(form):
     """check if is correct form of response formtat in url"""
-    if form not in Config.response_form:
+    if form not in Config.RESPONSE_FORM:
         abort(400, 'Invalid response format in url')
 
 
@@ -39,13 +39,13 @@ class AllSearch(Resource):
     def __init__(self, **kwargs):
         self.resource_schemas = kwargs['resource_schemas']
         self.translator = kwargs['translator']
-        self.connections = kwargs['connections']
-        self.parsers = kwargs['parsers']
+        self.connection = kwargs['connection']
+        self.parser = kwargs['parser']
         self.resource_description = kwargs['resource_description']
 
     def get(self, form):
         check_form(form)
-        query_processor = QueryResource(self.resource_schemas, self.translator, self.connections, self.parsers)
+        query_processor = QueryResource(self.resource_schemas, self.translator, self.connection, self.parser)
 
         try:
             query_processor.process_query(request.args)
@@ -53,7 +53,7 @@ class AllSearch(Resource):
             return render_error(error)
 
         if form == 'atom':
-            response = AllResourceXMLResponse(Config.namespaces, self.resource_description,
+            response = AllResourceXMLResponse(Config.NAMESPACES, self.resource_description,
                                               query_processor, request.url_root)
             return Response(response.build_response(), mimetype='application/xml',
                             content_type='text/xml; charset=utf-8')
@@ -65,8 +65,8 @@ class AllSearch(Resource):
 api.add_resource(AllSearch, '/<string:form>/search',
                  resource_class_kwargs={'resource_schemas': storage.resource_schemas,
                                         'translator': storage.translator,
-                                        'connections': storage.connections,
-                                        'parsers': storage.parsers,
+                                        'connection': storage.connection,
+                                        'parser': storage.parser,
                                         'resource_description': storage.resource_description})
 
 
@@ -94,14 +94,14 @@ class ResourceSearch(Resource):
         self.schema_builder = kwargs['schema_builder']
         self.resource_schemas = kwargs['resource_schemas']
         self.translator = kwargs['translator']
-        self.connections = kwargs['connections']
-        self.parsers = kwargs['parsers']
+        self.connection = kwargs['connection']
+        self.parser = kwargs['parser']
         self.response_spec = kwargs['response_spec']
 
     def get(self, resource_name, form):
         check_form(form)
         exist(resource_name)
-        query_processor = QueryResource(self.resource_schemas, self.translator, self.connections, self.parsers)
+        query_processor = QueryResource(self.resource_schemas, self.translator, self.connection, self.parser)
 
         try:
             query_processor.process_query(request.args, resource_name)
@@ -111,7 +111,7 @@ class ResourceSearch(Resource):
         if form == 'atom':
             url = f'{request.url_root}{resource_name}/{form}/search'
             response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, self.response_spec,
-                                           Config.namespaces, query_processor, url, resource_name)
+                                           Config.NAMESPACES, query_processor, url, resource_name)
             return Response(response.build_response(), mimetype='application/xml', content_type='text/xml; charset=utf-8')
         elif form == 'json':
             response = ResourceJsonResponse(FeedSchema, query_processor)
@@ -122,8 +122,8 @@ api.add_resource(ResourceSearch, '/<string:resource_name>/<string:form>/search',
                  resource_class_kwargs={'schema_builder': storage.query_schema_builder,
                                         'resource_schemas': storage.resource_schemas,
                                         'translator': storage.translator,
-                                        'connections': storage.connections,
-                                        'parsers': storage.parsers,
+                                        'connection': storage.connection,
+                                        'parser': storage.parser,
                                         'response_spec': storage.response_specification})
 
 

@@ -1,8 +1,6 @@
 resource_name: ccsi
-short_name: Copernicus core service interface
-connection:
-  url: null
-  typ: null
+resource_description:
+  name: Copernicus core service interface
 translator:
   typ: basic
 parameters:
@@ -32,7 +30,7 @@ parameters:
     values:
       - mundi
       - scihub
-      - creodis
+      - creodias
       - wekeo
   searchTerms:
     name: searchTerms
@@ -384,7 +382,12 @@ parameters:
     values:
       - level0
       - level1
+      - level1a
+      - level1b
+      - level1c
       - level2
+      - level2a
+      - level2ap
       - level3
   processingCenter:
     name: processingCenter
@@ -535,8 +538,6 @@ parameters:
        property:
     title: Elevation of the sun
     namespace: ccsi
-parser:
-  typ: null
 response:
   parameters:
     totalResults:

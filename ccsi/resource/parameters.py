@@ -297,11 +297,11 @@ class ResourceParameters:
         return parameterschema.load(properties)
 
 
-class ResourcesParameters(Container):
+class ResourcesParametersContainer(Container):
     """container for set of resource api parameters"""
 
     def __int__(self):
-        super(ResourcesParameters, self).__int__()
+        super(ResourcesParametersContainer, self).__int__()
 
     def create(self, resource_name):
         self.items.update({resource_name: ResourceParameters()})
@@ -317,6 +317,7 @@ def validate_choises(value, choises):
     if isinstance(value, str):
         if not any(item in value.split(',') for item in choises):
             return False
+
 
 def validate_datetime(value):
     try:

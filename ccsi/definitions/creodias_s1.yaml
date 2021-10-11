@@ -1,5 +1,6 @@
 resource_name: creodias_s1
-short_name: Creodias Sentinel 1 endpoint
+resource_description:
+  name: Creodias Sentinel 1 endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Sentinel1/search.atom?
   typ: simple_request

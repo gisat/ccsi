@@ -1,6 +1,6 @@
-resource_name: wekeo_s1
+resource_name: wekeo_s2
 resource_description:
-  name: Wekeo Sentinel 1 endpoint
+  name: Wekeo Sentinel 2 endpoint
 connection:
   url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
   typ: wekeo_connection
@@ -18,9 +18,9 @@ parameters:
      - name: get_mapped_pair
        property:
     mapping:
-      sentinel-1: "EO:ESA:DAT:SENTINEL-1:SAR"
+      sentinel-2: "EO:ESA:DAT:SENTINEL-2:MSI"
     missing:
-      sentinel-1
+      sentinel-2
   resource:
     typ: option
     name: resource
@@ -29,23 +29,6 @@ parameters:
        property:
     mapping:
       wekeo: wekeo
-  productType:
-    name: productType
-    typ: option
-    target: stringChoicesValues
-    tranfunc:
-     - name: get_mapped_pair
-       property:
-     - name: wekeo_parameter_form
-       property:
-    mapping:
-      grd: GRD
-      card-bs: BS
-      grd-cog: GRD-COG
-      raw: RAW
-      card-coh6: CARD-COH6
-      ocn: OCN
-      slc: SLC
   processingLevel:
     name: processingLevel
     typ: option
@@ -56,8 +39,9 @@ parameters:
      - name: wekeo_parameter_form
        property:
     mapping:
-      level1: LEVEL1
-      level2: LEVEL2
+      level1c: LEVEL1C
+      level2a: LEVEL2A
+      level2ap: LEVEL2AP
   startIndex:
     name: page
     typ: integer
@@ -91,7 +75,7 @@ parameters:
         property:
       - name: wekeo_time_parameter_form
         property:
-    missing: "2014-10-06T00:00:00.000Z"
+    missing: "2015-06-23T00:00:00.000Z"
   timeEnd:
     name: end
     typ: datetime
@@ -103,49 +87,6 @@ parameters:
        property:
      - name: wekeo_time_parameter_form
        property:
-  sensorMode:
-    name: sensorMode
-    typ: option
-    target: stringChoicesValues
-    tranfunc:
-     - name: get_mapped_pair
-       property:
-     - name: wekeo_parameter_form
-       property:
-    mapping:
-      sm: SM
-      iw: IW
-      ew: EW
-      wv: WV
-      hr: HR
-  polarisationChannels:
-    name: polarisation
-    typ: option
-    target: stringChoicesValues
-    tranfunc:
-     - name: get_mapped_pair
-       property:
-     - name: wekeo_parameter_form
-       property:
-    mapping:
-      hh/hv: HH+HV
-      vv/vh: VV+VH
-      hh: HH
-      vv: VV
-      hv: HV
-      vh: VH
-  orbitDirection:
-    name: orbit_direction
-    typ: option
-    target: stringChoicesValues
-    tranfunc:
-     - name: get_mapped_pair
-       property:
-     - name: wekeo_parameter_form
-       property:
-    mapping:
-      ascending : ascending
-      descending: descending
 parser:
   typ: wekeo
   preprocessor: prodInfo2content

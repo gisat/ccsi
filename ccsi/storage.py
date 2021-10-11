@@ -1,27 +1,28 @@
-from ccsi.base import Singleton
-from ccsi.resource.parameters import ResourcesParameters, QuerySchemaBuilder, ResourceSchemasContainer
-from ccsi.resource.connection import ConnectionContainer, ConnectionSchema
-from ccsi.resource.translators import TranslatorContainer, TranslatorSchema
+from ccsi.base import Singleton, Container
+from ccsi.resource.parameters import ResourcesParametersContainer, QuerySchemaBuilder, ResourceSchemasContainer
 from ccsi.errors.handlers import Errors
-from ccsi.resource.parser import ParserContainer, ParserSchema
-from ccsi.resource.output import Description, ResponseSpecContainer, ResourceDescriptionContainer
+from ccsi.resource.output import Description, ResponseSpecContainer
 from ccsi.config import Config
 
 
 class Storage(metaclass=Singleton):
     """Storage for containers"""
 
-    resources_parameters = ResourcesParameters()
-    query_schema_builder = QuerySchemaBuilder()
-    resource_schemas = ResourceSchemasContainer()
-    translator = TranslatorContainer(TranslatorSchema)
-    connections = ConnectionContainer(ConnectionSchema)
-    errors = Errors()
-    parsers = ParserContainer(ParserSchema())
-    description = Description(Config.namespaces, resources_parameters)
-    response_specification = ResponseSpecContainer()
-    resource_description = ResourceDescriptionContainer()
+    def __init__(self):
+        self.response_specification = ResponseSpecContainer()
+        self.resources_parameters = ResourcesParametersContainer()
+        self.query_schema_builder = QuerySchemaBuilder()
+        self.errors = Errors()
+        self.resource_schemas = ResourceSchemasContainer()
+        self.description = Description(Config.NAMESPACES, self.resources_parameters)
 
+    def add_container(self, name: str, container: Container) -> None:
+        setattr(self, name, container)
+
+    def get_container(self, name: str) -> Container:
+        return getattr(self, name)
 
 
 storage = Storage()
+
+

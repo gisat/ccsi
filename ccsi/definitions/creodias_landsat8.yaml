@@ -1,5 +1,6 @@
 resource_name: creodias_landsat8
-short_name: Creodias Landsat 8 endpoint
+resource_description:
+  name: Creodias Landsat 8 endpoint
 connection:
   url: https://finder.creodias.eu/resto/api/collections/Landsat8/search.atom?
   typ: simple_request

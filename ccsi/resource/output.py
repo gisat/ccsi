@@ -111,13 +111,13 @@ class DescriptionElementSchema(ExcludeSchema):
         data['value'] = f'{{{prefix}:{name}}}'
         if 'values' in data:
             values = data.pop('values')
-            element = self.create_element(f'{uri}Parameter', attrib=data, nsmap=Config.namespaces.get('param'))
+            element = self.create_element(f'{uri}Parameter', attrib=data, nsmap=Config.NAMESPACES.get('param'))
             for value in values:
                 sub_element = self.create_element(f'{uri}Option', attrib={'value': value},
-                                                  nsmap=Config.namespaces.get('param'))
+                                                  nsmap=Config.NAMESPACES.get('param'))
                 element.append(sub_element)
         else:
-            element = self.create_element(f'{uri}Parameter', attrib=data, nsmap=Config.namespaces.get('param'))
+            element = self.create_element(f'{uri}Parameter', attrib=data, nsmap=Config.NAMESPACES.get('param'))
         return element
 
 
@@ -361,7 +361,7 @@ class AllResourceXMLResponse:
 
 
 class ResourceDescriptionSchema(ExcludeSchema):
-    short_name = fields.String()
+    name = fields.String()
 
 
 class ResourceDescriptionContainer(Container):

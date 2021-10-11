@@ -1,5 +1,6 @@
 resource_name: mundi_clms
-short_name: Mundi Sentinel CLMS endpoint
+resource_description:
+  name: Mundi Sentinel CLMS endpoint
 connection:
   url: https://catalog-browse.default.mundiwebservices.com/acdc/catalog/proxy/search/LandMonitoring/opensearch?
   typ: simple_request
