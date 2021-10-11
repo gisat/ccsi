@@ -139,10 +139,18 @@ def find_in_dict(text, **ignore):
 def text_to_path(text, **ignore):
     return None, {"rel": "path", "type": "application/unknown", "href": text}
 
+def creodias_media_to_path(attrib, **ignore):
+    text = attrib['url']
+    text = text.lstrip('https://finder.creodias.eu/files')
+    n_strip = text.find('.SAFE') + 5
+    text = text[:n_strip]
+    return None, {"rel": "path", "type": "application/unknown", "href": text}
+
 
 TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'text_to_path': text_to_path,
-                'find_in_dict': find_in_dict}
+                'find_in_dict': find_in_dict,
+                'creodias_media_to_path': creodias_media_to_path}
 
 # schema
 class ResponseXMLTagSchema(ExcludeSchema):

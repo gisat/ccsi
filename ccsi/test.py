@@ -34,21 +34,21 @@ if __name__ == '__main__':
     #          'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
     #          'productType': 'grd'}
     #
-    # query = {
-    #          'timeStart': '2017-10-10',
-    #          'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
-    #          'collection': 'sentinel-1',
-    #          'productType': 'grd'}
+    query = {
+             'timeStart': '2017-10-10',
+             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+             'collection': 'sentinel-1',
+             'productType': 'grd'}
 
     #
     request = FakeRequest(query)
-    resource_name = 'wekeo_s1'
+    resource_name = 'creodias_s1'
 
     # resource
     from ccsi.storage import storage
     from ccsi.resource.output import ResourceJsonResponse, ResourceXMLResponse
     query_processor = QueryResource(storage.resource_schemas, storage.translator, storage.connection, storage.parser)
-    query_processor.process_query(request.args)
+    query_processor.process_query(request.args, resource_name=resource_name)
     # # import json
     # # with open("C:\michal\gisat\projects\Cure\junk\wekeo_content.json", 'r') as file:
     # #     content = json.load(file)
@@ -57,9 +57,9 @@ if __name__ == '__main__':
     # # query_processor._parse()
     # response = ResourceJsonResponse(FeedSchema, query_processor)
     # response.build_response()
-    # response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, storage.response_specification,
-    #                                Config.NAMESPACES, query_processor, 'url', resource_name)
-    # response.build_response()
+    response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, storage.response_specification,
+                                   Config.NAMESPACES, query_processor, 'url', resource_name)
+    response.build_response()
 
     #
 
