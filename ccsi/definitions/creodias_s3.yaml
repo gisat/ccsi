@@ -244,12 +244,12 @@ parser:
       uri: http://www.w3.org/2005/Atom
       source: text
     content:
-      tag: content
+      tag: link
+      tag_spec: creodias_media_to_path
       uri: http://search.yahoo.com/mrss/
       source:
         attrib:
           - url
-          - medium
     resolution:
       tag: resolution
       uri: http://a9.com/-/spec/opensearch/extensions/eo/1.0/
