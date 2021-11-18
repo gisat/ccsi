@@ -1,0 +1,410 @@
+resource_name: wekeo_c3s
+resource_description:
+  name: Wekeo Sentinel 3 endpoint
+connection:
+  url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
+  typ: wekeo_connection
+translator:
+  typ: wekeo
+cache:
+  url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
+  typ: wekeo_cache
+parameters:
+  collection:
+    typ: option
+    name: collections
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      c3s: c3s
+  resource:
+    typ: option
+    name: resource
+    tranfunc:
+     - name: identity
+       property:
+    mapping:
+      wekeo: wekeo
+  productType:
+    name: product_type
+    typ: option
+    target: multiStringSelectValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+     - name: wekeo_multi_parameter_form
+       property:
+    mapping:
+      ensemble_mean: ensemble_mean
+      ensemble_members: ensemble_members
+      ensemble_spread: ensemble_spread
+      reanalysis: reanalysis
+    missing: reanalysis
+  custom:cs3dataset:
+    name: variable
+    typ: option
+    target: wekeo_dataset_from_multiStringSelectValues
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_multi_parameter_form
+        property:
+    mapping:
+      100m u_component_of_wind: 100m u_component_of_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      100m_v_component_of_wind: 100m_v_component_of_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_u_component_of_neutral_wind: 10m_u_component_of_neutral_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_u_component_of_wind: 10m_u_component_of_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_v_component_of_neutral_wind: 10m_v_component_of_neutral_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_v_component_of_wind: 10m_v_component_of_wind,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_wind_direction: 10m_wind_direction,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_wind_gust_since_previous_post_processing: 10m_wind_gust_since_previous_post_processing,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      10m_wind_speed: 10m_wind_speed,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      2m_dewpoint_temperature: 2m_dewpoint_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      2m_temperature: 2m_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      Forecast_logarithm_of_surface_roughness_for_heat: Forecast_logarithm_of_surface_roughness_for_heat,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      air_density_over_the_oceans: air_density_over_the_oceans,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      altimeter_corrected_wave_height: altimeter_corrected_wave_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      altimeter_range_relative_correction: altimeter_range_relative_correction,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      altimeter_wave_height: altimeter_wave_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      angle_of_sub_gridscale_orography: angle_of_sub_gridscale_orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      anisotropy_of_sub_gridscale_orography: anisotropy_of_sub_gridscale_orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      benjamin_feir_index: benjamin_feir_index,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      boundary_layer_dissipation: boundary_layer_dissipation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      boundary_layer_height: boundary_layer_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      charnock: charnock,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      clear_sky_direct_solar_radiation_at_surface: clear_sky_direct_solar_radiation_at_surface,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      cloud_base_height: cloud_base_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      coefficient_of_drag_with_waves: coefficient_of_drag_with_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_available_potential_energy: convective_available_potential_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_inhibition: convective_inhibition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_precipitation: convective_precipitation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_rain_rate: convective_rain_rate,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_snowfall: convective_snowfall,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      convective_snowfall_rate_water_equivalent: convective_snowfall_rate_water_equivalent,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      downward_uv_radiation_at_the_surface: downward_uv_radiation_at_the_surface,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      duct_base_height: duct_base_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      eastward_gravity_wave_surface_stress: eastward_gravity_wave_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      eastward_turbulent_surface_stress: eastward_turbulent_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      evaporation: evaporation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      forecast_albedo: forecast_albedo,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      forecast_surface_roughness: forecast_surface_roughness,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      free_convective_velocity_over_the_oceans: free_convective_velocity_over_the_oceans,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      friction_velocity: friction_velocity,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      gravity_wave_dissipation: gravity_wave_dissipation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      high_cloud_cover: high_cloud_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      high_vegetation_cover: high_vegetation_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      ice_temperature_layer_1: ice_temperature_layer_1,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      ice_temperature_layer_2: ice_temperature_layer_2,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      ice_temperature_layer_3: ice_temperature_layer_3,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      ice_temperature_layer_4: ice_temperature_layer_4,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_10m_wind_gust: instantaneous_10m_wind_gust,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_eastward_turbulent_surface_stress: instantaneous_eastward_turbulent_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_large_scale_surface_precipitation_fraction: instantaneous_large_scale_surface_precipitation_fraction,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_moisture_flux: instantaneous_moisture_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_northward_turbulent_surface_stress: instantaneous_northward_turbulent_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      instantaneous_surface_sensible_heat_flux: instantaneous_surface_sensible_heat_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      k_index: k_index,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_bottom_temperature: lake_bottom_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_cover: lake_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_depth: lake_depth,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_ice_depth: lake_ice_depth,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_ice_temperature: lake_ice_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_mix_layer_depth: lake_mix_layer_depth,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_mix_layer_temperature: lake_mix_layer_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_shape_factor: lake_shape_factor,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      lake_total_layer_temperature: lake_total_layer_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      land_sea_mask: land_sea_mask,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      large_scale_precipitation: large_scale_precipitation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      large_scale_precipitation_fraction: large_scale_precipitation_fraction,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      large_scale_rain_rate: large_scale_rain_rate,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      large_scale_snowfall: large_scale_snowfall,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      large_scale_snowfall_rate_water_equivalent: large_scale_snowfall_rate_water_equivalent,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      leaf_area_index_high_vegetation: leaf_area_index_high_vegetation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      leaf_area_index_low_vegetation: leaf_area_index_low_vegetation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      low_cloud_cover: low_cloud_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      low_vegetation_cover: low_vegetation_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      maximum_2m_temperature_since_previous_post_processing: maximum_2m_temperature_since_previous_post_processing,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      maximum_individual_wave_height: maximum_individual_wave_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      maximum_total_precipitation_rate_since_previous_post_processing: maximum_total_precipitation_rate_since_previous_post_processing,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_direction_of_total_swell: mean_direction_of_total_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_direction_of_wind_waves: mean_direction_of_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_period_of_total_swell: mean_period_of_total_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_period_of_wind_waves: mean_period_of_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_sea_level_pressure: mean_sea_level_pressure,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_square_slope_of_waves: mean_square_slope_of_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_vertical_gradient_of_refractivity_inside_trapping_layer: mean_vertical_gradient_of_refractivity_inside_trapping_layer,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_direction: mean_wave_direction,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_direction_of_first_swell_partition: mean_wave_direction_of_first_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_direction_of_second_swell_partition: mean_wave_direction_of_second_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_direction_of_third_swell_partition: mean_wave_direction_of_third_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period: mean_wave_period,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_based_on_first_moment: mean_wave_period_based_on_first_moment,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_based_on_first_moment_for_swell: mean_wave_period_based_on_first_moment_for_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_based_on_first_moment_for_wind_waves: mean_wave_period_based_on_first_moment_for_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_based_on_second_moment_for_swell: mean_wave_period_based_on_second_moment_for_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_based_on_second_moment_for_wind_waves: mean_wave_period_based_on_second_moment_for_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_of_first_swell_partition: mean_wave_period_of_first_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_of_second_swell_partition: mean_wave_period_of_second_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_wave_period_of_third_swell_partition: mean_wave_period_of_third_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      mean_zero_crossing_wave_period: mean_zero_crossing_wave_period,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      medium_cloud_cover: medium_cloud_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      minimum_2m_temperature_since_previous_post_processing: minimum_2m_temperature_since_previous_post_processing,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      minimum_total_precipitation_rate_since_previous_post_processing: minimum_total_precipitation_rate_since_previous_post_processing,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      minimum_vertical_gradient_of_refractivity_inside_trapping_layer: minimum_vertical_gradient_of_refractivity_inside_trapping_layer,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      model_bathymetry: model_bathymetry,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      near_ir_albedo_for_diffuse_radiation: near_ir_albedo_for_diffuse_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      near_ir_albedo_for_direct_radiation: near_ir_albedo_for_direct_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      normalized_energy_flux_into_ocean: normalized_energy_flux_into_ocean,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      normalized_energy_flux_into_waves: normalized_energy_flux_into_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      normalized_stress_into_ocean: normalized_stress_into_ocean,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      northward_gravity_wave_surface_stress: northward_gravity_wave_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      northward_turbulent_surface_stress: northward_turbulent_surface_stress,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      orography: orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      peak_wave_period: peak_wave_period,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      period_corresponding_to_maximum_individual_wave_height: period_corresponding_to_maximum_individual_wave_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      potential_evaporation: potential_evaporation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      precipitation_type: precipitation_type,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      runoff: runoff,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      sea_ice_cover: sea_ice_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      sea_surface_temperature: sea_surface_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_height_of_combined_wind_waves_and_swell: significant_height_of_combined_wind_waves_and_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_height_of_total_swell: significant_height_of_total_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_height_of_wind_waves: significant_height_of_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_wave_height_of_first_swell_partition: significant_wave_height_of_first_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_wave_height_of_second_swell_partition: significant_wave_height_of_second_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      significant_wave_height_of_third_swell_partition: significant_wave_height_of_third_swell_partition,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      skin_reservoir_content: skin_reservoir_content,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      skin_temperature: skin_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      slope_of_sub_gridscale_orography: slope_of_sub_gridscale_orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snow_albedo: snow_albedo,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snow_density: snow_density,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snow_depth: snow_depth,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snow_evaporation: snow_evaporation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snowfall: snowfall,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      snowmelt: snowmelt,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      soil_temperature_level_1: soil_temperature_level_1,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      soil_temperature_level_2: soil_temperature_level_2,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      soil_temperature_level_3: soil_temperature_level_3,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      soil_temperature_level_4: soil_temperature_level_4,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      soil_type:soil_type,EO: ECMWF:DAT:ERA5_HOURLY_DATA_ON_SINGLE_LEVELS
+      standard_deviation_of_filtered_subgrid_orography: standard_deviation_of_filtered_subgrid_orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      standard_deviation_of_orography: standard_deviation_of_orography,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      sub_surface_runoff: sub_surface_runoff,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_latent_heat_flux: surface_latent_heat_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_net_solar_radiation: surface_net_solar_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_net_solar_radiation_clear_sky: surface_net_solar_radiation_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_net_thermal_radiation: surface_net_thermal_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_net_thermal_radiation_clear_sky: surface_net_thermal_radiation_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_pressure: surface_pressure,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_runoff: surface_runoff,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_sensible_heat_flux: surface_sensible_heat_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_solar_radiation_downward_clear_sky: surface_solar_radiation_downward_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_solar_radiation_downwards: surface_solar_radiation_downwards,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_thermal_radiation_downward_clear_sky: surface_thermal_radiation_downward_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      surface_thermal_radiation_downwards: surface_thermal_radiation_downwards,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      temperature_of_snow_layer: temperature_of_snow_layer,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      toa_incident_solar_radiation: toa_incident_solar_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      top_net_solar_radiation: top_net_solar_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      top_net_solar_radiation_clear_sky: top_net_solar_radiation_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      top_net_thermal_radiation: top_net_thermal_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      top_net_thermal_radiation_clear_sky: top_net_thermal_radiation_clear_sky,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_cloud_cover: total_cloud_cover,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_cloud_ice_water: total_column_cloud_ice_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_cloud_liquid_water: total_column_cloud_liquid_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_ozone: total_column_ozone,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_rain_water: total_column_rain_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_snow_water: total_column_snow_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_supercooled_liquid_water: total_column_supercooled_liquid_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_water: total_column_water,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_column_water_vapour: total_column_water_vapour,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_precipitation: total_precipitation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_sky_direct_solar_radiation_at_surface: total_sky_direct_solar_radiation_at_surface,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      total_totals_index: total_totals_index,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      trapping_layer_base_height: trapping_layer_base_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      trapping_layer_top_height: trapping_layer_top_height,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      type_of_high_vegetation: type_of_high_vegetation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      type_of_low_vegetation: type_of_low_vegetation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      u_component_stokes_drift: u_component_stokes_drift,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      uv_visible_albedo_for_diffuse_radiation: uv_visible_albedo_for_diffuse_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      uv_visible_albedo_for_direct_radiation: uv_visible_albedo_for_direct_radiation,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      v_component_stokes_drift:v_component_stokes_drift,EO:ECMWF: DAT:ERA5_HOURLY_DATA_ON_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_cloud_frozen_water_flux: vertical_integral_of_divergence_of_cloud_frozen_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_cloud_liquid_water_flux: vertical_integral_of_divergence_of_cloud_liquid_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_geopotential_flux: vertical_integral_of_divergence_of_geopotential_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_kinetic_energy_flux: vertical_integral_of_divergence_of_kinetic_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_mass_flux: vertical_integral_of_divergence_of_mass_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_moisture_flux: vertical_integral_of_divergence_of_moisture_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_ozone_flux: vertical_integral_of_divergence_of_ozone_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_thermal_energy_flux: vertical_integral_of_divergence_of_thermal_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_divergence_of_total_energy_flux: vertical_integral_of_divergence_of_total_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_cloud_frozen_water_flux: vertical_integral_of_eastward_cloud_frozen_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_cloud_liquid_water_flux: vertical_integral_of_eastward_cloud_liquid_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_geopotential_flux: vertical_integral_of_eastward_geopotential_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_heat_flux: vertical_integral_of_eastward_heat_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_kinetic_energy_flux: vertical_integral_of_eastward_kinetic_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_mass_flux: vertical_integral_of_eastward_mass_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_ozone_flux: vertical_integral_of_eastward_ozone_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_total_energy_flux: vertical_integral_of_eastward_total_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_eastward_water_vapour_flux: vertical_integral_of_eastward_water_vapour_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_energy_conversion: vertical_integral_of_energy_conversion,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_kinetic_energy: vertical_integral_of_kinetic_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_mass_of_atmosphere: vertical_integral_of_mass_of_atmosphere,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_mass_tendency: vertical_integral_of_mass_tendency,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_cloud_frozen_water_flux: vertical_integral_of_northward_cloud_frozen_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_cloud_liquid_water_flux: vertical_integral_of_northward_cloud_liquid_water_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_geopotential_flux: vertical_integral_of_northward_geopotential_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_heat_flux: vertical_integral_of_northward_heat_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_kinetic_energy_flux: vertical_integral_of_northward_kinetic_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_mass_flux: vertical_integral_of_northward_mass_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_ozone_flux: vertical_integral_of_northward_ozone_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_total_energy_flux: vertical_integral_of_northward_total_energy_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_northward_water_vapour_flux: vertical_integral_of_northward_water_vapour_flux,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_potential_and_internal_energy: vertical_integral_of_potential_and_internal_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_potential_internal_and_latent_energy: vertical_integral_of_potential_internal_and_latent_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_temperature: vertical_integral_of_temperature,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_thermal_energy: vertical_integral_of_thermal_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertical_integral_of_total_energy: vertical_integral_of_total_energy,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      vertically_integrated_moisture_divergence: vertically_integrated_moisture_divergence,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      volumetric_soil_water_layer_1: volumetric_soil_water_layer_1,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      volumetric_soil_water_layer_2: volumetric_soil_water_layer_2,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      volumetric_soil_water_layer_3: volumetric_soil_water_layer_3,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      volumetric_soil_water_layer_4: volumetric_soil_water_layer_4,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_directional_width: wave_spectral_directional_width,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_directional_width_for_swell: wave_spectral_directional_width_for_swell,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_directional_width_for_wind_waves: wave_spectral_directional_width_for_wind_waves,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_kurtosis: wave_spectral_kurtosis,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_peakedness: wave_spectral_peakedness,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      wave_spectral_skewness: wave_spectral_skewness,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      zero_degree_level: zero_degree_level,EO:ECMWF:DAT:REANALYSIS_ERA5_SINGLE_LEVELS
+      divergence: divergence,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      fraction_of_cloud_cover: fraction_of_cloud_cover,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      geopotential: geopotential,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      ozone_mass_mixing_ratio: ozone_mass_mixing_ratio,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      potential_vorticity: potential_vorticity,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      relative_humidity: relative_humidity,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      specific_cloud_ice_water_content: specific_cloud_ice_water_content,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      specific_cloud_liquid_water_content: specific_cloud_liquid_water_content,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      specific_humidity: specific_humidity,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      specific_rain_water_content: specific_rain_water_content,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      specific_snow_water_content: specific_snow_water_content,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      temperature: temperature,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      u_component_of_wind: u_component_of_wind,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      v_component_of_wind: v_component_of_wind,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      vertical_velocity: vertical_velocity,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+      vorticity: vorticity,EO:ECMWF:DAT:ERA5_HOURLY_VARIABLES_ON_PRESSURE_LEVELS
+  custom:format:
+    name: format
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_parameter_form
+        property:
+    mapping:
+      grib: grib
+      netcdf: netcdf
+    missing: netcdf
+  startIndex:
+    name: page
+    typ: integer
+    target: query_params
+    tranfunc:
+      - name: offset
+        property:
+         offset: 0
+  maxRecords:
+    name: size
+    typ: integer
+    target: query_params
+    tranfunc:
+     - name: identity
+       property:
+  processingDate:
+    name: year,month,day,time
+    typ: datetime
+    target: multiStringSelectValues
+    tranfunc:
+      - name: wekeo_time_c3s_parameter_form
+        property:
+    missing: "2008-01-01T00:00:00.000Z"
+  custom:pressureLevel:
+    name: pressure_level
+    typ: option
+    target: multiStringSelectValues
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_multi_parameter_form
+        property:
+    mapping:
+      "1": "1"
+      "2": "2"
+      "3": "3"
+      "5": "5"
+      "7": "7"
+      "10": "10"
+      "20": "20"
+      "30": "30"
+      "50": "50"
+      "70": "70"
+      "100": "100"
+      "125": "125"
+      "150": "150"
+      "175": "175"
+      "200": "200"
+      "225": "225"
+      "250": "250"
+      "300": "300"
+      "350": "350"
+      "400": "400"
+      "450": "450"
+      "500": "500"
+      "550": "550"
+      "600": "600"
+      "650": "650"
+      "700": "700"
+      "750": "750"
+      "775": "775"
+      "800": "800"
+      "825": "825"
+      "850": "850"
+      "875": "875"
+      "900": "900"
+      "925": "925"
+      "950": "950"
+      "975": "975"
+      "1000": "1000"
+parser:
+  typ: wekeo
+  preprocessor: prodInfo2content
+  parameters:
+    totItems:
+      tag: totalResults
+      location: head
+    downloadUri:
+      tag: link
+      tag_spec: text_to_enclousure
+    filename:
+      tag: title
+    datasetId:
+      tag: dataset
+    productStartDate:
+      tag: published
+    url:
+      tag: link
+      tag_spec: text_to_path
+
+
+
+
+
+
+
+
+
+
+
+

@@ -36,10 +36,14 @@ def utc_time_format(self, value):
 def rfc_time_format(self, value):
     return isoparse(value).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+def wekeo_C3S_time_format(self, value):
+    return isoparse(value).strftime("%Y,%m,%d,%H:%M")
 
 def wekeo_parameter_form(self, value):
     return {'name': self.name, 'value': value}
 
+def wekeo_multi_parameter_form(self, value):
+    return {'name': self.name, 'value': [value]}
 
 def wekeo_bbox_form(self, value):
     return {'name': self.name, 'bbox': value}
@@ -47,6 +51,12 @@ def wekeo_bbox_form(self, value):
 
 def wekeo_time_parameter_form(self, value):
     return {'name': 'position', self.name: value}
+
+def wekeo_time_c3s_parameter_form(self, value):
+    names = self.name.split(',')
+    times = isoparse(value).strftime("%Y,%m,%d,%H:%M").split(',')
+    return [{"name": name, "value": [time]} for name, time in zip(names, times)]
+
 
 
 def wekeo_bbox(self, value: str):
@@ -61,8 +71,11 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'rfc_time_format': rfc_time_format,
                        'get_mapped_pair':  get_mapped_pair,
                        'wekeo_parameter_form': wekeo_parameter_form,
+                       'wekeo_multi_parameter_form': wekeo_multi_parameter_form,
                        'wekeo_bbox_form': wekeo_bbox_form,
+                       'wekeo_C3S_time_format': wekeo_C3S_time_format,
                        'wekeo_time_parameter_form': wekeo_time_parameter_form,
+                       'wekeo_time_c3s_parameter_form': wekeo_time_c3s_parameter_form,
                        'wekeo_bbox': wekeo_bbox}
 
 

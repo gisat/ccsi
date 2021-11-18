@@ -52,6 +52,9 @@ class AllSearch(Resource):
         except Exception as error:
             return render_error(error)
 
+        if len(query_processor.errors) > 0:
+            return make_response(jsonify(query_processor.errors))
+
         if form == 'atom':
             response = AllResourceXMLResponse(Config.NAMESPACES, self.resource_description,
                                               query_processor, request.url_root)
@@ -107,6 +110,9 @@ class ResourceSearch(Resource):
             query_processor.process_query(request.args, resource_name)
         except Exception as error:
             return render_error(error)
+
+        if len(query_processor.errors) > 0:
+            return make_response(jsonify({'message': query_processor.errors}), 500)
 
         if form == 'atom':
             url = f'{request.url_root}{resource_name}/{form}/search'

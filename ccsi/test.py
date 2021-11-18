@@ -15,18 +15,18 @@ class FakeRequest:
 
 if __name__ == '__main__':
     init_storage()
-    query = {
-             'sensorMode': 'ew',
-             'polarisationChannels': 'hh/hv',
-             'orbitDirection': 'ascending',
-             'timeStart': '2017-10-10',
-             'timeEnd': '2018-10-10',
-             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
-             'collection': 'sentinel-1',
-             'productType': 'grd',
-             'processingLevel': 'level1',
-             'startIndex': 2,
-             'maxRecords': 1}
+    # query = {
+    #          'sensorMode': 'ew',
+    #          'polarisationChannels': 'hh/hv',
+    #          'orbitDirection': 'ascending',
+    #          'timeStart': '2017-10-10',
+    #          'timeEnd': '2018-10-10',
+    #          'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+    #          'collection': 'sentinel-1',
+    #          'productType': 'grd',
+    #          'processingLevel': 'level1',
+    #          'startIndex': 2,
+    #          'maxRecords': 1}
 
     # query = {
     #          'timeStart': '2017-10-10',
@@ -35,14 +35,14 @@ if __name__ == '__main__':
     #          'productType': 'grd'}
     #
     query = {
-             'timeStart': '2018-10-10',
-             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
-             'collection': 'sentinel-3',
-             'productType': 'lst'}
+             'processingDate': '2018-10-10',
+             'custom:cs3dataset': 'mean_sea_level_pressure',
+             'productType': 'reanalysis',
+             'custom:format': 'netcdf'}
 
     #
     request = FakeRequest(query)
-    resource_name = 'wekeo_s3'
+    resource_name = 'wekeo_c3s'
 
     # resource
     from ccsi.storage import storage
@@ -57,6 +57,10 @@ if __name__ == '__main__':
     # # query_processor._parse()
     # response = ResourceJsonResponse(FeedSchema, query_processor)
     # response.build_response()
+    if len(query_processor.errors) > 0:
+        {'message': query_processor.errors}, 500
+
+
     response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, storage.response_specification,
                                    Config.NAMESPACES, query_processor, 'url', resource_name)
     response.build_response()

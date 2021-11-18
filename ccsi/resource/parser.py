@@ -55,7 +55,7 @@ class Feed:
     def __init__(self):
         self.entries = []
         self.head = []
-        self.totalResults = None
+        self.totalResults = 0
 
     def add_entry(self, entry: Entry):
         self.entries.append(entry)

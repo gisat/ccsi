@@ -200,7 +200,10 @@ class ResourceXMLResponse:
         self.namespaces = namespaces
         self.resource_name = resource_name
         self.response = query_processor.feeds.get(resource_name)
-        self.total_results = query_processor.feeds.get(resource_name).totalResults
+        if query_processor.feeds.get(resource_name).totalResults:
+            self.total_results = query_processor.feeds.get(resource_name).totalResults
+        else:
+            self.total_results = 0
         self.query = query_processor.valid_queries.get(resource_name)
         self.base_url = base_url
 

@@ -67,7 +67,7 @@ class QueryResource:
             if status_code == 200:
                 self.responses.update({resource_name: content})
             else:
-                self.errors.update({resource_name: content})
+                self.errors.update({resource_name: {status_code : content.decode('utf-8')}})
 
     def _parse(self):
         for resource_name, response in self.responses.items():

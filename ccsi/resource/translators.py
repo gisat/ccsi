@@ -78,6 +78,14 @@ class WekeoTranslator(Translator):
             self.processed_query['stringChoicesValues'] = []
         self.processed_query['stringChoicesValues'].append(parameter)
 
+    def multiStringSelectValues(self, parameter):
+        if 'multiStringSelectValues' not in self.processed_query:
+            self.processed_query['multiStringSelectValues'] = []
+        if isinstance(parameter, list):
+            self.processed_query['multiStringSelectValues'] += parameter
+        elif isinstance(parameter, dict):
+            self.processed_query['multiStringSelectValues'].append(parameter)
+
     def dateRangeSelectValues(self, parameter):
         if 'dateRangeSelectValues' not in self.processed_query:
             self.processed_query['dateRangeSelectValues'] = [parameter]
@@ -93,6 +101,12 @@ class WekeoTranslator(Translator):
         data['value'] = value
         self.wekeo_dataset_id(datasetid)
         self.stringChoicesValues(data)
+
+    def wekeo_dataset_from_multiStringSelectValues(self, data):
+        value, datasetid = data['value'][0].split(',')
+        data['value'] = [value]
+        self.wekeo_dataset_id(datasetid)
+        self.multiStringSelectValues(data)
 
     def wekeo_dataset_id(self, parameter):
         # self.processed_dataset = [dataset for dataset in self.processed_dataset if dataset.__contains__(parameter)]
