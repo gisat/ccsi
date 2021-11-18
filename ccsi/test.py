@@ -35,14 +35,14 @@ if __name__ == '__main__':
     #          'productType': 'grd'}
     #
     query = {
-             'timeStart': '2017-10-10',
+             'timeStart': '2018-10-10',
              'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
-             'collection': 'sentinel-1',
-             'productType': 'grd'}
+             'collection': 'sentinel-3',
+             'productType': 'lst'}
 
     #
     request = FakeRequest(query)
-    resource_name = 'creodias_s1'
+    resource_name = 'wekeo_s3'
 
     # resource
     from ccsi.storage import storage

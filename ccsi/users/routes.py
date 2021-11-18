@@ -70,7 +70,6 @@ class Users(Resource):
         return jsonify({'message': f'{username} deleted'}), 200
 
 
-
 api.add_resource(Users, '/users')
 
 

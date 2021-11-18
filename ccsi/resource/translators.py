@@ -59,6 +59,8 @@ class WekeoTranslator(Translator):
             parameter = self.resources_parameters.get_parameter(key)
             if parameter.definitions['target'] == 'query_params':
                 getattr(self, parameter.definitions['target'])(parameter.transform(value))
+            elif parameter.definitions['target'] is None:
+                pass
             else:
                 getattr(self, parameter.definitions['target'])(parameter.transform(value)[parameter.name])
         return self.processed_query
@@ -85,6 +87,12 @@ class WekeoTranslator(Translator):
         if 'boundingBoxValues' not in self.processed_query:
             self.processed_query['boundingBoxValues'] = []
         self.processed_query['boundingBoxValues'].append(parameter)
+
+    def wekeo_dataset_from_string_choice(self, data):
+        value, datasetid = data['value'].split(',')
+        data['value'] = value
+        self.wekeo_dataset_id(datasetid)
+        self.stringChoicesValues(data)
 
     def wekeo_dataset_id(self, parameter):
         # self.processed_dataset = [dataset for dataset in self.processed_dataset if dataset.__contains__(parameter)]

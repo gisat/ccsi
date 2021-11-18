@@ -291,6 +291,18 @@ parameters:
       - vv
       - hv
       - vh
+  timeliness:
+    name: timeliness
+    typ: string
+    tranfunc:
+      - name: identity
+        property:
+    title: EO product processint timeliness
+    namespace: eo
+    values:
+      - near-real-time
+      - non-time-critical
+      - short-time-critical
   productType:
     name: productType
     typ: string
