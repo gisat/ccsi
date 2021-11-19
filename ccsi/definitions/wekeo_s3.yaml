@@ -27,17 +27,6 @@ parameters:
        property:
     mapping:
       wekeo: wekeo
-  processingLevel:
-    name: processingLevel
-    typ: option
-    target: stringChoicesValues
-    tranfunc:
-     - name: get_mapped_pair
-       property:
-     - name: wekeo_parameter_form
-       property:
-    mapping:
-      level2: LEVEL2
   productType:
     name: productType
     typ: option
