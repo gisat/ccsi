@@ -73,6 +73,11 @@ class WekeoTranslator(Translator):
         for key, value in query.items():
             self.resources_parameters.get_parameter(key).validate(value)
 
+    def stringInputs(self, parameter):
+        if 'stringInputs' not in self.processed_query:
+            self.processed_query['stringInputs'] = []
+        self.processed_query['stringInputs'].append(parameter)
+
     def stringChoicesValues(self, parameter):
         if 'stringChoicesValues' not in self.processed_query:
             self.processed_query['stringChoicesValues'] = []

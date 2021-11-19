@@ -52,6 +52,44 @@ parameters:
       lrr: LRR,EO:ESA:DAT:SENTINEL-3:OL_2_LRR___
       lst: LST,EO:ESA:DAT:SENTINEL-3:SL_2_LST___
       lan: LAN,EO:ESA:DAT:SENTINEL-3:SR_2_LAN___
+      efr: OL_1_EFR___,EO:EUM:DAT:SENTINEL-3:OL_1_EFR___
+      err: OL_1_ERR___,EO:EUM:DAT:SENTINEL-3:OL_1_ERR___
+      wfr: OL_2_WFR___,EO:EUM:DAT:SENTINEL-3:OL_2_WFR___
+      wrr: OL_2_WRR___,EO:EUM:DAT:SENTINEL-3:OL_2_WRR___
+      rbt: SL_1_RBT___,EO:EUM:DAT:SENTINEL-3:SL_1_RBT___
+      wst: SL_2_WST___,EO:EUM:DAT:SENTINEL-3:SL_2_WST___
+      sra: SR_1_SRA___,EO:EUM:DAT:SENTINEL-3:SR_1_SRA___
+      wta: SR_2_WAT___,EO:EUM:DAT:SENTINEL-3:SR_2_WAT___
+  orbitDirection:
+    name: orbitDirection
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_parameter_form
+        property:
+    mapping:
+      ascending: ascending
+      descending: descending
+  orbitNumber:
+    name: orbitnumber
+    typ: integer
+    target: stringInputs
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_parameter_form
+        property:
+  relativeOrbitNumber:
+    name: relativeorbitnumber
+    typ: integer
+    target: stringInputs
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_parameter_form
+        property:
   timeliness:
     name: timeliness
     typ: option
