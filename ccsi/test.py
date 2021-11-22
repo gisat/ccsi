@@ -28,23 +28,23 @@ if __name__ == '__main__':
     #          'startIndex': 2,
     #          'maxRecords': 1}
 
-    # query = {
-    #          'timeStart': '2017-10-10',
-    #          'timeEnd': '2018-10-10',
-    #          'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
-    #          'productType': 'wta',
-    #          'orbitDirection: 'ascending'
-    #          'orbitNumber': }
-    #
     query = {
-             'processingDate': '2018-10-10',
-             'custom:cs3dataset': 'mean_sea_level_pressure',
-             'productType': 'reanalysis',
-             'custom:format': 'netcdf'}
+             'timeStart': '2017-10-10',
+             'timeEnd': '2018-10-10',
+             'bbox': '14.295344355809593,49.999634756552354,14.635223520987124,50.15458581416696',
+             'productType': 'efr',
+             'orbitDirection': 'ascending',
+             'relativeOrbitNumber': '237'}
+    #
+    # query = {
+    #          'processingDate': '2018-10-10',
+    #          'custom:cs3dataset': 'mean_sea_level_pressure',
+    #          'productType': 'reanalysis',
+    #          'custom:format': 'netcdf'}
 
     #
     request = FakeRequest(query)
-    resource_name = 'wekeo_c3s'
+    resource_name = 'wekeo_s3'
 
     # resource
     from ccsi.storage import storage

@@ -61,13 +61,11 @@ parameters:
     mapping:
       ascending: ascending
       descending: descending
-  orbitNumber:
+  absoluteOrbitNumberr:
     name: orbitnumber
     typ: integer
     target: stringInputs
     tranfunc:
-      - name: get_mapped_pair
-        property:
       - name: wekeo_parameter_form
         property:
   relativeOrbitNumber:
@@ -75,8 +73,6 @@ parameters:
     typ: integer
     target: stringInputs
     tranfunc:
-      - name: get_mapped_pair
-        property:
       - name: wekeo_parameter_form
         property:
   timeliness:
