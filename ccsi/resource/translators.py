@@ -79,9 +79,9 @@ class WekeoTranslator(Translator):
         self.processed_query['stringInputs'].append(parameter)
 
     def stringChoicesValues(self, parameter):
-        if 'stringChoicesValues' not in self.processed_query:
-            self.processed_query['stringChoicesValues'] = []
-        self.processed_query['stringChoicesValues'].append(parameter)
+        if 'stringChoiceValues' not in self.processed_query:
+            self.processed_query['stringChoiceValues'] = []
+        self.processed_query['stringChoiceValues'].append(parameter)
 
     def multiStringSelectValues(self, parameter):
         if 'multiStringSelectValues' not in self.processed_query:

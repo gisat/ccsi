@@ -27,8 +27,20 @@ parameters:
        property:
     mapping:
       wekeo: wekeo
+  platform:
+    name: platformname
+    typ: option
+    target: stringChoicesValues
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+      - name: wekeo_parameter_form
+        property:
+    mapping:
+        sentinel-3: Sentinel-3
+    missing: sentinel-3
   productType:
-    name: productType
+    name: producttype
     typ: option
     target: wekeo_dataset_from_string_choice
     tranfunc:
