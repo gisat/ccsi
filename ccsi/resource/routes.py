@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from ccsi.storage import storage
 from ccsi.base import validate_regpars, ExcludeSchema
 from marshmallow import fields
-from flasgger import swag_from
+
 
 api_resource = Blueprint('api_resource', __name__)
 api = Api(api_resource)

@@ -5,7 +5,7 @@ connection:
   url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
   typ: wekeo_connection
 translator:
-  typ: wekeo
+  typ: wekeoC3S
 cache:
   url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
   typ: wekeo_cache
@@ -322,14 +322,21 @@ parameters:
     tranfunc:
      - name: identity
        property:
-  processingDate:
-    name: year,month,day,time
+  timeStart:
+    name: start
     typ: datetime
-    target: multiStringSelectValues
+    target: wekeoC3Stime
     tranfunc:
-      - name: wekeo_time_c3s_parameter_form
+      - name: time_to_datetime
         property:
-    missing: "2008-01-01T00:00:00.000Z"
+    missing: "2008-01-01T00:00"
+  timeEnd:
+    name: end
+    typ: datetime
+    target: wekeoC3Stime
+    tranfunc:
+     - name: time_to_datetime
+       property:
   custom:pressureLevel:
     name: pressure_level
     typ: option

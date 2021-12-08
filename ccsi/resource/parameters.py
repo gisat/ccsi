@@ -6,6 +6,10 @@ from dateutil.parser import isoparse
 from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, WekeoQuerySchema, partial
 import re
 from abc import ABC, abstractmethod
+from dateutil.parser import isoparse
+from dateutil.rrule import rrule, HOURLY
+from datetime import datetime
+from dateutil.tz import UTC
 
 
 # transformation
@@ -36,14 +40,22 @@ def utc_time_format(self, value):
 def rfc_time_format(self, value):
     return isoparse(value).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+
 def wekeo_C3S_time_format(self, value):
     return isoparse(value).strftime("%Y,%m,%d,%H:%M")
+
+
+def time_to_datetime(self, value):
+    return isoparse(value)
+
 
 def wekeo_parameter_form(self, value):
     return {'name': self.name, 'value': value}
 
+
 def wekeo_multi_parameter_form(self, value):
     return {'name': self.name, 'value': [value]}
+
 
 def wekeo_bbox_form(self, value):
     return {'name': self.name, 'bbox': value}
@@ -52,21 +64,51 @@ def wekeo_bbox_form(self, value):
 def wekeo_time_parameter_form(self, value):
     return {'name': 'position', self.name: value}
 
+
 def wekeo_time_c3s_parameter_form(self, value):
     names = self.name.split(',')
     times = isoparse(value).strftime("%Y,%m,%d,%H:%M").split(',')
     return [{"name": name, "value": [time]} for name, time in zip(names, times)]
 
 
-
 def wekeo_bbox(self, value: str):
     return [float(item) for item in value.split(',')]
+
+
+class TimeParser:
+
+    def __init__(self, query):
+        if 'timeStart' in query:
+            self.timeStart = isoparse(query['timeStart'])
+        if 'timeEnd' in query:
+            self.timeEnd = isoparse(query['timeEnd'])
+        else:
+            self.timeEnd = isoparse(datetime.now().isoformat())
+        self.year = set()
+        self.month = set()
+        self.day = set()
+        self.hour = set()
+
+    def parser_datetime_range(self):
+        for date in [dt for dt in rrule(HOURLY, dtstart=self.timeStart, until=self.timeEnd)]:
+            self.year.add(date.strftime("%Y"))
+            self.month.add(date.strftime("%m"))
+            self.day.add(date.strftime("%d"))
+            self.hour.add(date.strftime("%H:%M"))
+
+    def execute(self):
+        self.parser_datetime_range()
+        return [self.time_template(name, getattr(self, name)) for name in ['year', 'month', 'day', 'hour']]
+
+    def time_template(self, name:str, value: set):
+        return {"name": name, "value": list(value)}
 
 
 TRANSFORMATION_FUNC = {'identity': identity,
                        'offset': offset,
                        'bracket': bracket,
                        'default': default,
+                       'time_to_datetime': time_to_datetime,
                        'utc_time_format': utc_time_format,
                        'rfc_time_format': rfc_time_format,
                        'get_mapped_pair':  get_mapped_pair,
