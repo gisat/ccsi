@@ -42,7 +42,7 @@ parameters:
       ensemble_spread: ensemble_spread
       reanalysis: reanalysis
     missing: reanalysis
-  custom:cs3dataset:
+  custom:cs3Dataset:
     name: variable
     typ: option
     target: wekeo_dataset_from_multiStringSelectValues

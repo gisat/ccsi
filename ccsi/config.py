@@ -8,7 +8,7 @@ class Config:
 
     RESOURCE_DEFINITIONS = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml',
                            'creodias_s1.yaml', 'creodias_s2.yaml', 'creodias_s3.yaml', 'creodias_s5.yaml',  'creodias_landsat8.yaml',
-                            'wekeo_s1.yaml', 'wekeo_s2.yaml', 'wekeo_s3.yaml', 'wekeo_c3s.yaml']
+                            'wekeo_s1.yaml', 'wekeo_s2.yaml', 'wekeo_s3.yaml', 'wekeo_c3s.yaml', 'wekeo_cams.yaml']
 
     connections_repeat = 3
 

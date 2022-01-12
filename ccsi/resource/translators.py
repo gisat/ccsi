@@ -50,11 +50,12 @@ class BasicTranslator(Translator):
 class WekeoTranslator(Translator):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
+        self.processed_query = {}
 
     def translate(self, query: dict, **kwargs):
         """translate from one set of api parameters to another
         """
-        self.processed_query = {}
+
         for key, value in query.items():
             parameter = self.resources_parameters.get_parameter(key)
             if parameter.definitions['target'] == 'query_params':
@@ -114,7 +115,6 @@ class WekeoTranslator(Translator):
         self.multiStringSelectValues(data)
 
     def wekeo_dataset_id(self, parameter):
-        # self.processed_dataset = [dataset for dataset in self.processed_dataset if dataset.__contains__(parameter)]
         self.processed_query['datasetId'] = parameter
 
     def query_params(self, parameter):

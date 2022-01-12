@@ -54,6 +54,8 @@ def wekeo_parameter_form(self, value):
 
 
 def wekeo_multi_parameter_form(self, value):
+    if isinstance(value, list):
+        return {'name': self.name, 'value': value}
     return {'name': self.name, 'value': [value]}
 
 
@@ -61,8 +63,16 @@ def wekeo_bbox_form(self, value):
     return {'name': self.name, 'bbox': value}
 
 
+def wekeo_cams_bbox_form(self, value):
+    return {'name': self.name, 'area': value}
+
+
 def wekeo_time_parameter_form(self, value):
     return {'name': 'position', self.name: value}
+
+
+def wekeo_time_cams_parameter_form(self, value):
+    return {'name': 'date', self.name: value}
 
 
 def wekeo_time_c3s_parameter_form(self, value):
@@ -115,9 +125,11 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'wekeo_parameter_form': wekeo_parameter_form,
                        'wekeo_multi_parameter_form': wekeo_multi_parameter_form,
                        'wekeo_bbox_form': wekeo_bbox_form,
+                       'wekeo_cams_bbox_form': wekeo_cams_bbox_form,
                        'wekeo_C3S_time_format': wekeo_C3S_time_format,
                        'wekeo_time_parameter_form': wekeo_time_parameter_form,
                        'wekeo_time_c3s_parameter_form': wekeo_time_c3s_parameter_form,
+                       'wekeo_time_cams_parameter_form': wekeo_time_cams_parameter_form,
                        'wekeo_bbox': wekeo_bbox}
 
 
