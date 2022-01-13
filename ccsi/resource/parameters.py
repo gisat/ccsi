@@ -85,6 +85,10 @@ def wekeo_bbox(self, value: str):
     return [float(item) for item in value.split(',')]
 
 
+def round_list(self, value, precision):
+    return [round(v, precision) for v in value]
+
+
 class TimeParser:
 
     def __init__(self, query):
@@ -130,7 +134,8 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'wekeo_time_parameter_form': wekeo_time_parameter_form,
                        'wekeo_time_c3s_parameter_form': wekeo_time_c3s_parameter_form,
                        'wekeo_time_cams_parameter_form': wekeo_time_cams_parameter_form,
-                       'wekeo_bbox': wekeo_bbox}
+                       'wekeo_bbox': wekeo_bbox,
+                       'round_list': round_list}
 
 
 # parameters & translator

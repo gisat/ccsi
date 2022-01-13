@@ -35,6 +35,9 @@ parameters:
     tranfunc:
       - name: wekeo_bbox
         property:
+      - name: round_list
+        property:
+          precision: 2
       - name: wekeo_bbox_form
         property:
   timeStart:
