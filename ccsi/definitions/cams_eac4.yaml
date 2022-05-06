@@ -1,0 +1,504 @@
+resource_name: cams_eac4
+resource_description:
+  name: CAMS EAC$ API endpoint
+connection:
+  url: https://ads.atmosphere.copernicus.eu/api/v2
+  typ: cdsapi
+translator:
+  typ: cams_eac4
+parameters:
+  collection:
+    typ: option
+    name: collection
+    target: null
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+    mapping:
+      cams: cams-global-reanalysis-eac4
+    missing: cams
+  resource:
+    typ: option
+    target: null
+    name: resource
+    tranfunc:
+     - name: identity
+       property:
+    mapping:
+      wekeo: cams eac4
+  bbox:
+    name: area
+    typ: bbox
+    target: null
+    tranfunc:
+      - name: wekeo_bbox
+        property:
+      - name: round_list
+        property:
+          precision: 2
+      - name: identity
+        property:
+  timeStart:
+    name: start
+    typ: datetime
+    target: time
+    tranfunc:
+      - name: rfc_time_format
+        property:
+      - name: identity
+        property:
+    missing: "2003-01-01T00:00"
+  timeEnd:
+    name: end
+    typ: datetime
+    target: time
+    tranfunc:
+      - name: rfc_time_format
+        property:
+      - name: identity
+        property:
+  custom:camsDataset:
+    name: variable
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      10m_u_component_of_wind: 10m_u_component_of_wind
+      10m_v_component_of_wind: 10m_v_component_of_wind
+      2m_dewpoint_temperature: 2m_dewpoint_temperature
+      2m_temperature: 2m_temperature
+      black_carbon_aerosol_optical_depth_550nm: black_carbon_aerosol_optical_depth_550nm
+      dust_aerosol_optical_depth_550nm: dust_aerosol_optical_depth_550nm
+      land_sea_mask: land_sea_mask
+      mean_sea_level_pressure: mean_sea_level_pressure
+      organic_matter_aerosol_optical_depth_550nm: organic_matter_aerosol_optical_depth_550nm
+      sea_salt_aerosol_optical_depth_550nm: sea_salt_aerosol_optical_depth_550nm
+      sulphate_aerosol_optical_depth_550nm: sulphate_aerosol_optical_depth_550nm
+      surface_geopotential: surface_geopotential
+      total_aerosol_optical_depth_1240nm: total_aerosol_optical_depth_1240nm
+      total_aerosol_optical_depth_469nm: total_aerosol_optical_depth_469nm
+      total_aerosol_optical_depth_550nm: total_aerosol_optical_depth_550nm
+      total_aerosol_optical_depth_670nm: total_aerosol_optical_depth_670nm
+      total_aerosol_optical_depth_865nm: total_aerosol_optical_depth_865nm
+      total_column_carbon_monoxide: total_column_carbon_monoxide
+      total_column_ethane: total_column_ethane
+      total_column_formaldehyde: total_column_formaldehyde
+      total_column_hydroxyl_radical: total_column_hydroxyl_radical
+      total_column_isoprene: total_column_isoprene
+      total_column_nitric_acid: total_column_nitric_acid
+      total_column_nitrogen_dioxide: total_column_nitrogen_dioxide
+      total_column_nitrogen_monoxide: total_column_nitrogen_monoxide
+      total_column_ozone: total_column_ozone
+      total_column_peroxyacetyl_nitrate: total_column_peroxyacetyl_nitrate
+      total_column_propane: total_column_propane
+      total_column_sulphur_dioxide: total_column_sulphur_dioxide
+      total_column_water_vapour: total_column_water_vapour
+      carbon_monoxide: carbon_monoxide
+      dust_aerosol_0.03-0.55um_mixing_ratio: dust_aerosol_0.03-0.55um_mixing_ratio
+      dust_aerosol_0.55-0.9um_mixing_ratio: dust_aerosol_0.55-0.9um_mixing_ratio
+      dust_aerosol_0.9-20um_mixing_ratio: dust_aerosol_0.9-20um_mixing_ratio
+      ethane: ethane
+      formaldehyde: formaldehyde
+      hydrophilic_black_carbon_aerosol_mixing_ratio: hydrophilic_black_carbon_aerosol_mixing_ratio
+      hydrophilic_organic_matter_aerosol_mixing_ratio: hydrophilic_organic_matter_aerosol_mixing_ratio
+      hydrophobic_black_carbon_aerosol_mixing_ratio: hydrophobic_black_carbon_aerosol_mixing_ratio
+      hydrophobic_organic_matter_aerosol_mixing_ratio: hydrophobic_organic_matter_aerosol_mixing_ratio
+      hydroxyl_radical: hydroxyl_radical
+      isoprene: isoprene
+      logarithm_of_surface_pressure: logarithm_of_surface_pressure
+      nitric_acid: nitric_acid
+      nitrogen_dioxide: nitrogen_dioxide
+      nitrogen_monoxide: nitrogen_monoxide
+      ozone: ozone
+      peroxyacetyl_nitrate: peroxyacetyl_nitrate
+      propane: propane
+      sea_salt_aerosol_0.03-0.5um_mixing_ratio: sea_salt_aerosol_0.03-0.5um_mixing_ratio
+      sea_salt_aerosol_0.5-5um_mixing_ratio: sea_salt_aerosol_0.5-5um_mixing_ratio
+      sea_salt_aerosol_5-20um_mixing_ratio: sea_salt_aerosol_5-20um_mixing_ratio
+      specific_humidity: specific_humidity
+      sulphate_aerosol_mixing_ratio: sulphate_aerosol_mixing_ratio
+      sulphur_dioxide: sulphur_dioxide
+      temperature: temperature
+      particulate_matter_10um: particulate_matter_10um
+      particulate_matter_1um: particulate_matter_1um
+      particulate_matter_2.5um: particulate_matter_2.5um
+      vertically_integrated_mass_of_dust_aerosol_0.03-0.55um: vertically_integrated_mass_of_dust_aerosol_0.03-0.55um
+      vertically_integrated_mass_of_dust_aerosol_0.55-9um: vertically_integrated_mass_of_dust_aerosol_0.55-9um
+      vertically_integrated_mass_of_dust_aerosol_9-20um: vertically_integrated_mass_of_dust_aerosol_9-20um
+      vertically_integrated_mass_of_hydrophilic_black_carbon_aerosol: vertically_integrated_mass_of_hydrophilic_black_carbon_aerosol
+      vertically_integrated_mass_of_hydrophilic_organic_matter_aerosol: vertically_integrated_mass_of_hydrophilic_organic_matter_aerosol
+      vertically_integrated_mass_of_hydrophobic_black_carbon_aerosol: vertically_integrated_mass_of_hydrophobic_black_carbon_aerosol
+      vertically_integrated_mass_of_hydrophobic_organic_matter_aerosol: vertically_integrated_mass_of_hydrophobic_organic_matter_aerosol
+      vertically_integrated_mass_of_sea_salt_aerosol_0.03-0.5um: vertically_integrated_mass_of_sea_salt_aerosol_0.03-0.5um
+      vertically_integrated_mass_of_sea_salt_aerosol_0.5-5um: vertically_integrated_mass_of_sea_salt_aerosol_0.5-5um
+      vertically_integrated_mass_of_sea_salt_aerosol_5-20um: vertically_integrated_mass_of_sea_salt_aerosol_5-20um
+      vertically_integrated_mass_of_sulphate_aerosol: vertically_integrated_mass_of_sulphate_aerosol
+      albedo: albedo
+      clear_sky_direct_solar_radiation_at_surface: clear_sky_direct_solar_radiation_at_surface
+      downward_uv_radiation_at_the_surface: downward_uv_radiation_at_the_surface
+      forecast_albedo: forecast_albedo
+      near_ir_albedo_for_diffuse_radiation: near_ir_albedo_for_diffuse_radiation
+      near_ir_albedo_for_direct_radiation: near_ir_albedo_for_direct_radiation
+      photosynthetically_active_radiation_at_the_surface: photosynthetically_active_radiation_at_the_surface
+      snow_albedo: snow_albedo
+      sunshine_duration: sunshine_duration
+      surface_net_solar_radiation: surface_net_solar_radiation
+      surface_net_solar_radiation_clear_sky: surface_net_solar_radiation_clear_sky
+      surface_net_thermal_radiation: surface_net_thermal_radiation
+      surface_net_thermal_radiation_clear_sky: surface_net_thermal_radiation_clear_sky
+      surface_solar_radiation_downward_clear_sky: surface_solar_radiation_downward_clear_sky
+      surface_solar_radiation_downwards: surface_solar_radiation_downwards
+      surface_thermal_radiation_downward_clear_sky: surface_thermal_radiation_downward_clear_sky
+      surface_thermal_radiation_downwards: surface_thermal_radiation_downwards
+      toa_incident_solar_radiation: toa_incident_solar_radiation
+      top_net_solar_radiation: top_net_solar_radiation
+      top_net_solar_radiation_clear_sky: top_net_solar_radiation_clear_sky
+      top_net_thermal_radiation: top_net_thermal_radiation
+      top_net_thermal_radiation_clear_sky: top_net_thermal_radiation_clear_sky
+      total_sky_direct_solar_radiation_at_surface: total_sky_direct_solar_radiation_at_surface
+      uv_biologically_effective_dose: uv_biologically_effective_dose
+      uv_biologically_effective_dose_clear_sky: uv_biologically_effective_dose_clear_sky
+      uv_visible_albedo_for_diffuse_radiation: uv_visible_albedo_for_diffuse_radiation
+      uv_visible_albedo_for_direct_radiation: uv_visible_albedo_for_direct_radiation
+      total_column_acetone: total_column_acetone
+      total_column_aldehydes: total_column_aldehydes
+      total_column_cloud_ice_water: total_column_cloud_ice_water
+      total_column_cloud_liquid_water: total_column_cloud_liquid_water
+      total_column_ethanol: total_column_ethanol
+      total_column_ethene: total_column_ethene
+      total_column_formic_acid: total_column_formic_acid
+      total_column_hydrogen_peroxide: total_column_hydrogen_peroxide
+      total_column_methane: total_column_methane
+      total_column_methanol: total_column_methanol
+      total_column_methyl_peroxide: total_column_methyl_peroxide
+      total_column_olefins: total_column_olefins
+      total_column_organic_nitrates: total_column_organic_nitrates
+      total_column_paraffins: total_column_paraffins
+      total_column_water: total_column_water
+      vertically_integrated_mass_of_sulphur_dioxide: vertically_integrated_mass_of_sulphur_dioxide
+      100m_u_component_of_wind: 100m_u_component_of_wind
+      100m_v_component_of_wind: 100m_v_component_of_wind
+      10m_u_component_of_neutral_wind: 10m_u_component_of_neutral_wind
+      10m_v_component_of_neutral_wind: 10m_v_component_of_neutral_wind
+      10m_wind_gust_in_the_last_6_hours: 10m_wind_gust_in_the_last_6_hours
+      10m_wind_gust_since_previous_post_processing: 10m_wind_gust_since_previous_post_processing
+      angle_of_sub_gridscale_orography: angle_of_sub_gridscale_orography
+      anisotropy_of_sub_gridscale_orography: anisotropy_of_sub_gridscale_orography
+      boundary_layer_dissipation: boundary_layer_dissipation
+      boundary_layer_height: boundary_layer_height
+      charnock: charnock
+      cloud_base_height: cloud_base_height
+      convective_available_potential_energy: convective_available_potential_energy
+      convective_inhibition: convective_inhibition
+      convective_precipitation: convective_precipitation
+      convective_rain_rate: convective_rain_rate
+      convective_snowfall_rate_water_equivalent: convective_snowfall_rate_water_equivalent
+      eastward_gravity_wave_surface_stress: eastward_gravity_wave_surface_stress
+      eastward_turbulent_surface_stress: eastward_turbulent_surface_stress
+      evaporation: evaporation
+      forecast_logarithm_of_surface_roughness_for_heat: forecast_logarithm_of_surface_roughness_for_heat
+      forecast_surface_roughness: forecast_surface_roughness
+      friction_velocity: friction_velocity
+      gravity_wave_dissipation: gravity_wave_dissipation
+      high_cloud_cover: high_cloud_cover
+      high_vegetation_cover: high_vegetation_cover
+      ice_temperature_layer_1: ice_temperature_layer_1
+      ice_temperature_layer_2: ice_temperature_layer_2
+      ice_temperature_layer_3: ice_temperature_layer_3
+      ice_temperature_layer_4: ice_temperature_layer_4
+      instantaneous_10m_wind_gust: instantaneous_10m_wind_gust
+      instantaneous_eastward_turbulent_surface_stress: instantaneous_eastward_turbulent_surface_stress
+      instantaneous_large_scale_surface_precipitation_fraction: instantaneous_large_scale_surface_precipitation_fraction
+      instantaneous_moisture_flux: instantaneous_moisture_flux
+      instantaneous_northward_turbulent_surface_stress: instantaneous_northward_turbulent_surface_stress
+      instantaneous_surface_sensible_heat_flux: instantaneous_surface_sensible_heat_flux
+      k_index: k_index
+      lake_bottom_temperature: lake_bottom_temperature
+      lake_cover: lake_cover
+      lake_depth: lake_depth
+      lake_ice_depth: lake_ice_depth
+      lake_ice_temperature: lake_ice_temperature
+      lake_mix_layer_depth: lake_mix_layer_depth
+      lake_mix_layer_temperature: lake_mix_layer_temperature
+      lake_shape_factor: lake_shape_factor
+      lake_total_layer_temperature: lake_total_layer_temperature
+      large_scale_precipitation: large_scale_precipitation
+      large_scale_precipitation_fraction: large_scale_precipitation_fraction
+      large_scale_rain_rate: large_scale_rain_rate
+      large_scale_snowfall_rate_water_equivalent: large_scale_snowfall_rate_water_equivalent
+      leaf_area_index_high_vegetation: leaf_area_index_high_vegetation
+      leaf_area_index_low_vegetation: leaf_area_index_low_vegetation
+      lifting_threshold_speed: lifting_threshold_speed
+      logarithm_of_surface_roughness_length_for_heat: logarithm_of_surface_roughness_length_for_heat
+      low_cloud_cover: low_cloud_cover
+      low_vegetation_cover: low_vegetation_cover
+      maximum_2m_temperature_in_the_last_6_hours: maximum_2m_temperature_in_the_last_6_hours
+      maximum_2m_temperature_since_previous_post_processing: maximum_2m_temperature_since_previous_post_processing
+      mean_altitude_of_maximum_injection: mean_altitude_of_maximum_injection
+      medium_cloud_cover: medium_cloud_cover
+      minimum_2m_temperature_in_the_last_6_hours: minimum_2m_temperature_in_the_last_6_hours
+      minimum_2m_temperature_since_previous_post_processing: minimum_2m_temperature_since_previous_post_processing
+      northward_gravity_wave_surface_stress: northward_gravity_wave_surface_stress
+      northward_turbulent_surface_stress: northward_turbulent_surface_stress
+      potential_evaporation: potential_evaporation
+      precipitation_type: precipitation_type
+      runoff: runoff
+      sea_ice_cover: sea_ice_cover
+      sea_surface_temperature: sea_surface_temperature
+      secondary_organic_precursor_mixing_ratio: secondary_organic_precursor_mixing_ratio
+      skin_reservoir_content: skin_reservoir_content
+      skin_temperature: skin_temperature
+      slope_of_sub_gridscale_orography: slope_of_sub_gridscale_orography
+      snow_density: snow_density
+      snow_depth: snow_depth
+      snow_evaporation: snow_evaporation
+      snowfall: snowfall
+      snowmelt: snowmelt
+      soil_clay_content: soil_clay_content
+      soil_temperature_level_1: soil_temperature_level_1
+      soil_temperature_level_2: soil_temperature_level_2
+      soil_temperature_level_3: soil_temperature_level_3
+      soil_temperature_level_4: soil_temperature_level_4
+      soil_type: soil_type
+      standard_deviation_of_filtered_subgrid_orography: standard_deviation_of_filtered_subgrid_orography
+      standard_deviation_of_orography: standard_deviation_of_orography
+      sub_surface_runoff: sub_surface_runoff
+      surface_latent_heat_flux: surface_latent_heat_flux
+      surface_pressure: surface_pressure
+      surface_roughness: surface_roughness
+      surface_runoff: surface_runoff
+      surface_sensible_heat_flux: surface_sensible_heat_flux
+      temperature_of_snow_layer: temperature_of_snow_layer
+      total_cloud_cover: total_cloud_cover
+      total_precipitation: total_precipitation
+      total_totals_index: total_totals_index
+      type_of_high_vegetation: type_of_high_vegetation
+      type_of_low_vegetation: type_of_low_vegetation
+      visibility: visibility
+      volumetric_soil_water_layer_1: volumetric_soil_water_layer_1
+      volumetric_soil_water_layer_2: volumetric_soil_water_layer_2
+      volumetric_soil_water_layer_3: volumetric_soil_water_layer_3
+      volumetric_soil_water_layer_4: volumetric_soil_water_layer_4
+      zero_degree_level: zero_degree_level
+      aerosol_backscatter_coefficient_1064nm_from_ground: aerosol_backscatter_coefficient_1064nm_from_ground
+      aerosol_backscatter_coefficient_1064nm_from_top_of_atmosphere: aerosol_backscatter_coefficient_1064nm_from_top_of_atmosphere
+      aerosol_backscatter_coefficient_355nm_from_ground: aerosol_backscatter_coefficient_355nm_from_ground
+      aerosol_backscatter_coefficient_355nm_from_top_of_atmosphere: aerosol_backscatter_coefficient_355nm_from_top_of_atmosphere
+      aerosol_backscatter_coefficient_532nm_from_ground: aerosol_backscatter_coefficient_532nm_from_ground
+      aerosol_backscatter_coefficient_532nm_from_top_of_atmosphere: aerosol_backscatter_coefficient_532nm_from_top_of_atmosphere
+      aerosol_extinction_coefficient_1064nm: aerosol_extinction_coefficient_1064nm
+      aerosol_extinction_coefficient_355nm: aerosol_extinction_coefficient_355nm
+      aerosol_extinction_coefficient_532nm: aerosol_extinction_coefficient_532nm
+      so2_precursor_mixing_ratio: so2_precursor_mixing_ratio
+      acetone: acetone
+      acetone_product: acetone_product
+      aldehydes: aldehydes
+      amine: amine
+      ammonia: ammonia
+      ammonium: ammonium
+      dimethyl_sulfide: dimethyl_sulfide
+      dinitrogen_pentoxide: dinitrogen_pentoxide
+      ethanol: ethanol
+      ethene: ethene
+      formic_acid: formic_acid
+      hydrogen_peroxide: hydrogen_peroxide
+      hydroperoxy_radical: hydroperoxy_radical
+      lead: lead
+      methacrolein_mvk: methacrolein_mvk
+      methacrylic_acid: methacrylic_acid
+      methane_chemistry: methane_chemistry
+      methane_sulfonic_acid: methane_sulfonic_acid
+      methanol: methanol
+      methyl_glyoxal: methyl_glyoxal
+      methyl_peroxide: methyl_peroxide
+      methylperoxy_radical: methylperoxy_radical
+      nitrate: nitrate
+      nitrate_radical: nitrate_radical
+      olefins: olefins
+      organic_ethers: organic_ethers
+      organic_nitrates: organic_nitrates
+      paraffins: paraffins
+      pernitric_acid: pernitric_acid
+      peroxides: peroxides
+      peroxy_acetyl_radical: peroxy_acetyl_radical
+      propene: propene
+      radon: radon
+      stratospheric_ozone: stratospheric_ozone
+      sulfate_chemistry: sulfate_chemistry
+      terpenes: terpenes
+      divergence: divergence
+      fraction_of_cloud_cover: fraction_of_cloud_cover
+      geopotential: geopotential
+      polar_stratospheric_cloud: polar_stratospheric_cloud
+      potential_vorticity: potential_vorticity
+      relative_humidity: relative_humidity
+      specific_cloud_ice_water_content: specific_cloud_ice_water_content
+      specific_cloud_liquid_water_content: specific_cloud_liquid_water_content
+      specific_rain_water_content: specific_rain_water_content
+      specific_snow_water_content: specific_snow_water_content
+      vertical_velocity: vertical_velocity
+      vorticity_relative: vorticity_relative
+  custom:format:
+    name: format
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      grib: grib
+      netcdf: netcdf
+    missing: netcdf
+  startIndex:
+    name: page
+    typ: integer
+    target: query_params
+    tranfunc:
+      - name: offset
+        property:
+         offset: 0
+  maxRecords:
+    name: size
+    typ: integer
+    target: query_params
+    tranfunc:
+     - name: identity
+       property:
+  custom:pressureLevel:
+    name: pressure_level
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      "1": "1"
+      "2": "2"
+      "3": "3"
+      "5": "5"
+      "7": "7"
+      "10": "10"
+      "20": "20"
+      "30": "30"
+      "50": "50"
+      "70": "70"
+      "100": "100"
+      "150": "150"
+      "200": "200"
+      "250": "250"
+      "300": "300"
+      "400": "400"
+      "500": "500"
+      "600": "600"
+      "700": "700"
+      "800": "800"
+      "900": "900"
+      "925": "925"
+      "950": "950"
+      "1000": "1000"
+  custom:modelLevel:
+    name: model_level
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      "1": "1"
+      "2": "2"
+      "3": "3"
+      "4": "4"
+      "5": "5"
+      "6": "6"
+      "7": "7"
+      "8": "8"
+      "9": "9"
+      "10": "10"
+      "11": "11"
+      "12": "12"
+      "13": "13"
+      "14": "14"
+      "15": "15"
+      "16": "16"
+      "17": "17"
+      "18": "18"
+      "19": "19"
+      "20": "20"
+      "21": "21"
+      "22": "22"
+      "23": "23"
+      "24": "24"
+      "25": "25"
+      "26": "26"
+      "27": "27"
+      "28": "28"
+      "29": "29"
+      "30": "30"
+      "31": "31"
+      "32": "32"
+      "33": "33"
+      "34": "34"
+      "35": "35"
+      "36": "36"
+      "37": "37"
+      "38": "38"
+      "39": "39"
+      "40": "40"
+      "41": "41"
+      "42": "42"
+      "43": "43"
+      "44": "44"
+      "45": "45"
+      "46": "46"
+      "47": "47"
+      "48": "48"
+      "49": "49"
+      "50": "50"
+      "51": "51"
+      "52": "52"
+      "53": "53"
+      "54": "54"
+      "55": "55"
+      "56": "56"
+      "57": "57"
+      "58": "58"
+      "59": "59"
+      "60": "60"
+  custom:hour:
+    name: time
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      "00:00": "00:00"
+      "03:00": "03:00"
+      "06:00": "06:00"
+      "09:00": "09:00"
+      "12:00": "12:00"
+      "15:00": "15:00"
+      "18:00": "18:00"
+      "21:00": "21:00"
+      "all":
+      - "00:00"
+      - "03:00"
+      - "06:00"
+      - "09:00"
+      - "12:00"
+      - "15:00"
+      - "18:00"
+      - "21:00"
+    missing: "all"
+parser:
+  typ: cdsapi
+  preprocessor: prodInfo2content
+  parameters:
+    totalResults:
+      tag: totalResults
+      location: head
+    downloadUri:
+      tag: link
+      tag_spec: text_to_enclousure

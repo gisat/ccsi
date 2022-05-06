@@ -5,6 +5,7 @@ from io import StringIO, BytesIO
 from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
 from ccsi.base import Container, ExcludeSchema
+from abc import ABC, abstractmethod
 
 
 class Tag:
@@ -73,7 +74,14 @@ class FeedSchema(ExcludeSchema):
 
 
 # SAX parser
-class XMLSaxHandler(ContentHandler):
+class Parser(ABC):
+
+    @abstractmethod
+    def parse(self, content) -> Feed:
+        pass
+
+
+class XMLSaxHandler(ContentHandler, Parser):
     
     def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
         super(XMLSaxHandler, self).__init__()
@@ -135,12 +143,12 @@ class XMLSaxHandler(ContentHandler):
          if self.current_tag.source == 'text':
              self.current_tag.text += content
 
-    def parse(self, source):
+    def parse(self, content):
         self.feed = self._feed()
         parser = make_parser()
         parser.setContentHandler(self)
         parser.setFeature(feature_namespaces, 1)
-        stream = self.stream(source)
+        stream = self.stream(content)
         parser.parse(stream)
         return self.feed
 
@@ -151,15 +159,15 @@ class XMLSaxHandler(ContentHandler):
             return StringIO(source)
 
 
-class XMLSaxHandlerCreo(XMLSaxHandler):
+class XMLSaxHandlerCreo(XMLSaxHandler, Parser):
 
-    def parse(self, source):
+    def parse(self, content):
         self.feed = self._feed()
         parser = make_parser()
         parser.setContentHandler(self)
         parser.setFeature(feature_namespaces, 1)
-        source = self.remove_resto(source)
-        stream = self.stream(source)
+        content = self.remove_resto(content)
+        stream = self.stream(content)
         parser.parse(stream)
         return self.feed
 
@@ -172,7 +180,7 @@ class XMLSaxHandlerCreo(XMLSaxHandler):
         return etree.tostring(tree)
 
 
-class WekeoParser:
+class WekeoParser(Parser):
 
     def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
         self.parameters = parameters
@@ -182,10 +190,10 @@ class WekeoParser:
         self.feed = None
         self.entry = None
 
-    def parse(self, response):
+    def parse(self, content):
         self.feed = self._feed()
-        self._parse_head(response)
-        self._parse_entries(response['content'])
+        self._parse_head(content)
+        self._parse_entries(content['content'])
         return self.feed
 
     def _parse_head(self, response):
@@ -213,9 +221,36 @@ def prodInfo2content(content):
     return content
 
 
+class CDSAPIParser(Parser):
+
+    def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
+        self.parameters = parameters
+        self._preprocessor = preprocessor
+        self._feed = feed
+        self._entry = entry
+        self.feed = None
+        self.entry = None
+
+    def parse(self, content):
+        self.feed = self._feed()
+
+        for parameter_name in self.parameters:
+            tag = Tag(parameter_name, **self.parameters[parameter_name])
+            if tag.location == 'head':
+                tag.text = 1
+                self.feed.add_to_head(tag)
+            else:
+                entry = self._entry()
+                tag.text = content
+                entry.add_tag(tag)
+                self.feed.add_entry(entry)
+        return self.feed
+
+
 PARSER_TYPES = {'xmlsax': XMLSaxHandler,
                 'xmlsax_creo': XMLSaxHandlerCreo,
-                'wekeo': WekeoParser}
+                'wekeo': WekeoParser,
+                'cdsapi': CDSAPIParser}
 
 PREPRCESSORS = {'prodInfo2content': prodInfo2content}
 

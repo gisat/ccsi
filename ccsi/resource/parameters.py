@@ -10,6 +10,8 @@ from dateutil.parser import isoparse
 from dateutil.rrule import rrule, HOURLY
 from datetime import datetime
 from dateutil.tz import UTC
+from pydantic import BaseModel, Field, validator, Extra
+from typing import Union, Optional
 
 
 # transformation
@@ -89,7 +91,30 @@ def round_list(self, value, precision):
     return [round(v, precision) for v in value]
 
 
-class TimeParser:
+class TimeParser(ABC):
+
+    def execute(self) -> Union[list, dict]:
+        pass
+
+
+class CamsTimeParser(BaseModel, TimeParser):
+    timeStart: datetime
+    timeEnd: Optional[datetime] = Field(default=datetime.now())
+
+    def execute(self) -> Union[list, dict]:
+        return {'date': f'{self.timeStart.strftime("%Y-%m-%d")}/{self.timeEnd.strftime("%Y-%m-%d")}'}
+
+    @validator('timeStart', pre=True)
+    def validate_start(cls, value: str) -> datetime:
+        return isoparse(value)
+
+    @validator('timeEnd', pre=True)
+    def validate_end(cls, value: str) -> datetime:
+        return isoparse(value)
+
+
+
+class WekeoCamsTimeParser(TimeParser):
 
     def __init__(self, query):
         if 'timeStart' in query:

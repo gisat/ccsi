@@ -11,7 +11,7 @@ from lxml.etree import register_namespace
 from ccsi.config import Config
 from ccsi.storage import storage
 from ccsi.base import load_yaml, ContainerFactory, Container
-from ccsi.resource.connection import ConnectionSchema
+from ccsi.tests.connection import ConnectionSchema
 from ccsi.resource.output import ResourceDescriptionSchema
 from ccsi.config import Config
 from ccsi.cache.cache import CacheSchema

@@ -159,7 +159,6 @@ class ResponseXMLTagSchema(ExcludeSchema):
     tag_spec = fields.String(required=False, allow_none=True)
     tag = fields.String(required=True)
 
-
     def __init__(self, response_specification, namespace):
         super(ResponseXMLTagSchema, self).__init__()
         self.response_specification = response_specification

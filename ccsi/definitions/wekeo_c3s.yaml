@@ -1,6 +1,6 @@
 resource_name: wekeo_c3s
 resource_description:
-  name: Wekeo Sentinel 3 endpoint
+  name: Wekeo C3S endpoint
 connection:
   url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
   typ: wekeo_connection

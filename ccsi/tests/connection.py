@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 from time import sleep
 import json
 from functools import partial
+from cdsapi import Client
 
 
 class Connection(ABC):
@@ -110,9 +111,27 @@ class WekeoConnection(Connection):
             raise ValueError(f"Error: Cannot receive Wekeo auth token. Unexpected response {response}.")
 
 
+class CDSAPIConnection(Connection):
+    """Class represents each registered service. Its base url, parameters, auth etc."""
+
+    def __init__(self, url, typ):
+        self.url = url
+        self.typ = typ
+        self.dataset = 'cams-global-reanalysis-eac4'
+
+    def send_query(self, query: dict):
+        """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
+        c = Client(url=self.url, key=Config.CDS_KEY, verify=0)
+        try:
+            return 200, c.retrieve(self.dataset, query, f'download.{query.get("format")}').location
+        except Exception as e:
+            raise ConnectionError(f'Problem with connections to {self.url} Message: {e}')
+
+
 class ConnectionSchema(ExcludeSchema):
     CONNECTION_TYPES = {'simple_request': BasicConnection,
-                        'wekeo_connection': WekeoConnection}
+                        'wekeo_connection': WekeoConnection,
+                        'cdsapi': CDSAPIConnection}
 
     url = fields.Url(required=True, allow_none=True)
     typ = fields.String(required=True, validate=OneOf(CONNECTION_TYPES), allow_none=True)
