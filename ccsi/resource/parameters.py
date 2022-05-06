@@ -123,7 +123,7 @@ class OndaTimeParser(BaseModel, TimeParser):
     timeEnd: Optional[datetime] = Field(default=datetime.now())
 
     def execute(self) -> Union[list, dict]:
-        return {'creationDate': f'[{self.timeStart.strftime("%Y-%m-%dT%H:%M:%SZ")} TO {self.timeEnd.strftime("%Y-%m-%dT%H:%M:%SZ")}]'}
+        return {'beginPosition': f'[{self.timeStart.strftime("%Y-%m-%dT%H:%M:%SZ")} TO {self.timeEnd.strftime("%Y-%m-%dT%H:%M:%SZ")}]'}
 
     @validator('timeStart', pre=True)
     def validate_start(cls, value: str) -> datetime:
