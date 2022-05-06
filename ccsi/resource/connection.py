@@ -128,10 +128,34 @@ class CDSAPIConnection(Connection):
             raise ConnectionError(f'Problem with connections to {self.url} Message: {e}')
 
 
+class OndaConnection(Connection):
+    """Class represents each registered service. Its base url, parameters, auth etc."""
+
+    def __init__(self, url, typ):
+        self.url = url
+        self.typ = typ
+
+    def send_query(self, query: dict):
+        """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
+        search = ' AND '.join([f'{k}:{v}' for k, v in query['$search'].items()])
+        query['$search'] = f'"{search}"'
+        link = '&'.join([f'{k}={v}' for k, v in query.items()])
+
+        response = get(f'{self.url}{link}')
+        if response.status_code == 200:
+            return response.status_code, response.json()
+        else:
+            raise ConnectionError(f'Problem with connections tu {self.url} \n Status code: {response.status_code} \n'
+                                  f'Message: {response.content}')
+
+
+
+
 class ConnectionSchema(ExcludeSchema):
     CONNECTION_TYPES = {'simple_request': BasicConnection,
                         'wekeo_connection': WekeoConnection,
-                        'cdsapi': CDSAPIConnection}
+                        'cdsapi': CDSAPIConnection,
+                        'onda': OndaConnection}
 
     url = fields.Url(required=True, allow_none=True)
     typ = fields.String(required=True, validate=OneOf(CONNECTION_TYPES), allow_none=True)

@@ -20,7 +20,7 @@ parameters:
       - clms
       - landsat-8
       - c3s
-      - cams
+      - eac4
   resource:
     typ: string
     name: resource
@@ -34,6 +34,8 @@ parameters:
       - scihub
       - creodias
       - wekeo
+      - cams
+      - onda
   searchTerms:
     name: searchTerms
     typ: string
@@ -1311,6 +1313,9 @@ response:
       content: text
       namespace: atom
     dataset:
+      content: text
+      namespace: ccsi
+    downloadable:
       content: text
       namespace: ccsi
 

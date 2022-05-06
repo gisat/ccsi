@@ -6,6 +6,7 @@ from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
 from ccsi.base import Container, ExcludeSchema
 from abc import ABC, abstractmethod
+import ast
 
 
 class Tag:
@@ -247,10 +248,34 @@ class CDSAPIParser(Parser):
         return self.feed
 
 
+class OndaParser(Parser):
+
+    def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
+        self.parameters = parameters
+        self._preprocessor = preprocessor
+        self._feed = feed
+        self._entry = entry
+        self.feed = None
+        self.entry = None
+
+    def parse(self, content):
+        self.feed = self._feed()
+
+        for record in content.get('value'):
+            entry = self._entry()
+            for parameter_name in self.parameters:
+                tag = Tag(parameter_name, **self.parameters[parameter_name])
+                tag.text = record.get(parameter_name)
+                entry.add_tag(tag)
+            self.feed.add_entry(entry)
+        return self.feed
+
+
 PARSER_TYPES = {'xmlsax': XMLSaxHandler,
                 'xmlsax_creo': XMLSaxHandlerCreo,
                 'wekeo': WekeoParser,
-                'cdsapi': CDSAPIParser}
+                'cdsapi': CDSAPIParser,
+                'onda': OndaParser}
 
 PREPRCESSORS = {'prodInfo2content': prodInfo2content}
 

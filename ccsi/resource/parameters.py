@@ -91,6 +91,11 @@ def round_list(self, value, precision):
     return [round(v, precision) for v in value]
 
 
+def onda_bbox2footprint(self, value):
+    geom = box(*[float(n) for n in value.split(',')])
+    return f'"intersects({geom.wkt})"'
+
+
 class TimeParser(ABC):
 
     def execute(self) -> Union[list, dict]:
@@ -112,6 +117,21 @@ class CamsTimeParser(BaseModel, TimeParser):
     def validate_end(cls, value: str) -> datetime:
         return isoparse(value)
 
+
+class OndaTimeParser(BaseModel, TimeParser):
+    timeStart: datetime
+    timeEnd: Optional[datetime] = Field(default=datetime.now())
+
+    def execute(self) -> Union[list, dict]:
+        return {'creationDate': f'[{self.timeStart.strftime("%Y-%m-%dT%H:%M:%SZ")} TO {self.timeEnd.strftime("%Y-%m-%dT%H:%M:%SZ")}]'}
+
+    @validator('timeStart', pre=True)
+    def validate_start(cls, value: str) -> datetime:
+        return isoparse(value)
+
+    @validator('timeEnd', pre=True)
+    def validate_end(cls, value: str) -> datetime:
+        return isoparse(value)
 
 
 class WekeoCamsTimeParser(TimeParser):
@@ -160,7 +180,8 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'wekeo_time_c3s_parameter_form': wekeo_time_c3s_parameter_form,
                        'wekeo_time_cams_parameter_form': wekeo_time_cams_parameter_form,
                        'wekeo_bbox': wekeo_bbox,
-                       'round_list': round_list}
+                       'round_list': round_list,
+                       'onda_bbox2footprint': onda_bbox2footprint}
 
 
 # parameters & translator

@@ -1,5 +1,5 @@
 from ccsi.base import Container, ExcludeSchema
-from ccsi.resource.parameters import ResourcesParametersContainer, WekeoCamsTimeParser, CamsTimeParser
+from ccsi.resource.parameters import ResourcesParametersContainer, WekeoCamsTimeParser, CamsTimeParser, OndaTimeParser
 from ccsi.config import Config
 
 from abc import ABC, abstractmethod
@@ -251,11 +251,58 @@ class CamsEAC4Translator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
+class OndaTranslator(Translator):
+    def __init__(self, resources_parameters: ResourcesParametersContainer):
+        self.resources_parameters = resources_parameters
+        self.processed_query = {}
+        self.time_set = None
+
+    def translate(self, query: dict, **kwargs):
+        """translate from one set of api parameters to another
+        """
+        self.processed_query = {}
+        self.time_set = OndaTimeParser.parse_obj(query)
+
+        for key, value in query.items():
+            parameter = self.resources_parameters.get_parameter(key)
+
+            if not parameter.definitions['target']:
+                self.processed_query.update(parameter.transform(value))
+            else:
+                getattr(self, parameter.definitions['target'])(parameter.name, parameter.transform(value)[parameter.name])
+
+        return self.processed_query
+
+    def get_mapped_pairs(self, resource_name):
+        return self.resources_parameters.get_item(resource_name).get_mapped_pairs()
+
+    def validate(self, query: dict):
+        """validate from one set of api parameters to another"""
+        for key, value in query.items():
+            self.resources_parameters.get_parameter(key).validate(value)
+
+    def time(self, *args, **ignore):
+        if not self.processed_query.get('$search'):
+            self.processed_query.update({'$search': {}})
+        if self.time_set:
+            self.processed_query.get('$search').update(self.time_set.execute())
+
+    def query_param(self, name, value, **ignore):
+        self.processed_query.update({f'${name}': value})
+
+    def search(self, name, value, **ignore):
+        if not self.processed_query.get('$search'):
+            self.processed_query.update({'$search': {}})
+        self.processed_query.get('$search').update({name: value})
+
+
+
 class TranslatorSchema(ExcludeSchema):
     TYPES = {'basic': BasicTranslator,
              'wekeo': WekeoTranslator,
              'wekeoC3S': WekeoC3STranslator,
-             'cams_eac4': CamsEAC4Translator}
+             'cams_eac4': CamsEAC4Translator,
+             'onda': OndaTranslator}
     typ = fields.Str(required=True, validate=OneOf(TYPES))
 
     @post_load(pass_original=True)
