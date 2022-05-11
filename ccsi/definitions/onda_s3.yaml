@@ -97,7 +97,6 @@ parameters:
     mapping:
       online: "false"
       offline: "true"
-    missing: online
 parser:
   typ: onda
   parameters:
