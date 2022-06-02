@@ -47,6 +47,17 @@ class Entry:
     def add_tag(self, tag: Tag):
         self.entry.append(tag)
 
+    def find_tag(self, tag_type: str, tag_name: str):
+        for tag in self.entry:
+            if tag.__getattribute__(tag_type) == tag_name:
+                return tag
+        return None
+
+    def delete_tag_by_id(self, _id):
+        self.entry = [tag for tag in self.entry if not id(tag) == _id]
+
+
+
 
 class EntrySchema(ExcludeSchema):
     entry = fields.Nested(TagSchema, many=True)
@@ -267,6 +278,11 @@ class OndaParser(Parser):
                 tag = Tag(parameter_name, **self.parameters[parameter_name])
                 tag.text = record.get(parameter_name)
                 entry.add_tag(tag)
+
+            if entry.find_tag(tag_type='source_tag', tag_name='downloadable') and \
+                    entry.find_tag(tag_type='source_tag', tag_name='downloadable').text == False:
+                entry.delete_tag_by_id(id(entry.find_tag(tag_type='source_tag', tag_name='id') ))
+
             self.feed.add_entry(entry)
             self.feed.totalResults += 1
         return self.feed
