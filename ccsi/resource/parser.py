@@ -279,9 +279,8 @@ class OndaParser(Parser):
                 tag.text = record.get(parameter_name)
                 entry.add_tag(tag)
 
-            if entry.find_tag(tag_type='source_tag', tag_name='downloadable') and \
-                    entry.find_tag(tag_type='source_tag', tag_name='downloadable').text == False:
-                entry.delete_tag_by_id(id(entry.find_tag(tag_type='source_tag', tag_name='id') ))
+            if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
+                entry.find_tag(tag_type='source_tag', tag_name='id').tag_spec = 'onda_id_to_esn'
 
             self.feed.add_entry(entry)
             self.feed.totalResults += 1

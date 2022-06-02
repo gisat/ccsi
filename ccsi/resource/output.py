@@ -151,12 +151,17 @@ def onda_id_to_enclousure(text, **ignore):
     enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/$value'
     return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
 
+def onda_id_to_esn(text, **ignore):
+    enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/Ens.Order'
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
+
 
 TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'text_to_path': text_to_path,
                 'find_in_dict': find_in_dict,
                 'creodias_media_to_path': creodias_media_to_path,
-                'onda_id_to_enclosuer': onda_id_to_enclousure}
+                'onda_id_to_enclosuer': onda_id_to_enclousure,
+                'onda_id_to_esn': onda_id_to_esn}
 
 # schema
 class ResponseXMLTagSchema(ExcludeSchema):

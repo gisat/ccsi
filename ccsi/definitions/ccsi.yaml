@@ -1320,5 +1320,8 @@ response:
     downloadable:
       content: text
       namespace: ccsi
+    offline:
+      content: text
+      namespace: ccsi
 
 

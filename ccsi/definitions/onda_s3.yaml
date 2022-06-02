@@ -114,6 +114,8 @@ parser:
       tag_spec: text_to_path
     footprint:
       tag: polygon
+    offline:
+      tag: offline
 
 
 
