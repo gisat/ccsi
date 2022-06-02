@@ -21,6 +21,7 @@ parameters:
       - landsat-8
       - c3s
       - eac4
+      - era5
   resource:
     typ: string
     name: resource
@@ -36,6 +37,7 @@ parameters:
       - wekeo
       - cams
       - onda
+      - cds
   searchTerms:
     name: searchTerms
     typ: string

@@ -268,6 +268,7 @@ class OndaParser(Parser):
                 tag.text = record.get(parameter_name)
                 entry.add_tag(tag)
             self.feed.add_entry(entry)
+            self.feed.totalResults += 1
         return self.feed
 
 

@@ -13,7 +13,10 @@ class Config:
                             'wekeo_s1.yaml', 'wekeo_s2.yaml', 'wekeo_s3.yaml', 'wekeo_c3s.yaml', 'wekeo_cams.yaml', 'cams_eac4.yaml',
                             'onda_s3.yaml']
 
-    CDS_KEY = '8585:21c4d84c-f6ec-4de0-a0ec-ab0c096b2b93'
+
+    ADS_KEY = '8585:21c4d84c-f6ec-4de0-a0ec-ab0c096b2b93'
+
+    CDS_KEY = '47967:580c1363-60a1-456d-8fd8-05d902c854d3'
 
     connections_repeat = 3
 

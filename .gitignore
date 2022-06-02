@@ -2,3 +2,4 @@
 /ccsi/test.py
 /ccsi/tests/
 /ccsi/test_s3.py
+/ccsi/test_era5.py

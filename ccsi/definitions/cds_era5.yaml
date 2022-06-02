@@ -1,11 +1,11 @@
-resource_name: cams_eac4
+resource_name: cds_era5
 resource_description:
-  name: CAMS EAC4 API endpoint
+  name: CDS EAC5 API endpoint
 connection:
-  url: https://ads.atmosphere.copernicus.eu/api/v2
-  typ: adsapi
+  url: https://cds.climate.copernicus.eu/api/v2
+  typ: cdsapi
 translator:
-  typ: cams_eac4
+  typ: cds
 parameters:
   collection:
     typ: option
@@ -15,8 +15,8 @@ parameters:
      - name: get_mapped_pair
        property:
     mapping:
-      eac4: cams-global-reanalysis-eac4
-    missing: eac4
+      era5: reanalysis-era5-single-levels
+    missing: era5
   resource:
     typ: option
     target: null
@@ -25,7 +25,7 @@ parameters:
      - name: identity
        property:
     mapping:
-      cams: cams
+      cds: cds
   bbox:
     name: area
     typ: bbox
@@ -36,8 +36,21 @@ parameters:
       - name: round_list
         property:
           precision: 2
-      - name: identity
+      - name: cds_bbox_coordinates
         property:
+  productType:
+    name: product_type
+    typ: option
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      reanalysis: reanalysis
+      ensemble_members: ensemble_members
+      ensemble_spread: ensemble_spread
+      ensemble_mean: ensemble_mean
+    missing: reanalysis
   timeStart:
     name: start
     typ: datetime
@@ -47,7 +60,7 @@ parameters:
         property:
       - name: identity
         property:
-    missing: "2003-01-01T00:00"
+    missing: "1979-01-01T00:00"
   timeEnd:
     name: end
     typ: datetime

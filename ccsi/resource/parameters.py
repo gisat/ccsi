@@ -86,6 +86,10 @@ def wekeo_time_c3s_parameter_form(self, value):
 def wekeo_bbox(self, value: str):
     return [float(item) for item in value.split(',')]
 
+def cds_bbox_coordinates(self, value: list) -> list:
+    return [value[1], value[0], value[3], value[2]]
+
+
 
 def round_list(self, value, precision):
     return [round(v, precision) for v in value]
@@ -134,6 +138,32 @@ class OndaTimeParser(BaseModel, TimeParser):
         return isoparse(value)
 
 
+class CDSTimeParser(TimeParser):
+
+    def __init__(self, query):
+        if 'timeStart' in query:
+            self.timeStart = isoparse(query['timeStart'])
+        if 'timeEnd' in query:
+            self.timeEnd = isoparse(query['timeEnd'])
+        else:
+            self.timeEnd = isoparse(datetime.now().isoformat())
+        self.year = set()
+        self.month = set()
+        self.day = set()
+        self.hour = set()
+
+    def parser_datetime_range(self):
+        for date in [dt for dt in rrule(HOURLY, dtstart=self.timeStart, until=self.timeEnd)]:
+            self.year.add(date.strftime("%Y"))
+            self.month.add(date.strftime("%m"))
+            self.day.add(date.strftime("%d"))
+            self.hour.add(date.strftime("%H:%M"))
+
+    def execute(self) -> dict:
+        self.parser_datetime_range()
+        return {name: list(getattr(self, name)) for name in ['year', 'month', 'day', 'hour']}
+
+
 class WekeoCamsTimeParser(TimeParser):
 
     def __init__(self, query):
@@ -159,7 +189,7 @@ class WekeoCamsTimeParser(TimeParser):
         self.parser_datetime_range()
         return [self.time_template(name, getattr(self, name)) for name in ['year', 'month', 'day', 'hour']]
 
-    def time_template(self, name:str, value: set):
+    def time_template(self, name: str, value: set):
         return {"name": name, "value": list(value)}
 
 
@@ -181,7 +211,8 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'wekeo_time_cams_parameter_form': wekeo_time_cams_parameter_form,
                        'wekeo_bbox': wekeo_bbox,
                        'round_list': round_list,
-                       'onda_bbox2footprint': onda_bbox2footprint}
+                       'onda_bbox2footprint': onda_bbox2footprint,
+                       'cds_bbox_coordinates': cds_bbox_coordinates}
 
 
 # parameters & translator
@@ -484,7 +515,7 @@ class QuerySchemaBuilder:
             field_properties.update({'missing': missing})
         if typ == 'datetime':
             field_properties.update({'validate': validate_datetime})
-            
+
         return QuerySchemaBuilder.FIELDS_TYPES[typ](**field_properties)
 
 

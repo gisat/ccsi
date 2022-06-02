@@ -111,13 +111,30 @@ class WekeoConnection(Connection):
             raise ValueError(f"Error: Cannot receive Wekeo auth token. Unexpected response {response}.")
 
 
-class CDSAPIConnection(Connection):
+class ADSAPIConnection(Connection):
     """Class represents each registered service. Its base url, parameters, auth etc."""
 
     def __init__(self, url, typ):
         self.url = url
         self.typ = typ
         self.dataset = 'cams-global-reanalysis-eac4'
+
+    def send_query(self, query: dict):
+        """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
+        c = Client(url=self.url, key=Config.ADS_KEY, verify=0)
+        try:
+            return 200, c.retrieve(self.dataset, query, f'download.{query.get("format")}').location
+        except Exception as e:
+            raise ConnectionError(f'Problem with connections to {self.url} Message: {e}')
+
+
+class CDSAPIConnection(Connection):
+    """Class represents each registered service. Its base url, parameters, auth etc."""
+
+    def __init__(self, url, typ):
+        self.url = url
+        self.typ = typ
+        self.dataset = 'reanalysis-era5-single-levels'
 
     def send_query(self, query: dict):
         """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
@@ -149,12 +166,11 @@ class OndaConnection(Connection):
                                   f'Message: {response.content}')
 
 
-
-
 class ConnectionSchema(ExcludeSchema):
     CONNECTION_TYPES = {'simple_request': BasicConnection,
                         'wekeo_connection': WekeoConnection,
                         'cdsapi': CDSAPIConnection,
+                        'adsapi': ADSAPIConnection,
                         'onda': OndaConnection}
 
     url = fields.Url(required=True, allow_none=True)

@@ -1,5 +1,6 @@
 from ccsi.base import Container, ExcludeSchema
-from ccsi.resource.parameters import ResourcesParametersContainer, WekeoCamsTimeParser, CamsTimeParser, OndaTimeParser
+from ccsi.resource.parameters import ResourcesParametersContainer, WekeoCamsTimeParser, CamsTimeParser, OndaTimeParser,\
+    CDSTimeParser
 from ccsi.config import Config
 
 from abc import ABC, abstractmethod
@@ -251,6 +252,51 @@ class CamsEAC4Translator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
+class CDSTranslator(Translator):
+    def __init__(self, resources_parameters: ResourcesParametersContainer):
+        self.resources_parameters = resources_parameters
+        self.processed_query = {}
+        self.time_set = None
+
+    def translate(self, query: dict, **kwargs):
+        """translate from one set of api parameters to another
+        """
+        self.processed_query = {}
+        self.time_set = CDSTimeParser(query)
+
+        for key, value in query.items():
+            parameter = self.resources_parameters.get_parameter(key)
+            if parameter.definitions['target'] == 'query_params':
+                pass
+            elif not parameter.definitions.get('target'):
+                parameter = self.resources_parameters.get_parameter(key)
+                self.processed_query.update(parameter.transform(value))
+            else:
+                getattr(self, parameter.definitions['target'])(parameter.transform(value)[parameter.name])
+
+        return self.processed_query
+
+    def get_mapped_pairs(self, resource_name):
+        return self.resources_parameters.get_item(resource_name).get_mapped_pairs()
+
+    def validate(self, query: dict):
+        """validate from one set of api parameters to another"""
+        for key, value in query.items():
+            self.resources_parameters.get_parameter(key).validate(value)
+
+    def wekeo_dataset_id(self, parameter, **ignore):
+        self.processed_query['datasetId'] = parameter
+
+    def time(self, *args, **ignore):
+        if self.time_set:
+            self.processed_query.update(self.time_set.execute())
+
+    def query_params(self, parameter, **ignore):
+        if 'query_params' not in self.processed_query:
+            self.processed_query['query_params'] = {}
+        self.processed_query['query_params'].update(parameter)
+
+
 class OndaTranslator(Translator):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
@@ -302,7 +348,8 @@ class TranslatorSchema(ExcludeSchema):
              'wekeo': WekeoTranslator,
              'wekeoC3S': WekeoC3STranslator,
              'cams_eac4': CamsEAC4Translator,
-             'onda': OndaTranslator}
+             'onda': OndaTranslator,
+             'cds': CDSTranslator}
     typ = fields.Str(required=True, validate=OneOf(TYPES))
 
     @post_load(pass_original=True)
