@@ -283,7 +283,7 @@ class OndaParser(Parser):
                 entry.find_tag(tag_type='source_tag', tag_name='id').tag_spec = 'onda_id_to_esn'
 
             self.feed.add_entry(entry)
-            self.feed.totalResults += 1
+            self.feed.totalResults = content.get('totalResults')
         return self.feed
 
 

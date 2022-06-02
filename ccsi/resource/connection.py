@@ -157,10 +157,14 @@ class OndaConnection(Connection):
         search = ' AND '.join([f'{k}:{v}' for k, v in query['$search'].items()])
         query['$search'] = f'"{search}"'
         link = '&'.join([f'{k}={v}' for k, v in query.items()])
+        count = '&'.join([f'{k}={v}' for k, v in query.items() if k not in ['$top', '$skip']])
 
-        response = get(f'{self.url}{link}')
+        response = get(f'{self.url}?{link}')
+        counts = get(f'{self.url}/$count?{count}')
+        content = response.json()
+        content.update(totalResults=counts.json())
         if response.status_code == 200:
-            return response.status_code, response.json()
+            return response.status_code, content
         else:
             raise ConnectionError(f'Problem with connections tu {self.url} \n Status code: {response.status_code} \n'
                                   f'Message: {response.content}')

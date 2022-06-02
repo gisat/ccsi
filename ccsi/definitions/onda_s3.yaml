@@ -2,7 +2,7 @@ resource_name: onda_s3
 resource_description:
   name: Onda Sentinel 3 endpoint
 connection:
-  url: https://catalogue.onda-dias.eu/dias-catalogue/Products?
+  url: https://catalogue.onda-dias.eu/dias-catalogue/Products
   typ: onda
 translator:
   typ: onda
