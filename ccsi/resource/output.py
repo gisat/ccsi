@@ -4,7 +4,10 @@ from marshmallow import fields, post_load
 from ccsi.base import ExcludeSchema, Container
 from ccsi.config import Config
 from datetime import datetime
-from collections import OrderedDict
+from flask import url_for, request
+
+
+
 
 
 class Description:
@@ -155,13 +158,18 @@ def onda_id_to_esn(text, **ignore):
     enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/Ens.Order'
     return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
 
+def onda_id_to_esn_proxy(text, **ignore):
+
+    enclouser  = f"{request.host_url}{url_for('api_search.resourceproxy', resource_name='onda_s3_proxy', identifier=text)}"
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{str(request.host_url)}/a/{enclouser}'}
 
 TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'text_to_path': text_to_path,
                 'find_in_dict': find_in_dict,
                 'creodias_media_to_path': creodias_media_to_path,
                 'onda_id_to_enclosuer': onda_id_to_enclousure,
-                'onda_id_to_esn': onda_id_to_esn}
+                'onda_id_to_esn': onda_id_to_esn,
+                'onda_id_to_esn_proxy': onda_id_to_esn_proxy}
 
 # schema
 class ResponseXMLTagSchema(ExcludeSchema):

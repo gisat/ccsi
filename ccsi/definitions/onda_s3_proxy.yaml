@@ -1,0 +1,118 @@
+resource_name: onda_s3_proxy
+resource_description:
+  name: Onda Sentinel 3 endpoint
+connection:
+  url: https://catalogue.onda-dias.eu/dias-catalogue/Products
+  typ: onda
+translator:
+  typ: onda
+parameters:
+  collection:
+    typ: option
+    name: collections
+    target: null
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      sentinel-3: sentinel-3
+  resource:
+    typ: option
+    name: resource
+    target: null
+    tranfunc:
+     - name: identity
+       property:
+    mapping:
+      onda: onda
+  productType:
+    name: productType
+    target: search
+    typ: option
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      wfr: OL_2_WFR___
+      wrr: OL_2_WRR___
+      wst: SL_2_WST___
+      wat: SR_2_WAT___
+      sra: SR_1_SRA___
+      sra_a: SR_1_SRA_A_
+      sra_bs: SR_1_SRA_BS
+      lan: SR_2_LAN___
+      efr: OL_1_EFR___
+      err: OL_1_ERR___
+      lfr: OL_2_LFR___
+      lrr: OL_2_LRR_
+      rbt: SL_1_RBT___
+      lst: SL_2_LST___
+      syn: SY_2_SYN___
+      v10: SY_2_V10___
+      vg1: SY_2_VG1___
+      vgp: SY_2_VGP___
+  startIndex:
+    name: skip
+    typ: integer
+    target: query_param
+    tranfunc:
+      - name: offset
+        property:
+         offset: 0
+  maxRecords:
+    name: top
+    typ: integer
+    target: query_param
+    tranfunc:
+     - name: identity
+       property:
+  bbox:
+    name: footprint
+    typ: bbox
+    target: search
+    tranfunc:
+      - name: onda_bbox2footprint
+        property:
+  timeStart:
+    name: beginPosition
+    typ: datetime
+    target: time
+    tranfunc:
+      - name: identity
+        property:
+  timeEnd:
+    name: endPosition
+    typ: datetime
+    target: time
+    tranfunc:
+      - name: identity
+        property:
+  custom:onlineStatus:
+    name: offline
+    typ: option
+    target: search
+    tranfunc:
+      - name: get_mapped_pair
+        property:
+    mapping:
+      online: "false"
+      offline: "true"
+parser:
+  typ: onda_proxy
+  parameters:
+    id:
+      tag: link
+      tag_spec: text_to_enclousure
+    name:
+      tag: title
+    creationDate:
+      tag: processingDate
+    downloadable:
+      tag: downloadable
+    pseudopath:
+      tag: link
+      tag_spec: text_to_path
+    footprint:
+      tag: polygon
+    offline:
+      tag: offline

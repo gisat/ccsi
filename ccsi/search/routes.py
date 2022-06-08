@@ -1,14 +1,18 @@
 from flask import Response, request, abort, render_template, make_response, Blueprint, redirect, url_for, jsonify
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restful import Resource, Api
 from ccsi.config import Config
-from ccsi.storage import storage
 from ccsi.resource.query import QueryResource
 from ccsi.resource.parser import FeedSchema
 from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse, ResourceJsonResponse
 import datetime
+from ccsi.storage import storage
 
 api_search = Blueprint('api_search', __name__)
 api = Api(api_search)
+
+
 
 
 # helpers function
@@ -148,6 +152,20 @@ class ResourceSearchDescription(Resource):
 
 api.add_resource(ResourceSearchDescription, '/<string:resource_name>/<string:form>/search/description.xml',
                  resource_class_kwargs={'description': storage.description})
+
+
+class ResourceProxy(Resource):
+    """Proxy for management of onda resources"""
+    def __init__(self, **kwargs):
+        self.proxy = kwargs['proxy']
+
+    def get(self, resource_name, identifier):
+        exist(resource_name)
+        return self.proxy(resource_name, identifier)
+
+
+api.add_resource(ResourceProxy, '/<string:resource_name>/proxy/<string:identifier>',
+                 resource_class_kwargs={'proxy': storage.get_container('proxy')})
 
 
 @api_search.context_processor

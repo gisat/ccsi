@@ -1,5 +1,7 @@
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import make_parser
+
+from flask import request, url_for
 from lxml import etree
 from io import StringIO, BytesIO
 from marshmallow import fields, post_load
@@ -55,8 +57,6 @@ class Entry:
 
     def delete_tag_by_id(self, _id):
         self.entry = [tag for tag in self.entry if not id(tag) == _id]
-
-
 
 
 class EntrySchema(ExcludeSchema):
@@ -287,11 +287,43 @@ class OndaParser(Parser):
         return self.feed
 
 
+class OndaProxyParser(Parser):
+
+    def __init__(self, parameters, feed: Feed, entry: Entry, preprocessor=None, **ignore):
+        self.parameters = parameters
+        self._preprocessor = preprocessor
+        self._feed = feed
+        self._entry = entry
+        self.feed = None
+        self.entry = None
+
+    def parse(self, content):
+        self.feed = self._feed()
+
+        for record in content.get('value'):
+            entry = self._entry()
+            for parameter_name in self.parameters:
+                tag = Tag(parameter_name, **self.parameters[parameter_name])
+                tag.text = record.get(parameter_name)
+                entry.add_tag(tag)
+
+            if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
+                identificator = entry.find_tag(tag_type='source_tag', tag_name='id').text
+                proxy = url_for('api_search.resourceproxy', resource_name='onda_s3_proxy', identifier=identificator)
+                proxy_url = f"{request.host_url}{proxy}"
+                entry.find_tag(tag_type='source_tag', tag_name='id').text = proxy_url
+
+            self.feed.add_entry(entry)
+            self.feed.totalResults = content.get('totalResults')
+        return self.feed
+
+
 PARSER_TYPES = {'xmlsax': XMLSaxHandler,
                 'xmlsax_creo': XMLSaxHandlerCreo,
                 'wekeo': WekeoParser,
                 'cdsapi': CDSAPIParser,
-                'onda': OndaParser}
+                'onda': OndaParser,
+                'onda_proxy': OndaProxyParser}
 
 PREPRCESSORS = {'prodInfo2content': prodInfo2content}
 
