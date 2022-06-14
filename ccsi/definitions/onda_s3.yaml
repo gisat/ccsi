@@ -98,11 +98,11 @@ parameters:
       online: "false"
       offline: "true"
 parser:
-  typ: onda
+  typ: onda_proxy
   parameters:
     id:
       tag: link
-      tag_spec: onda_id_to_enclosuer
+      tag_spec: onda_id_to_esn_proxy
     name:
       tag: title
     creationDate:
@@ -116,17 +116,3 @@ parser:
       tag: polygon
     offline:
       tag: offline
-
-
-
-
-
-
-
-
-
-
-
-
-
-

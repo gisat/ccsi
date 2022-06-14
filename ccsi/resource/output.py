@@ -159,9 +159,8 @@ def onda_id_to_esn(text, **ignore):
     return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
 
 def onda_id_to_esn_proxy(text, **ignore):
-
-    enclouser  = f"{request.host_url}{url_for('api_search.resourceproxy', resource_name='onda_s3_proxy', identifier=text)}"
-    return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{str(request.host_url)}/a/{enclouser}'}
+    enclouser  = f"{request.host_url}{url_for('api_search.resourceproxy', resource_name='onda_s3', identifier=text)}"
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{enclouser}'}
 
 TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'text_to_path': text_to_path,

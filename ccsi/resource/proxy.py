@@ -95,7 +95,7 @@ class ProxyContainer:
 
 
 proxy_container = ProxyContainer()
-proxy_container.add(proxy_name='onda_s3_proxy', proxy=OndaProxy())
+proxy_container.add(proxy_name='onda_s3', proxy=OndaProxy())
 
 
 

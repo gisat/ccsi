@@ -279,8 +279,8 @@ class OndaParser(Parser):
                 tag.text = record.get(parameter_name)
                 entry.add_tag(tag)
 
-            if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
-                entry.find_tag(tag_type='source_tag', tag_name='id').tag_spec = 'onda_id_to_esn'
+            # if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
+            #     entry.find_tag(tag_type='source_tag', tag_name='id').tag_spec = 'onda_id_to_esn'
 
             self.feed.add_entry(entry)
             self.feed.totalResults = content.get('totalResults')
@@ -307,11 +307,11 @@ class OndaProxyParser(Parser):
                 tag.text = record.get(parameter_name)
                 entry.add_tag(tag)
 
-            if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
-                identificator = entry.find_tag(tag_type='source_tag', tag_name='id').text
-                proxy = url_for('api_search.resourceproxy', resource_name='onda_s3_proxy', identifier=identificator)
-                proxy_url = f"{request.host_url}{proxy}"
-                entry.find_tag(tag_type='source_tag', tag_name='id').text = proxy_url
+            # if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
+            #     identificator = entry.find_tag(tag_type='source_tag', tag_name='id').text
+            #     proxy = url_for('api_search.resourceproxy', resource_name='onda_s3', identifier=identificator)
+            #     proxy_url = f"{request.host_url}{proxy}"
+            #     entry.find_tag(tag_type='source_tag', tag_name='id').text = proxy_url
 
             self.feed.add_entry(entry)
             self.feed.totalResults = content.get('totalResults')
