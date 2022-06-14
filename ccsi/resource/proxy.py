@@ -2,10 +2,12 @@ from requests import post, get
 from requests.auth import HTTPBasicAuth
 from dataclasses import dataclass, field
 from ccsi.config import Config
-from flask import Response, jsonify, redirect
+from flask import jsonify, redirect, make_response, Response, stream_with_context, url_for
 from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict
+from base64 import b64encode
+from requests import Request, Session
 
 
 class OrderStatus(Enum):
@@ -54,16 +56,15 @@ class OndaProxy(Proxy):
             return OrderStatus.READY
 
     def download(self, product_id):
-        request = redirect(f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/$value', code=301)
-        self.auth(request)
-        return request
-        # return Response(response.content, status=response.status_code, content_type=response.headers['content-type'])
+        url = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/$value'
+        r = get(url=url, auth=self.auth, stream=True)
+        return Response(r.iter_content(chunk_size=10 * 1024), content_type=r.headers['Content-Type'])
 
     def pending(self, *args, **kwargs):
-        return Response("{'status': 'pending'}", 202, content_type='application/json')
+        return Response("{'status': 'pending'}", 201, content_type='application/json')
 
     def failed(self, *args, **kwargs):
-        return Response({'status': 'failed'}, 400, content_type='application/json')
+        return Response("{'status': 'failed'}", 400, content_type='application/json')
 
     def process(self, product_id: str):
 

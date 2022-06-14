@@ -75,7 +75,9 @@ parameters:
     typ: option
     target: null
     tranfunc:
-      - name: get_mapped_pair
+      - name: get_multilemapped_pair
+        property:
+      - name: resolve_list
         property:
     mapping:
       10m_u_component_of_wind: 10m_u_component_of_wind
@@ -358,7 +360,7 @@ parameters:
     typ: option
     target: null
     tranfunc:
-      - name: get_mapped_pair
+      - name: get_multilemapped_pair
         property:
     mapping:
       grib: grib
@@ -384,7 +386,9 @@ parameters:
     typ: option
     target: null
     tranfunc:
-      - name: get_mapped_pair
+      - name: get_multilemapped_pair
+        property:
+      - name: resolve_list
         property:
     mapping:
       "1": "1"
@@ -416,7 +420,9 @@ parameters:
     typ: option
     target: null
     tranfunc:
-      - name: get_mapped_pair
+      - name: get_multilemapped_pair
+        property:
+      - name: resolve_list
         property:
     mapping:
       "1": "1"
@@ -484,7 +490,9 @@ parameters:
     typ: option
     target: null
     tranfunc:
-      - name: get_mapped_pair
+      - name: get_multilemapped_pair
+        property:
+      - name: resolve_list
         property:
     mapping:
       "00:00": "00:00"

@@ -8,6 +8,8 @@ from ccsi.resource.parser import FeedSchema
 from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse, ResourceJsonResponse
 import datetime
 from ccsi.storage import storage
+from requests import post
+from requests.auth import HTTPBasicAuth
 
 api_search = Blueprint('api_search', __name__)
 api = Api(api_search)
@@ -50,6 +52,8 @@ class AllSearch(Resource):
     def get(self, form):
         check_form(form)
         query_processor = QueryResource(self.resource_schemas, self.translator, self.connection, self.parser)
+
+
 
         try:
             query_processor.process_query(request.args)
@@ -110,6 +114,7 @@ class ResourceSearch(Resource):
         exist(resource_name)
         query_processor = QueryResource(self.resource_schemas, self.translator, self.connection, self.parser)
 
+
         try:
             query_processor.process_query(request.args, resource_name)
         except Exception as error:
@@ -117,6 +122,8 @@ class ResourceSearch(Resource):
 
         if len(query_processor.errors) > 0:
             return make_response(jsonify({'message': query_processor.errors}), 500)
+
+
 
         if form == 'atom':
             url = f'{request.url_root}{resource_name}/{form}/search'
@@ -163,10 +170,19 @@ class ResourceProxy(Resource):
         exist(resource_name)
         return self.proxy(resource_name, identifier)
 
+    def post(self, resource_name, identifier):
+        exist(resource_name)
+        return self.proxy(resource_name, identifier)
+
 
 api.add_resource(ResourceProxy, '/<string:resource_name>/proxy/<string:identifier>',
                  resource_class_kwargs={'proxy': storage.get_container('proxy')})
 
+
+# @api_search.route('/proxy/redirect', methods=['GET', 'POST'])
+# def post_redirect():
+#     # return Response(post(url=request.args['url'], stream=True, auth=HTTPBasicAuth(username=request.args['usr'], password=request.args['pwd'])), content_type='application/zip')
+#     pass
 
 @api_search.context_processor
 def my_utility_processor():

@@ -35,6 +35,20 @@ def get_mapped_pair(self, value):
     return self.mapping[value]
 
 
+def get_multilemapped_pair(self, value):
+    if value.__contains__(','):
+        values = value.split(',')
+    else:
+        return value
+    return ','.join(self.mapping[v] for v in values)
+
+
+def resolve_list(self, value):
+    if value.__contains__(','):
+        return value.split(',')
+    else:
+        return value
+
 def utc_time_format(self, value):
     return isoparse(value).strftime("%Y-%m-%dT%H:%M:%S0Z")
 
@@ -90,10 +104,8 @@ def cds_bbox_coordinates(self, value: list) -> list:
     return [value[1], value[0], value[3], value[2]]
 
 
-
 def round_list(self, value, precision):
     return [round(v, precision) for v in value]
-
 
 def onda_bbox2footprint(self, value):
     geom = box(*[float(n) for n in value.split(',')])
@@ -212,7 +224,9 @@ TRANSFORMATION_FUNC = {'identity': identity,
                        'wekeo_bbox': wekeo_bbox,
                        'round_list': round_list,
                        'onda_bbox2footprint': onda_bbox2footprint,
-                       'cds_bbox_coordinates': cds_bbox_coordinates}
+                       'cds_bbox_coordinates': cds_bbox_coordinates,
+                       'get_multilemapped_pair': get_multilemapped_pair,
+                       'resolve_list': resolve_list}
 
 
 # parameters & translator
@@ -321,7 +335,13 @@ class Options(Parameter):
         self.mapping = mapping
 
     def validate(self, value):
-        if value in self.mapping:
+        if value.__contains__(','):
+            value = value.split(',')
+
+        if not isinstance(value, list):
+            value = [value]
+
+        if set(value).issubset(set(self.mapping.keys())):
             return True
         else:
             raise ValueError(f'{self.__repr__()}: Invalid argument {value}, expected one of '
