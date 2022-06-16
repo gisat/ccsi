@@ -1,50 +1,121 @@
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import make_parser
-
+from lxml.etree import Element, SubElement, tostring, register_namespace
 from flask import request, url_for
 from lxml import etree
 from io import StringIO, BytesIO
 from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
-from ccsi.base import Container, ExcludeSchema
 from abc import ABC, abstractmethod
-import ast
+from pydantic import BaseModel, Field, validator, root_validator
+from typing import Optional, Callable, List, Union, Tuple
+
+from ccsi.storage import storage
+from ccsi import Config
+from ccsi.base import ExcludeSchema
 
 
-class Tag:
-
-    def __init__(self, source_tag, tag, tag_spec=None, source=None, uri=None,
-                 mapping=None, location='entry'):
-        """
-        :param source_tag: name o tag at original source
-        :param tag: name of the mapped tag
-        :param tag_spec: additional mapped tag specification
-        :param source: where find the data, in text or attributes
-        :param uri: namespace uri
-        :param locations: 'entry' or none, if entry only tags in entry are considered
-        """
-        self.source_tag = source_tag
-        self.tag = tag
-        self.tag_spec = tag_spec
-        self.uri = uri
-        self.mapping = mapping
-        self.source = source
-        self.attrib = {}
-        self.text = ''
-        self.location = location
+# tag_spec_func
+def text2enclousure(text, **ignore):
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": text}
 
 
-class TagSchema(ExcludeSchema):
-    tag = fields.String(required=True)
-    tag_spec = fields.String(allow_none=True)
-    text = fields.String(allow_none=True)
-    attrib = fields.Dict(allow_none=True)
-    uri = fields.String(allow_none=True)
+def find_in_dict(text, **ignore):
+    return None
 
 
-class Entry:
-    def __init__(self):
-        self.entry = []
+def text_to_path(text, **ignore):
+    return None, {"rel": "path", "type": "application/unknown", "href": text}
+
+
+def creodias_media_to_path(attrib, **ignore):
+    text = attrib['url']
+    text = text.lstrip('https://finder.creodias.eu/files')
+    n_strip = text.find('.SAFE') + 5
+    text = text[:n_strip]
+    return None, {"rel": "path", "type": "application/unknown", "href": text}
+
+
+def onda_id_to_enclousure(text, **ignore):
+    enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/$value'
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
+
+
+def onda_id_to_esn(text, **ignore):
+    enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/Ens.Order'
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
+
+
+def onda_id_to_esn_proxy(text, **ignore):
+    enclouser  = f"{request.host_url}{url_for('api_search.resourceproxy', resource_name='onda_s3', identifier=text)}"
+    return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{enclouser}'}
+
+
+TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
+                'text_to_path': text_to_path,
+                'find_in_dict': find_in_dict,
+                'creodias_media_to_path': creodias_media_to_path,
+                'onda_id_to_enclosuer': onda_id_to_enclousure,
+                'onda_id_to_esn': onda_id_to_esn,
+                'onda_id_to_esn_proxy': onda_id_to_esn_proxy}
+
+
+class Tag(BaseModel):
+    """
+    :param source_tag: name o tag at original source
+    :param tag: name of the mapped tag
+    :param tag_spec: additional mapped tag specification
+    :param source: where find the data, in text or attributes
+    :param uri: namespace uri
+    :param locations: 'entry' or none, if entry only tags in entry are considered
+    """
+    tag: str
+    text: Optional[str] = Field(default='')
+    attrib: dict = Field(default_factory=dict)
+    source_tag: str = Field(exclude=True)
+    tag_spec: Optional[str] = Field(exclude=True)
+    mapping: Optional[str] = Field(exclude=True)
+    source: Optional[str] = Field(exclude=True)
+    location: str = Field(default='entry', exclude=True)
+
+    @root_validator(pre=True)
+    def set_tag_content(cls, values):
+        tag,  text, attrib, tag_spec = values.get('tag'), values.get('text'), values.get('attrib'),\
+                                       values.get('tag_spec')
+        content = storage.response_specification.get_item(tag)['content']
+
+        if tag_spec:
+            text, attrib = TAG_SPEC_FUC.get(tag_spec)(text=text, attrib=attrib)
+
+        if content == 'text':
+            values['text'], values['attrib'] = text, {}
+        elif content == 'attrib':
+            values['text'], values['attrib'] = '', attrib
+        return values
+
+    @property
+    def nsmap(self):
+        return Config.NAMESPACES.get(self.namespace)
+
+    @property
+    def uri(self):
+        return self.nsmap.get(self.namespace)
+
+    @property
+    def namespace(self):
+        return storage.response_specification.get_item(self.tag)['namespace']
+
+    def xml(self) -> Element:
+        """return xml representation of tag"""
+        element = Element(f'{{{self.uri}}}{self.tag}', attrib=self.attrib, nsmap=self.nsmap)
+        element.text = str(self.text)
+        return element
+
+
+class Entry(BaseModel):
+    tag: str = Field(default='Entry')
+    entry: List[Tag] = Field(default_factory=list)
+    namespace: str = Field(default='atom', exclude=True)
 
     def add_tag(self, tag: Tag):
         self.entry.append(tag)
@@ -58,17 +129,25 @@ class Entry:
     def delete_tag_by_id(self, _id):
         self.entry = [tag for tag in self.entry if not id(tag) == _id]
 
+    @property
+    def nsmap(self):
+        return Config.NAMESPACES.get(self.namespace)
 
-class EntrySchema(ExcludeSchema):
-    entry = fields.Nested(TagSchema, many=True)
+    @property
+    def uri(self):
+        return self.nsmap.get(self.namespace)
+
+    def xml(self) -> Element:
+        entry = Element(f'{{{self.uri}}}{self.tag}')
+        for tag in self.entry:
+            entry.append(tag.xml())
+        return entry
 
 
-class Feed:
-
-    def __init__(self):
-        self.entries = []
-        self.head = []
-        self.totalResults = 0
+class Feed(BaseModel):
+    entries: List[Entry] = Field(default_factory=list)
+    head: List[Tag] = Field(default_factory=list)
+    totalResults: int = Field(default=0)
 
     def add_entry(self, entry: Entry):
         self.entries.append(entry)
@@ -78,11 +157,6 @@ class Feed:
         if tag.tag == 'totalResults':
             self.totalResults = int(tag.text)
         self.head.append(tag)
-
-
-class FeedSchema(ExcludeSchema):
-    head = fields.Nested(TagSchema, many=True)
-    entries = fields.Nested(EntrySchema, many=True)
 
 
 # SAX parser
@@ -303,15 +377,8 @@ class OndaProxyParser(Parser):
         for record in content.get('value'):
             entry = self._entry()
             for parameter_name in self.parameters:
-                tag = Tag(parameter_name, **self.parameters[parameter_name])
-                tag.text = record.get(parameter_name)
+                tag = Tag(source_tag=parameter_name, text=record.get(parameter_name), **self.parameters[parameter_name])
                 entry.add_tag(tag)
-
-            # if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
-            #     identificator = entry.find_tag(tag_type='source_tag', tag_name='id').text
-            #     proxy = url_for('api_search.resourceproxy', resource_name='onda_s3', identifier=identificator)
-            #     proxy_url = f"{request.host_url}{proxy}"
-            #     entry.find_tag(tag_type='source_tag', tag_name='id').text = proxy_url
 
             self.feed.add_entry(entry)
             self.feed.totalResults = content.get('totalResults')

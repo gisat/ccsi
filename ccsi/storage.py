@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Optional, List, Union, Any
 
 from ccsi.base import Singleton, Container
 from ccsi.resource.parameters import ResourcesParametersContainer, QuerySchemaBuilder, ResourceSchemasContainer
@@ -7,17 +7,6 @@ from ccsi.resource.proxy import proxy_container, Proxy
 from ccsi.errors.handlers import Errors
 from ccsi.resource.output import Description, ResponseSpecContainer
 from ccsi.config import Config
-
-
-@dataclass
-class Container:
-    items: Dict[str, Any] = field(default_factory=dict)
-
-    def add(self, name: str, itme: Any) -> None:
-        self.items.update({name: itme})
-
-    def get(self, name: str):
-        return self.items.get(name)
 
 
 class Storage(metaclass=Singleton):
@@ -41,5 +30,9 @@ class Storage(metaclass=Singleton):
 
 storage = Storage()
 
+
+# helpers functions
+def extract_from_storage(container_name: str, item_name: str, parameter_name: Optional[Union[str, List[str]]]) -> Any:
+   pass
 
 

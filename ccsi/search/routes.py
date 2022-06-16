@@ -4,17 +4,13 @@ flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restful import Resource, Api
 from ccsi.config import Config
 from ccsi.resource.query import QueryResource
-from ccsi.resource.parser import FeedSchema
-from ccsi.resource.output import ResourceXMLResponse, ResponseXMLTagSchema, AllResourceXMLResponse, ResourceJsonResponse
+from ccsi.resource.output import ResourceXMLResponse, AllResourceXMLResponse, ResourceJsonResponse
 import datetime
 from ccsi.storage import storage
-from requests import post
-from requests.auth import HTTPBasicAuth
+
 
 api_search = Blueprint('api_search', __name__)
 api = Api(api_search)
-
-
 
 
 # helpers function
@@ -29,6 +25,7 @@ def exist(resource_name):
         return True
     else:
         abort(400, f'Unknown resource name {resource_name}')
+
 
 def render_error(error):
     msg, status_code = storage.errors.process_error(error)
@@ -53,8 +50,6 @@ class AllSearch(Resource):
         check_form(form)
         query_processor = QueryResource(self.resource_schemas, self.translator, self.connection, self.parser)
 
-
-
         try:
             query_processor.process_query(request.args)
         except Exception as error:
@@ -69,7 +64,7 @@ class AllSearch(Resource):
             return Response(response.build_response(), mimetype='application/xml',
                             content_type='text/xml; charset=utf-8')
         if form == 'json':
-            response = ResourceJsonResponse(FeedSchema, query_processor)
+            response = ResourceJsonResponse(query_processor)
             return jsonify(response.build_response())
 
 
@@ -123,15 +118,12 @@ class ResourceSearch(Resource):
         if len(query_processor.errors) > 0:
             return make_response(jsonify({'message': query_processor.errors}), 500)
 
-
-
         if form == 'atom':
             url = f'{request.url_root}{resource_name}/{form}/search'
-            response = ResourceXMLResponse(FeedSchema, ResponseXMLTagSchema, self.response_spec,
-                                           Config.NAMESPACES, query_processor, url, resource_name)
+            response = ResourceXMLResponse(self.response_spec, Config.NAMESPACES, query_processor, url, resource_name)
             return Response(response.build_response(), mimetype='application/xml', content_type='text/xml; charset=utf-8')
         elif form == 'json':
-            response = ResourceJsonResponse(FeedSchema, query_processor)
+            response = ResourceJsonResponse(query_processor)
             return jsonify(response.build_response())
 
 
@@ -178,11 +170,6 @@ class ResourceProxy(Resource):
 api.add_resource(ResourceProxy, '/<string:resource_name>/proxy/<string:identifier>',
                  resource_class_kwargs={'proxy': storage.get_container('proxy')})
 
-
-# @api_search.route('/proxy/redirect', methods=['GET', 'POST'])
-# def post_redirect():
-#     # return Response(post(url=request.args['url'], stream=True, auth=HTTPBasicAuth(username=request.args['usr'], password=request.args['pwd'])), content_type='application/zip')
-#     pass
 
 @api_search.context_processor
 def my_utility_processor():

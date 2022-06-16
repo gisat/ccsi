@@ -1,13 +1,8 @@
 from lxml.etree import Element, SubElement, tostring, register_namespace
-from xml.sax.saxutils import unescape
 from marshmallow import fields, post_load
 from ccsi.base import ExcludeSchema, Container
 from ccsi.config import Config
 from datetime import datetime
-from flask import url_for, request
-
-
-
 
 
 class Description:
@@ -131,88 +126,11 @@ class ResponseSpecContainer(Container):
             self.update(parameter, properties)
 
 
-# tag_spec_func
-def text2enclousure(text, **ignore):
-    return None, {"rel": "enclosure", "type": "application/unknown", "href": text}
-
-
-def find_in_dict(text, **ignore):
-    return None
-
-def text_to_path(text, **ignore):
-    return None, {"rel": "path", "type": "application/unknown", "href": text}
-
-def creodias_media_to_path(attrib, **ignore):
-    text = attrib['url']
-    text = text.lstrip('https://finder.creodias.eu/files')
-    n_strip = text.find('.SAFE') + 5
-    text = text[:n_strip]
-    return None, {"rel": "path", "type": "application/unknown", "href": text}
-
-
-def onda_id_to_enclousure(text, **ignore):
-    enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/$value'
-    return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
-
-def onda_id_to_esn(text, **ignore):
-    enclouser = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({text})/Ens.Order'
-    return None, {"rel": "enclosure", "type": "application/unknown", "href": enclouser}
-
-def onda_id_to_esn_proxy(text, **ignore):
-    enclouser  = f"{request.host_url}{url_for('api_search.resourceproxy', resource_name='onda_s3', identifier=text)}"
-    return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{enclouser}'}
-
-TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
-                'text_to_path': text_to_path,
-                'find_in_dict': find_in_dict,
-                'creodias_media_to_path': creodias_media_to_path,
-                'onda_id_to_enclosuer': onda_id_to_enclousure,
-                'onda_id_to_esn': onda_id_to_esn,
-                'onda_id_to_esn_proxy': onda_id_to_esn_proxy}
-
 # schema
-class ResponseXMLTagSchema(ExcludeSchema):
-    attrib = fields.Dict(required=True, allow_none=True)
-    text = fields.String(required=True, allow_none=True)
-    tag_spec = fields.String(required=False, allow_none=True)
-    tag = fields.String(required=True)
-
-    def __init__(self, response_specification, namespace):
-        super(ResponseXMLTagSchema, self).__init__()
-        self.response_specification = response_specification
-        self.namespace = namespace
-
-    @post_load()
-    def make_element(self, data, **ignore):
-        return self._prepare(**data)
-
-    def _prepare(self, tag, tag_spec=None, text=None, attrib={}):
-        tag_def = self.response_specification.get_item(tag)
-        text, attrib = self._prepare_tag_content(tag_def['content'], tag_spec, text, attrib)
-        return self._create_Element(tag, tag_def['namespace'], attrib, text)
-
-    def _prepare_tag_content(self, content, tag_spec=None, text=None, attrib={}, **ignore):
-        if tag_spec:
-            text, attrib = TAG_SPEC_FUC.get(tag_spec)(text=text, attrib=attrib)
-        if content == 'text':
-            text, attrib = text, {}
-        elif content == 'attrib':
-            text, attrib = None, attrib
-        return text, attrib
-
-    def _create_Element(self, tag, namespace, attrib={}, text=None, **_extra):
-        nsmap = self.namespace.get(namespace)
-        uri = nsmap.get(namespace)
-        element = Element(f'{{{uri}}}{tag}', attrib=attrib, nsmap=nsmap)
-        element.text = text
-        return element
-
 
 class ResourceXMLResponse:
 
-    def __init__(self, feed_schema, tag_schema, response_spec, namespaces, query_processor, base_url, resource_name):
-        self.feed_schema = feed_schema()
-        self.tag_schema = tag_schema
+    def __init__(self, response_spec, namespaces, query_processor, base_url, resource_name):
         self.response_spec = response_spec
         self.namespaces = namespaces
         self.resource_name = resource_name
@@ -275,17 +193,8 @@ class ResourceXMLResponse:
                                     attrib={"rel": "last", "href": f"{self.base_url}?{self._encode(last_query)}"})
 
     def _create_body(self):
-        atom_uri = self.get_uri('atom')
-        feed = self.feed_schema.dump(self.response)
-        tag_schema = self.tag_schema(self.response_spec, self.namespaces)
-        for entry in feed.get('entries'):
-            entry_tag = Element(f'{{{atom_uri}}}Entry')
-            for _, tags in entry.items():
-                for tag in tags:
-                    element = tag_schema.load(tag)
-                    entry_tag.append(element)
-            self.feed.append(entry_tag)
-
+        for entry in self.response.entries:
+            self.feed.append(entry.xml())
 
     @staticmethod
     def _create_SubElement(parent, tag, attrib={}, text=None, nsmap=None, **_extra):
@@ -323,8 +232,6 @@ class AllResourceXMLResponse:
         self._create_body()
         encoding = "utf-8"
         xml = tostring(self.feed, pretty_print=True, encoding="unicode")
-        # xml = xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
-        # return unescape(xml)
         return xml
 
     def _create_head(self):
@@ -400,11 +307,10 @@ class ResourceDescriptionContainer(Container):
 
 class ResourceJsonResponse:
 
-    def __init__(self, feed_schema, query_processor):
-        self.feed_schema = feed_schema()
+    def __init__(self, query_processor):
         self.query_processor = query_processor
 
     def build_response(self):
-        return [self.feed_schema.dump(feed) for _, feed in self.query_processor.feeds.items()]
+        return [feed.dict() for _, feed in self.query_processor.feeds.items()]
 
 

@@ -2,12 +2,10 @@ from requests import post, get
 from requests.auth import HTTPBasicAuth
 from dataclasses import dataclass, field
 from ccsi.config import Config
-from flask import jsonify, redirect, make_response, Response, stream_with_context, url_for
+from flask import Response
 from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict
-from base64 import b64encode
-from requests import Request, Session
 
 
 class OrderStatus(Enum):

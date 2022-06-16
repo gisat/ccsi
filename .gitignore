@@ -1,6 +1,6 @@
 /ccsi/test_cs3.py
 /ccsi/test.py
-/ccsi/tests/
+/ccsi/test/
 /ccsi/test_s3.py
 /ccsi/test_era5.py
 /ccsi/test_proxy.py
