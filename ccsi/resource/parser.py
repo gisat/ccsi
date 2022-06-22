@@ -1,14 +1,14 @@
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import make_parser
-from lxml.etree import Element, SubElement, tostring, register_namespace
+from lxml.etree import Element
 from flask import request, url_for
 from lxml import etree
 from io import StringIO, BytesIO
 from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field, validator, root_validator
-from typing import Optional, Callable, List, Union, Tuple
+from pydantic import BaseModel, Field, root_validator
+from typing import Optional,List
 
 from ccsi.storage import storage
 from ccsi import Config
@@ -60,6 +60,11 @@ TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'onda_id_to_esn_proxy': onda_id_to_esn_proxy}
 
 
+# class Attrib(BaseModel):
+#     rel: Optional[str] = Field(default='')
+#     href: Optional[str] = Field(default='')
+
+
 class Tag(BaseModel):
     """
     :param source_tag: name o tag at original source
@@ -69,9 +74,9 @@ class Tag(BaseModel):
     :param uri: namespace uri
     :param locations: 'entry' or none, if entry only tags in entry are considered
     """
-    tag: str
+    tag: Optional[str]
     text: Optional[str] = Field(default='')
-    attrib: dict = Field(default_factory=dict)
+    attrib: dict = Field(default={'rel': '', 'href': ''})
     source_tag: str = Field(exclude=True)
     tag_spec: Optional[str] = Field(exclude=True)
     mapping: Optional[str] = Field(exclude=True)
@@ -191,7 +196,7 @@ class XMLSaxHandler(ContentHandler, Parser):
             self.current_entry = self._entry()
 
         if localname in self.parameters:
-            tag = Tag(localname, **self.parameters[localname])
+            tag = Tag(tag=localname, **self.parameters[localname])
             if uri == tag.uri:
                 self.current_tag_name = localname
                 self.current_tag = tag
@@ -284,20 +289,25 @@ class WekeoParser(Parser):
 
     def _parse_head(self, response):
         for parameter_name in self.parameters:
-            tag = Tag(parameter_name, **self.parameters[parameter_name])
-            if tag.location == 'head':
-                tag.text = response[parameter_name]
-                self.feed.add_to_head(tag)
+            try:
+                tag = Tag(source_tag=parameter_name, text=response[parameter_name], **self.parameters[parameter_name])
+                if tag.location == 'head':
+                    self.feed.add_to_head(tag)
+            except KeyError:
+                pass
+
 
     def _parse_entries(self, contents):
         for content in contents:
             content = self._preprocessor(content)
             entry = self._entry()
             for parameter_name in self.parameters:
-                tag = Tag(parameter_name, **self.parameters[parameter_name])
-                if tag.location == 'entry':
-                    tag.text = content[parameter_name]
-                    entry.add_tag(tag)
+                try:
+                    tag = Tag(source_tag=parameter_name, text=content[parameter_name], **self.parameters[parameter_name])
+                    if tag.location == 'entry':
+                        entry.add_tag(tag)
+                except KeyError:
+                    pass
             self.feed.add_entry(entry)
 
 
@@ -321,13 +331,12 @@ class CDSAPIParser(Parser):
         self.feed = self._feed()
 
         for parameter_name in self.parameters:
-            tag = Tag(parameter_name, **self.parameters[parameter_name])
+            tag = Tag(source_tag=parameter_name, text=content, **self.parameters[parameter_name])
             if tag.location == 'head':
                 tag.text = 1
                 self.feed.add_to_head(tag)
             else:
                 entry = self._entry()
-                tag.text = content
                 entry.add_tag(tag)
                 self.feed.add_entry(entry)
         return self.feed
@@ -349,12 +358,8 @@ class OndaParser(Parser):
         for record in content.get('value'):
             entry = self._entry()
             for parameter_name in self.parameters:
-                tag = Tag(parameter_name, **self.parameters[parameter_name])
-                tag.text = record.get(parameter_name)
+                tag = Tag(source_tag=parameter_name, text=record.get(parameter_name), **self.parameters[parameter_name])
                 entry.add_tag(tag)
-
-            # if entry.find_tag(tag_type='source_tag', tag_name='offline').text is True:
-            #     entry.find_tag(tag_type='source_tag', tag_name='id').tag_spec = 'onda_id_to_esn'
 
             self.feed.add_entry(entry)
             self.feed.totalResults = content.get('totalResults')

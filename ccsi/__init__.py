@@ -138,8 +138,3 @@ def init_storage():
         init_container(definitions, 'parser', ParserSchema)
         init_container(definitions, 'resource_description', ResourceDescriptionSchema)
         init_container(definitions, 'cache', CacheSchema)
-
-
-if __name__ == '__main__':
-    # testing
-    create_app(Config)

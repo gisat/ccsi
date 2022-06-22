@@ -1,14 +1,14 @@
-from ccsi.base import Container, ExcludeSchema
+from ccsi.base import ExcludeSchema
 from ccsi.resource.parameters import ResourcesParametersContainer, WekeoCamsTimeParser, CamsTimeParser, OndaTimeParser,\
     CDSTimeParser
-from ccsi.config import Config
+from ccsi.resource.adapters import adapters_factory
 
 from abc import ABC, abstractmethod
-from marshmallow import Schema, fields, post_load, pre_load, post_dump, EXCLUDE, ValidationError
-from marshmallow.validate import OneOf, ContainsOnly
+from marshmallow import fields, post_load
+from marshmallow.validate import OneOf
 
 
-class Translator(ABC):
+class TranslatorABC(ABC):
 
     @abstractmethod
     def translate(self, query: dict):
@@ -23,7 +23,7 @@ class Translator(ABC):
         pass
 
 
-class BasicTranslator(Translator):
+class BasicTranslator(TranslatorABC):
     """ class responsible for translation from ccsi set o api params to resource api params"""
 
     def __init__(self, resources_parameters: ResourcesParametersContainer):
@@ -48,7 +48,7 @@ class BasicTranslator(Translator):
             self.resources_parameters.get_parameter(key).validate(value)
 
 
-class WekeoTranslator(Translator):
+class WekeoTranslator(TranslatorABC):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
         self.processed_query = {}
@@ -124,7 +124,7 @@ class WekeoTranslator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
-class WekeoC3STranslator(Translator):
+class WekeoC3STranslator(TranslatorABC):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
 
@@ -207,7 +207,7 @@ class WekeoC3STranslator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
-class CamsEAC4Translator(Translator):
+class CamsEAC4Translator(TranslatorABC):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
         self.processed_query = {}
@@ -252,7 +252,7 @@ class CamsEAC4Translator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
-class CDSTranslator(Translator):
+class CDSTranslator(TranslatorABC):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
         self.processed_query = {}
@@ -297,7 +297,7 @@ class CDSTranslator(Translator):
         self.processed_query['query_params'].update(parameter)
 
 
-class OndaTranslator(Translator):
+class OndaTranslator(TranslatorABC):
     def __init__(self, resources_parameters: ResourcesParametersContainer):
         self.resources_parameters = resources_parameters
         self.processed_query = {}
@@ -342,6 +342,24 @@ class OndaTranslator(Translator):
         self.processed_query.get('$search').update({name: value})
 
 
+class WekeoCLMS(TranslatorABC):
+    def __init__(self, resources_parameters: ResourcesParametersContainer):
+        self.resources_parameters = resources_parameters
+
+    def translate(self, query: dict):
+        product_type = query['productType']
+        configuration = self.resources_parameters.get_parameter('productType').mapping[product_type]
+        adapter = adapters_factory.get(**configuration)(definition=self.resources_parameters, **query)
+        return adapter.dict()
+
+
+    def get_mapped_pairs(self, resource_name):
+        pass
+
+    def validate(self, query: dict):
+        for key, value in query.items():
+            self.resources_parameters.get_parameter(key).validate(value)
+
 
 class TranslatorSchema(ExcludeSchema):
     TYPES = {'basic': BasicTranslator,
@@ -349,7 +367,8 @@ class TranslatorSchema(ExcludeSchema):
              'wekeoC3S': WekeoC3STranslator,
              'cams_eac4': CamsEAC4Translator,
              'onda': OndaTranslator,
-             'cds': CDSTranslator}
+             'cds': CDSTranslator,
+             'wekeo_clms': WekeoCLMS}
     typ = fields.Str(required=True, validate=OneOf(TYPES))
 
     @post_load(pass_original=True)

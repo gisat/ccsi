@@ -200,6 +200,17 @@ parameters:
       - sentinel-5p
       - clms
       - landsat-8
+  platformType:
+      name: platformType
+      typ: string
+      tranfunc:
+        - name: identity
+          property:
+      title: EO product platform type
+      namespace: eo
+      values:
+        - s2a
+        - s2b
   instrument:
     name: instrument
     typ: string
@@ -394,6 +405,10 @@ parameters:
       - ensemble_members
       - ensemble_spread
       - reanalysis
+      - ppi
+      - fapar
+      - ndvi
+      - qflag2
   processingLevel:
     name: processingLevel
     typ: string
@@ -1240,6 +1255,27 @@ parameters:
         - specific_snow_water_content
         - vertical_velocity
         - vorticity_relative
+    custom:tileID:
+      name: custom:tileID
+      typ: string
+      title: Identification of the second part of an MGRS coordinate
+      tranfunc:
+        - name: identity
+          property:
+    custom:placeName:
+      name: custom:placeName
+      title: A location criteria to perform the search like Paris, Belgium
+      typ: string
+      tranfunc:
+        - name: identity
+          property:
+    custom:productVersion:
+      name: custom:productVersion
+      typ: string
+      title:  the version of the Product
+      tranfunc:
+        - name: identity
+          property:
 response:
   parameters:
     totalResults:

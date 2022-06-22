@@ -435,14 +435,37 @@ class ParameterSchema(ExcludeSchema):
 
 
 parameterschema = ParameterSchema(dump_only=['definitions'])
+class ResourceParametersABC(ABC):
+
+    @abstractmethod
+    def update(self, name, properties):
+        pass
+
+    @abstractmethod
+    def delete(self, name):
+        pass
+
+    @abstractmethod
+    def get(self):
+        pass
+
+
+    @abstractmethod
+    def get_parameter(self, name):
+        pass
+
+    @abstractmethod
+    def get_mapped_pairs(self):
+        pass
+
+    @abstractmethod
+    def _build_parameter(self, properties):
+        pass
 
 
 # parameters containers
-class ResourceParameters:
+class ResourceParameters(ResourceParametersABC):
     """container for individual resource parameters"""
-
-    def __init__(self):
-        pass
 
     def update(self, name, properties):
         setattr(self, name, self._build_parameter(properties))

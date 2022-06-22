@@ -1,0 +1,158 @@
+resource_name: wekeo_clms
+resource_description:
+  name: Wekeo Copernicus Land Service Monitoring
+connection:
+  url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
+  typ: wekeo_connection
+translator:
+  typ: wekeo_clms
+cache:
+  url: https://wekeo-broker.apps.mercator.dpi.wekeo.eu/databroker
+  typ: wekeo_cache
+parameters:
+  collection:
+    typ: option
+    name: collection
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+    mapping:
+      clms: clms
+    missing: clms
+  resource:
+    typ: option
+    name: resource
+    tranfunc:
+     - name: identity
+       property:
+    mapping:
+      wekeo: wekeo
+  bbox:
+    name: area
+    typ: bbox
+    target: boundingBoxValues
+    tranfunc:
+     - name: identity
+       property:
+  timeStart:
+    name: start
+    typ: datetime
+    target: dateRangeSelectValues
+    tranfunc:
+     - name: rfc_time_format
+       property:
+  timeEnd:
+    name: end
+    typ: datetime
+    target: dateRangeSelectValues
+    tranfunc:
+     - name: rfc_time_format
+       property:
+  productType:
+    name: variable
+    typ: option
+    target: stringChoiceValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+    mapping:
+      fpar:
+        wekeo_hrvpp:
+          adapter_name: wekeo_hrvpp
+          FAPAR: EO:HRVPP:DAT:VEGETATION-INDICES,
+      lai:
+        adapter_name: wekeo_hrvpp
+        LAI: EO:HRVPP:DAT:VEGETATION-INDICES
+      ndvi:
+        adapter_name: wekeo_hrvpp
+        NDVI: EO:HRVPP:DAT:VEGETATION-INDICES
+      ppi:
+        adapter_name: wekeo_hrvpp
+        PPI: EO:HRVPP:DAT:VEGETATION-INDICES
+      qflag2:
+        adapter_name: wekeo_hrvpp
+        QFLAG2: EO:HRVPP:DAT:VEGETATION-INDICES
+  startIndex:
+    name: page
+    typ: integer
+    target: query_params
+    tranfunc:
+      - name: offset
+        property:
+         offset: 0
+  maxRecords:
+    name: size
+    typ: integer
+    target: query_params
+    tranfunc:
+     - name: identity
+       property:
+  platformType:
+    name: platformType
+    typ: option
+    target: stringChoiceValues
+    tranfunc:
+     - name: get_mapped_pair
+       property:
+    mapping:
+     s2a: S2A
+     s2b: S2B
+  productIdentifier:
+    name: uid
+    typ: string
+    target: stringInputValues
+    tranfunc:
+     - name: identity
+       property:
+  custom:tileID:
+    name: tileID
+    typ: string
+    target: stringInputValues
+    tranfunc:
+     - name: identity
+       property:
+  custom:productVersion:
+    name: productVersion
+    target: stringInputValues
+    typ: string
+    tranfunc:
+     - name: identity
+       property:
+  custom:placeName:
+    name: placeName
+    typ: string
+    target: stringInputValues
+    tranfunc:
+     - name: identity
+       property:
+parser:
+  typ: wekeo
+  preprocessor: prodInfo2content
+  parameters:
+    totItems:
+      tag: totalResults
+      location: head
+    downloadUri:
+      tag: link
+      tag_spec: text_to_enclousure
+    filename:
+      tag: title
+    datasetId:
+      tag: dataset
+    productStartDate:
+      tag: published
+    url:
+      tag: link
+      tag_spec: text_to_path
+
+
+
+
+
+
+
+
+
+
+
+
