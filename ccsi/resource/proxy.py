@@ -13,6 +13,7 @@ class OrderStatus(Enum):
     READY = 2
     FAILED = 3
     AVAILABLE = 4
+    TOO_MUCH_REQUEST = 5
 
 
 class Proxy(ABC):
@@ -34,10 +35,11 @@ class OndaProxy(Proxy):
     def order(self, product_id)-> OrderStatus:
         order = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/Ens.Order'
         response = post(url=order, auth=self.auth)
-        content = response.json()
-        if response.status_code == 200 and content.get('Status') == 'RUNNING':
+        if response.status_code == 200:
             msg = self.pending()
-        elif response.status_code == 403 and content.get('code') == '001':
+        elif response.status_code == 429:
+            msg = self.too_mucch_request()
+        elif 500 > response.status_code >= 400:
             msg = self.pending()
         else:
             msg = self.failed()
@@ -45,7 +47,6 @@ class OndaProxy(Proxy):
 
     def check_availibility(self, product_id) -> OrderStatus:
         request = get(f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})')
-
         if request.status_code != 200:
             return OrderStatus.FAILED
         elif request.status_code == 200 and request.json().get('offline'):
@@ -63,6 +64,9 @@ class OndaProxy(Proxy):
 
     def failed(self, *args, **kwargs):
         return Response("{'status': 'failed'}", 400, content_type='application/json')
+
+    def too_mucch_request(self, *args, **kwargs):
+        return Response("{'status': 'too much requests'}", 429, content_type='application/json')
 
     def process(self, product_id: str):
 

@@ -11,7 +11,7 @@ class Config:
     RESOURCE_DEFINITIONS = ['ccsi.yaml', 'mundi_s1.yaml', 'mundi_s2.yaml', 'mundi_s3.yaml', 'mundi_clms.yaml',
                            'creodias_s1.yaml', 'creodias_s2.yaml', 'creodias_s3.yaml', 'creodias_s5.yaml',  'creodias_landsat8.yaml',
                             'wekeo_s1.yaml', 'wekeo_s2.yaml', 'wekeo_s3.yaml', 'wekeo_c3s.yaml', 'wekeo_cams.yaml', 'cams_eac4.yaml',
-                             'cds_era5.yaml', 'onda_s3.yaml']
+                             'cds_era5.yaml', 'onda_s3.yaml', 'wekeo_clms.yaml']
 
 
     ADS_KEY = '8585:21c4d84c-f6ec-4de0-a0ec-ab0c096b2b93'

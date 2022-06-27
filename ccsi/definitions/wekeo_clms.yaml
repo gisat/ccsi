@@ -28,7 +28,7 @@ parameters:
     mapping:
       wekeo: wekeo
   bbox:
-    name: area
+    name: bbox
     typ: bbox
     target: boundingBoxValues
     tranfunc:
@@ -49,7 +49,7 @@ parameters:
      - name: rfc_time_format
        property:
   productType:
-    name: variable
+    name: productType
     typ: option
     target: stringChoiceValues
     tranfunc:
@@ -57,21 +57,25 @@ parameters:
        property:
     mapping:
       fpar:
-        wekeo_hrvpp:
-          adapter_name: wekeo_hrvpp
-          FAPAR: EO:HRVPP:DAT:VEGETATION-INDICES,
+        adapter_name: wekeo_hrvpp
+        type: FAPAR
+        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
       lai:
         adapter_name: wekeo_hrvpp
-        LAI: EO:HRVPP:DAT:VEGETATION-INDICES
+        type: LAI
+        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
       ndvi:
         adapter_name: wekeo_hrvpp
-        NDVI: EO:HRVPP:DAT:VEGETATION-INDICES
+        type: NDVI
+        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
       ppi:
         adapter_name: wekeo_hrvpp
-        PPI: EO:HRVPP:DAT:VEGETATION-INDICES
+        type: PPI
+        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
       qflag2:
         adapter_name: wekeo_hrvpp
-        QFLAG2: EO:HRVPP:DAT:VEGETATION-INDICES
+        type: QFLAG2
+        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
   startIndex:
     name: page
     typ: integer
@@ -88,7 +92,7 @@ parameters:
      - name: identity
        property:
   platformType:
-    name: platformType
+    name: platformSerialIdentifier
     typ: option
     target: stringChoiceValues
     tranfunc:

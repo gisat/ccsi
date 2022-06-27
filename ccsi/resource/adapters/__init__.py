@@ -11,7 +11,7 @@ class AdapterABC(ABC, BaseModel):
         arbitrary_types_allowed = True
 
 
-from ccsi.resource.adapters.wekeo import Wekeohrvpp
+from ccsi.resource.adapters.wekeo import WekeoHRVPP
 
 
 class AdapterFactory(BaseModel):
@@ -25,4 +25,4 @@ class AdapterFactory(BaseModel):
 
 
 adapters_factory = AdapterFactory()
-adapters_factory.add(adapter_name='wekeo_hrvpp', adpter=Wekeohrvpp)
+adapters_factory.add(adapter_name='wekeo_hrvpp', adpter=WekeoHRVPP)

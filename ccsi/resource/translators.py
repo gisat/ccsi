@@ -350,7 +350,7 @@ class WekeoCLMS(TranslatorABC):
         product_type = query['productType']
         configuration = self.resources_parameters.get_parameter('productType').mapping[product_type]
         adapter = adapters_factory.get(**configuration)(definition=self.resources_parameters, **query)
-        return adapter.dict()
+        return adapter.dict(exclude_none=True)
 
 
     def get_mapped_pairs(self, resource_name):
