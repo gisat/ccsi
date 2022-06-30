@@ -1,8 +1,39 @@
 from lxml.etree import Element, SubElement, tostring, register_namespace
 from marshmallow import fields, post_load
+from pydantic import BaseModel, Extra
+from flask import request
+from urllib.parse import urlencode
+
 from ccsi.base import ExcludeSchema, Container
 from ccsi.config import Config
 from datetime import datetime
+from ccsi.resource.schemas.json_ouput import Tag, Attrib
+
+
+def build_link_tag(tag: str, href: str, rel: str,):
+    attrib = Attrib(href=href, rel=rel)
+    return Tag(tag=tag, attrib=attrib)
+
+
+def build_self_tag(params: dict):
+    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='self')
+
+
+def build_first_tag(params: dict):
+    params['startIndex'] = 0
+    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='first')
+
+
+def build_next_tag(params: dict, total_results: int):
+    if startIndex := (params['startIndex'] + params['maxRecords']) < total_results:
+        params['startIndex'] = startIndex
+    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='next')
+
+
+def build_last_tag(params: dict, total_results: int):
+    startIndex = (total_results //params['maxRecords']) * params['maxRecords']
+    params['startIndex'] = startIndex
+    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='last')
 
 
 class Description:
@@ -311,6 +342,16 @@ class ResourceJsonResponse:
         self.query_processor = query_processor
 
     def build_response(self):
-        return [feed.dict() for _, feed in self.query_processor.feeds.items()]
+        feeds = []
+        for _, feed in self.query_processor.feeds.items():
+            feed.head.append(build_self_tag(self.query_processor.valid_query))
+            feed.head.append(build_first_tag(self.query_processor.valid_query))
+            feed.head.append(build_next_tag(self.query_processor.valid_query, feed.totalResults))
+            feed.head.append(build_last_tag(self.query_processor.valid_query, feed.totalResults))
+
+            feeds.append(feed.dict())
+
+
+        return feeds
 
 

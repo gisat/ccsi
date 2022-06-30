@@ -87,7 +87,7 @@ class WekeoConnection(Connection):
             self.get_authorization_header()
             return self.datarequest_results(jobId, params)
 
-    def send_orders(self, resluts: list, jobId: str ):
+    def send_orders(self, resluts: list, jobId: str):
         for i in range(len(resluts)):
             body = {"jobId": jobId, "uri": resluts[i]['url']}
             resluts[i]['downloadUri'] = f'{self.url}/dataorder/download/{self.send_order(body)}'

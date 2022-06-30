@@ -7,8 +7,8 @@ from io import StringIO, BytesIO
 from marshmallow import fields, post_load
 from marshmallow.validate import OneOf
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field, root_validator
-from typing import Optional,List
+from pydantic import BaseModel, Field, root_validator, Extra
+from typing import Optional, List, Any
 
 from ccsi.storage import storage
 from ccsi import Config
@@ -115,6 +115,9 @@ class Tag(BaseModel):
         element = Element(f'{{{self.uri}}}{self.tag}', attrib=self.attrib, nsmap=self.nsmap)
         element.text = str(self.text)
         return element
+
+    class Config:
+        extra = Extra.ignore
 
 
 class Entry(BaseModel):

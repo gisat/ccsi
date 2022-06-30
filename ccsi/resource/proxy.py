@@ -46,18 +46,18 @@ class OndaProxy(Proxy):
         return msg
 
     def check_availibility(self, product_id) -> OrderStatus:
-        request = get(f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})')
-        if request.status_code != 200:
+        response = get(f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})')
+        if response.status_code != 200:
             return OrderStatus.FAILED
-        elif request.status_code == 200 and request.json().get('offline'):
+        elif response.status_code == 200 and response.json().get('offline'):
             return OrderStatus.AVAILABLE
-        elif request.status_code == 200 and request.json().get('downloadable'):
+        elif response.status_code == 200 and response.json().get('downloadable'):
             return OrderStatus.READY
 
     def download(self, product_id):
         url = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/$value'
         r = get(url=url, auth=self.auth, stream=True)
-        return Response(r.iter_content(chunk_size=10 * 1024), content_type=r.headers['Content-Type'])
+        return Response(r, content_type=r.headers['Content-Type'])
 
     def pending(self, *args, **kwargs):
         return Response("{'status': 'pending'}", 201, content_type='application/json')
