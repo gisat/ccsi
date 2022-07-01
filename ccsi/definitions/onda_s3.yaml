@@ -102,7 +102,7 @@ parser:
   parameters:
     id:
       tag: link
-      tag_spec: onda_id_to_esn
+      tag_spec: onda_id_to_esn_proxy
     name:
       tag: title
     creationDate:
