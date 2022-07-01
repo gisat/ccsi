@@ -16,24 +16,24 @@ def build_link_tag(tag: str, href: str, rel: str,):
 
 
 def build_self_tag(params: dict):
-    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='self')
+    return build_link_tag(tag='link', href=f'{"request.host_url"}{urlencode(params)}', rel='self')
 
 
 def build_first_tag(params: dict):
     params['startIndex'] = 0
-    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='first')
+    return build_link_tag(tag='link', href=f'{"request.host_url"}{urlencode(params)}', rel='first')
 
 
 def build_next_tag(params: dict, total_results: int):
-    if startIndex := (params['startIndex'] + params['maxRecords']) < total_results:
-        params['startIndex'] = startIndex
-    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='next')
+    if (params['startIndex'] + params['maxRecords']) < total_results:
+        params['startIndex'] = params['startIndex'] + params['maxRecords']
+    return build_link_tag(tag='link', href=f'{"request.host_url"}{urlencode(params)}', rel='next')
 
 
 def build_last_tag(params: dict, total_results: int):
     startIndex = (total_results //params['maxRecords']) * params['maxRecords']
     params['startIndex'] = startIndex
-    return build_link_tag(tag='link', href=f'{request.host_url}{urlencode(params)}', rel='last')
+    return build_link_tag(tag='link', href=f'{"request.host_url"}{urlencode(params)}', rel='last')
 
 
 class Description:

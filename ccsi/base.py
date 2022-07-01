@@ -1,7 +1,6 @@
 import yaml
 from marshmallow import Schema, EXCLUDE, post_dump, RAISE
 from flask import abort
-from typing import Callable
 
 
 class Singleton(type):
@@ -16,7 +15,7 @@ class Singleton(type):
 class Container(metaclass=Singleton):
     """container for items"""
 
-    def __init__(self, items=None ):
+    def __init__(self, items=None):
         if items is None:
             self.items = {}
         else:

@@ -1,16 +1,14 @@
-from marshmallow import Schema, fields, post_load, pre_load, post_dump, EXCLUDE, ValidationError
-from marshmallow.validate import OneOf, ContainsOnly
+from marshmallow import fields, post_load, pre_load, post_dump, ValidationError
+from marshmallow.validate import OneOf
 from shapely import wkt, errors
 from shapely.geometry import box
-from dateutil.parser import isoparse
 from ccsi.base import Container, ExcludeSchema, ResourceQuerySchema, CCSIQuerySchema, WekeoQuerySchema, partial
 import re
 from abc import ABC, abstractmethod
 from dateutil.parser import isoparse
 from dateutil.rrule import rrule, HOURLY
 from datetime import datetime
-from dateutil.tz import UTC
-from pydantic import BaseModel, Field, validator, Extra
+from pydantic import BaseModel, Field, validator
 from typing import Union, Optional
 
 
@@ -230,6 +228,18 @@ TRANSFORMATION_FUNC = {'identity': identity,
 
 
 # parameters & translator
+class ParameterABC(BaseModel, ABC):
+
+    @abstractmethod
+    def validate(self, values):
+        pass
+
+    @abstractmethod
+    def transform(self, value):
+        pass
+
+
+
 class Parameter:
 
     def __init__(self, name: str, typ: str, tranfunc: list, definitions: dict):
@@ -432,6 +442,7 @@ class ParameterSchema(ExcludeSchema):
         typ = PARAM_TYPES.get(data['typ'])
         data['definitions'] = original_data.get('definitions').copy()
         return typ(**data)
+
 
 
 parameterschema = ParameterSchema(dump_only=['definitions'])
