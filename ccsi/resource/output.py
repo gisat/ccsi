@@ -1,6 +1,5 @@
 from lxml.etree import Element, SubElement, tostring, register_namespace
 from marshmallow import fields, post_load
-from pydantic import BaseModel, Extra
 from flask import request
 from urllib.parse import urlencode
 
@@ -344,12 +343,13 @@ class ResourceJsonResponse:
     def build_response(self):
         feeds = []
         for _, feed in self.query_processor.feeds.items():
-            feed.head.append(build_self_tag(self.query_processor.valid_query))
-            feed.head.append(build_first_tag(self.query_processor.valid_query))
-            feed.head.append(build_next_tag(self.query_processor.valid_query, feed.totalResults))
-            feed.head.append(build_last_tag(self.query_processor.valid_query, feed.totalResults))
+            feed.head.append(build_self_tag(self.query_processor.valid_query.copy()))
+            feed.head.append(build_first_tag(self.query_processor.valid_query.copy()))
+            feed.head.append(build_next_tag(self.query_processor.valid_query.copy(), feed.totalResults))
+            feed.head.append(build_last_tag(self.query_processor.valid_query.copy(), feed.totalResults))
 
             feeds.append(feed.dict())
+
 
 
         return feeds
