@@ -1,6 +1,9 @@
+import os
 import json
 from concurrent.futures.thread import ThreadPoolExecutor
 from time import time, sleep as timesleep
+from datetime import datetime as dt
+from dateutil.relativedelta import relativedelta
 from requests import get, Response
 import argparse
 import geopandas as gpd
@@ -10,11 +13,10 @@ from uuid import uuid4, UUID
 from enum import Enum
 from pathlib import Path
 from termcolor import colored
-from simplejson.errors import JSONDecodeError
+
 
 # constants
 BASE_URL = "http://185.226.13.104"
-# BASE_URL = 'http://localhost:5000/'
 
 
 # helper func
@@ -147,8 +149,6 @@ class CCSIRequester(BaseModel):
             return value
 
     def run(self) -> List[Resource]:
-        print(colored('Starting requesting Resources from CCSI', 'green'))
-        print(colored('Initial request', 'green'))
         response = self.send_request()
         feed = self.parse_response(response)
         self.parse_feed(feed)
@@ -157,37 +157,25 @@ class CCSIRequester(BaseModel):
 
     def parse_feed(self, feed: JsonCCSISchema):
         self.records += self.parser(feed)
-        print(colored(f'Requested  {len(self.records)}/{feed.feed.totalResults} Resources', 'green'))
 
     def parse_response(self, response: Response)-> JsonCCSISchema:
         return self.schemas(feed=response.json())
 
     def get_next(self, feed: JsonCCSISchema)-> None:
-        if any(next:=tag for tag in feed.feed.head if Tag(tag='link', attrib=Attrib(rel='next')) == tag):
-            if len(self.records) == feed.feed.totalResults:
-                return None
-
-            try:
-                time_to_sleep = 2
-                timesleep(time_to_sleep)
-                print(colored(f'Requesting NEXT with sleep for {time_to_sleep} s', 'green'))
-                response = get(url=next.attrib.href)
-                feed = self.parse_response(response)
-            except JSONDecodeError as e:
-                print(colored(f'Cannot parse NEXT response: \n{e}', 'red'))
-                json_exeption_time_to_sleep = 10
-                timesleep(json_exeption_time_to_sleep)
-                print(colored(f'Sleep in NEXT for {json_exeption_time_to_sleep} s before another try', 'green'))
-                self.get_next(feed)
-            except Exception as e:
-                print(colored(f'Exception in NEXT: \n{e}', 'red'))
-
-
-            self.parse_feed(feed)
-            self.get_next(feed)
+        for tag in feed.feed.head:
+            if Tag(tag='link', attrib=Attrib(rel='next')) == tag:
+                next = tag
+        # if any(next:=tag for tag in feed.feed.head if Tag(tag='link', attrib=Attrib(rel='next')) == tag):
+        if len(self.records) == feed.feed.totalResults:
+            return None
+        response = get(url=next.attrib.href)
+        feed = self.parse_response(response)
+        self.parse_feed(feed)
+        self.get_next(feed)
 
     def send_request(self):
         response = get(url=f"{BASE_URL}/{self.resource}/json/search?", params=self.params)
+        print(response.url)
         if response.status_code != 200:
             raise Exception(f"ccsi request {response.url} failed")
         return response
@@ -288,22 +276,25 @@ class PageingSetting(BaseModel):
 
 
 class WekeoS2Input(PageingSetting):
-    processingLevel: str = Field(default='level2a')
+    processingLevel: str
     bbox: str
     timeStart: str
     timeEnd: str
 
 
 class CDSERA5Input(PageingSetting):
-    customcamsDataset: str = Field(default='total_column_water_vapour', alias='custom:camsDataset')
-    customformat: str = Field(default='grib', alias='custom:format')
+    customcamsDataset: str = Field(alias='custom:camsDataset')
+    customformat: str = Field(alias='custom:format')
     bbox: str
     timeStart: str
     timeEnd: str
 
+    class Config:
+        allow_population_by_field_name = True
+
 
 class ONDAS3Input(PageingSetting):
-    productType: str = Field(default='rbt')
+    productType: str
     bbox: str
     timeStart: str
     timeEnd: str
@@ -316,13 +307,13 @@ RESOURCES = {'wekeo_s2': WekeoS2Input,
 if __name__ == "__main__":
 
     # I little bit change a CLI for testing but i thinh that is not problem to change the code as you need.
-    cli = argparse.ArgumentParser(description="This script produces a "
-                                                 "Leaf Area Index from "
-                                                 "Sentinel-2 L2A data.")
+    cli = argparse.ArgumentParser(description="This script produces LST of App 1")
+    cli.add_argument("-c", "--City", type=str, metavar="", required=True,
+                        help="City name (Berlin, Copenhagen, Heraklion, Sofia)")
     cli.add_argument("-s", "--Start", type=str, metavar="", required=True,
                         help="Start Date e.g. 2019-01-01")
     cli.add_argument("-e", "--End", type=str, metavar="", required=True,
-                        help="End Date e.g. 2019-01-19")
+                        help="End Date e.g. 2019-01-190")
     cli.add_argument("-i", "--ID", type=str, metavar="", required=True,
                         help="Order/Run ID")
     cli.add_argument("-o", "--Output", type=str, metavar="", required=True,
@@ -332,37 +323,54 @@ if __name__ == "__main__":
     cli.add_argument("-r", "--Resources", type=str, metavar="", required=True,
                         help="Dictionary of resources")
 
+    args = cli.parse_args()
     # test
-    args = cli.parse_args(['--Start', '2020-03-01',
-                           '--End', '2020-03-31',
-                           '--Output', 'C:\\Users\\micha\\PycharmProjects\\ccsi\\ccsi\\hands_on\\test',
-                           '--Geometry', 'C:\\Users\\micha\\PycharmProjects\\ccsi\\ccsi\\hands_on\\Heraklion.geojson',
-                           '--Resources', '{\"onda_s3\": {\"productType\": \"rbt\"},'
-                                          '\"wekeo_s2\": {\"processingLevel\": \"level2a\"},'
-                                          '\"cds_era5\": {\"customcamsDataset\": \"total_column_water_vapour,10m_v_component_of_wind\", \"customformat\": \"grib\"}}',
-                           '--ID', '123456789'])
+    # args = cli.parse_args(['--Start', '2020-03-01',
+    #                        '--End', '2020-03-31',
+    #                        '--Output', '/home/schmid/Desktop/test',
+    #                        '--Geometry', '/media/schmid/One Touch1/Documents/WORK/Projects/Cure/cities/Heraklion.geojson',
+    #                        '--Resources', '{\"onda_s3\": {\"productType\": \"rbt\"},'
+    #                                       '\"wekeo_s2\": {\"processingLevel\": \"level2a\"},'
+    #                                       '\"cds_era5\": {\"customcamsDataset\": \"total_column_water_vapour,10m_v_component_of_wind\", \"customformat\": \"grib\"}}',
+    #                        '--ID', '123456789'])
 
     start = time()
 
     # validation of user input
     args.Resources = json.loads(args.Resources)
+    print(args.Resources)
+    geom_base_directory = args.Geometry
+    geometries = {"Berlin": os.path.join(geom_base_directory, "Berlin.geojson"),
+                  "Copenhagen": os.path.join(geom_base_directory, "Copenhagen.geojson"),
+                  "Heraklion": os.path.join(geom_base_directory, "Heraklion.geojson"),
+                  "Sofia": os.path.join(geom_base_directory, "Sofia.geojson")}
+    args.Geometry = geometries[args.City]
     user_input = UserInput(**vars(args))
 
-    for resource in user_input.Resources:
+    for resource, extra_params in user_input.Resources.items():
         print(resource)
         output_directory = user_input.Output / resource
         create_fld_if_not_exist(output_directory)
 
         # setting ccsi params and requesting the data
-        params = RESOURCES.get(resource)(**user_input.dict(by_alias=True))
+        extra_params.update(user_input.dict(by_alias=True))
+        # App1 and App10 need to have two month of S2 data although start date = end date
+        if resource == "wekeo_s2" and extra_params["timeStart"] == extra_params["timeEnd"]:
+            start_date = extra_params["timeStart"]
+            new_start_date = dt.strptime(start_date, "%Y-%m-%d") + relativedelta(months=-2)
+            extra_params["timeStart"] = str(new_start_date.date())
+        params = RESOURCES.get(resource)(**extra_params)
 
         requester = CCSIRequester(resource=resource, params=params, schemas=JsonCCSISchema, parser=Parser())
         resource_data = requester.run()
 
         # download
-        downloader = Downloader(pool=resource_data, path=user_input.Output, sleep=8*60, timeout=12*60)
+        downloader = Downloader(pool=resource_data, path=output_directory, sleep=8*60, timeout=12*60)
         downloader.run()
 
 
     end = time()
     print(f'Process time: {end - start} s')
+    first_wvp_date = start_date.replace("-", "") + "T000000"
+    print(first_wvp_date)
+
