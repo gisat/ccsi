@@ -3,7 +3,7 @@ jinja2<3.1.0
 setuptools==45.1.0
 flask_restful==0.3.8
 marshmallow==3.10.0
-Shapely==1.7.1
+Shapely==1.8.4
 python-dateutil==2.8.1
 requests==2.24.0
 flask_wtf==0.14.3
@@ -11,8 +11,8 @@ wtforms==2.3.2
 flask-markdown==0.3
 flask_sqlalchemy==2.5.1
 flask-bcrypt==1.0.1
-flask-restful==0.3.8
-flask-apispec==0.11.0
+docker
+flask-apispec==0.11.4
 apispec-webframeworks==0.5.2
 flask_swagger_ui==3.36.0
 email-validator==1.1.1
@@ -28,6 +28,6 @@ beautifulsoup4==4.9.3
 Flask-HTTPAuth==4.4.0
 itsdangerous==2.0.1
 cdsapi==0.5.1
-pyodata==1.9.1
+pyodata==1.10.0
 MarkupSafe==2.1.1
-pydantic==1.9.0
+pydantic==1.10.2

@@ -306,7 +306,7 @@ RESOURCES = {'wekeo_s2': WekeoS2Input,
 
 if __name__ == "__main__":
 
-    # I little bit change a CLI for testing but i thinh that is not problem to change the code as you need.
+    # # I little bit change a CLI for testing but i thinh that is not problem to change the code as you need.
     cli = argparse.ArgumentParser(description="This script produces LST of App 1")
     cli.add_argument("-c", "--City", type=str, metavar="", required=True,
                         help="City name (Berlin, Copenhagen, Heraklion, Sofia)")
@@ -323,16 +323,24 @@ if __name__ == "__main__":
     cli.add_argument("-r", "--Resources", type=str, metavar="", required=True,
                         help="Dictionary of resources")
 
-    args = cli.parse_args()
-    # test
-    # args = cli.parse_args(['--Start', '2020-03-01',
+    # args = cli.parse_args()
+    # args = cli.parse_args(['--City', 'Heraklion',
+    #                        '--Start', '2020-03-01',
     #                        '--End', '2020-03-31',
     #                        '--Output', '/home/schmid/Desktop/test',
-    #                        '--Geometry', '/media/schmid/One Touch1/Documents/WORK/Projects/Cure/cities/Heraklion.geojson',
+    #                        '--Geometry',
+    #                        '/media/schmid/One Touch1/Documents/WORK/Projects/Cure/cities/Heraklion.geojson',
     #                        '--Resources', '{\"onda_s3\": {\"productType\": \"rbt\"},'
     #                                       '\"wekeo_s2\": {\"processingLevel\": \"level2a\"},'
     #                                       '\"cds_era5\": {\"customcamsDataset\": \"total_column_water_vapour,10m_v_component_of_wind\", \"customformat\": \"grib\"}}',
     #                        '--ID', '123456789'])
+    args = cli.parse_args(['--City', 'Heraklion',
+                           '--Start', '2020-03-01',
+                           '--End', '2020-03-31',
+                           '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
+                           '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
+                           '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
+                           '--ID', '123456789'])
 
     start = time()
 
@@ -344,7 +352,7 @@ if __name__ == "__main__":
                   "Copenhagen": os.path.join(geom_base_directory, "Copenhagen.geojson"),
                   "Heraklion": os.path.join(geom_base_directory, "Heraklion.geojson"),
                   "Sofia": os.path.join(geom_base_directory, "Sofia.geojson")}
-    args.Geometry = geometries[args.City]
+    # args.Geometry = geometries[args.City]
     user_input = UserInput(**vars(args))
 
     for resource, extra_params in user_input.Resources.items():
