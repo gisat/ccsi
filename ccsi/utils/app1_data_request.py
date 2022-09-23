@@ -17,6 +17,7 @@ from termcolor import colored
 
 # constants
 BASE_URL = "http://185.226.13.104"
+BASE_URL = "http://localhost:5000"
 
 
 # helper func
