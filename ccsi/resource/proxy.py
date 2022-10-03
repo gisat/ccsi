@@ -6,7 +6,9 @@ from flask import Response
 from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict
+from datetime import datetime
 
+from ccsi.resource.cache import onda_order_cache
 
 class OrderStatus(Enum):
     PENDING = 1
@@ -32,11 +34,12 @@ class OndaProxy(Proxy):
     def auth(self):
         return HTTPBasicAuth(username=self.user, password=self.pwd)
 
-    def order(self, product_id)-> OrderStatus:
+    def order(self, product_id) -> OrderStatus:
         order = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/Ens.Order'
         response = post(url=order, auth=self.auth)
         if response.status_code == 200:
             msg = self.pending()
+            onda_order_cache.add_order(orderID=product_id, time=datetime.now())
         elif response.status_code == 429:
             msg = self.too_mucch_request()
         elif 500 > response.status_code >= 400:
@@ -49,14 +52,18 @@ class OndaProxy(Proxy):
         response = get(f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})')
         if response.status_code != 200:
             return OrderStatus.FAILED
-        elif response.status_code == 200 and response.json().get('offline'):
+        elif response.status_code == 200 and response.json().get('offline') and not onda_order_cache.exits(product_id):
             return OrderStatus.AVAILABLE
+        elif response.status_code == 200 and response.json().get('offline') and onda_order_cache.exits(product_id):
+            return OrderStatus.PENDING
         elif response.status_code == 200 and response.json().get('downloadable'):
             return OrderStatus.READY
 
     def download(self, product_id):
         url = f'https://catalogue.onda-dias.eu/dias-catalogue/Products({product_id})/$value'
         r = get(url=url, auth=self.auth, stream=True)
+        if onda_order_cache.exits(orderID=product_id):
+            onda_order_cache.del_order(orderID=product_id)
         return Response(r, content_type=r.headers['Content-Type'])
 
     def pending(self, *args, **kwargs):
@@ -69,7 +76,6 @@ class OndaProxy(Proxy):
         return Response("{'status': 'too much requests'}", 429, content_type='application/json')
 
     def process(self, product_id: str):
-
         status = self.check_availibility(product_id)
         func = self.resolve_status(status)
         return func(product_id)

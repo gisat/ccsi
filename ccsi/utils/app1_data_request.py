@@ -210,11 +210,13 @@ def resolve_status(resource: Resource) -> Resource:
 
 
 def download(path: Path, resource: Resource):
-    print(colored(f' {resource.index} requested from {resource.link} : data download start', 'green'))
+    print(colored(f' {resource.index} requested from {resource.title} : data download start', 'green'))
     with open(path / resource.title, 'wb') as fd:
-        for chunk in resource.response.iter_content():
-            fd.write(chunk)
-    print(colored(f' {resource.index} requested from {resource.link} : data download end', 'green'))
+        fd.write(resource.response.content)
+        # for count, chunk in enumerate(resource.response.iter_content()):
+        #     fd.write(chunk)
+        #     print(colored(f' {resource.index} requested from {resource.title} : data download {count} cnunk', 'green'))
+    print(colored(f' {resource.index} requested from {resource.title} : data download end', 'green'))
 
 
 class Downloader(BaseModel):
@@ -223,6 +225,7 @@ class Downloader(BaseModel):
     sleep: int = Field(default=200)
     sleep_step: int = Field(default=5)
     timeout: int = Field(default=12*60)
+    max_worker: int = Field(default=20)
 
     def run(self):
         with ThreadPoolExecutor(max_workers=20) as executor:
@@ -335,13 +338,21 @@ if __name__ == "__main__":
     #                                       '\"wekeo_s2\": {\"processingLevel\": \"level2a\"},'
     #                                       '\"cds_era5\": {\"customcamsDataset\": \"total_column_water_vapour,10m_v_component_of_wind\", \"customformat\": \"grib\"}}',
     #                        '--ID', '123456789'])
+    # args = cli.parse_args(['--City', 'Heraklion',
+    #                        '--Start', '2020-03-01',
+    #                        '--End', '2020-03-31',
+    #                        '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
+    #                        '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
+    #                        '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
+    #                        '--ID', '123456789'])
     args = cli.parse_args(['--City', 'Heraklion',
                            '--Start', '2020-03-01',
                            '--End', '2020-03-31',
                            '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
                            '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
-                           '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
+                           '--Resources', '{"onda_s3": {"productType": "rbt"}}',
                            '--ID', '123456789'])
+
 
     start = time()
 
@@ -374,7 +385,7 @@ if __name__ == "__main__":
         resource_data = requester.run()
 
         # download
-        downloader = Downloader(pool=resource_data, path=output_directory, sleep=8*60, timeout=12*60)
+        downloader = Downloader(pool=resource_data, path=output_directory, sleep=8*60, timeout=12*60, max_worker=1)
         downloader.run()
 
 

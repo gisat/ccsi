@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
+
+from pydantic import BaseModel, Field
 from requests import post, get
 import json
 from marshmallow import fields, post_load
@@ -83,3 +86,22 @@ class CacheContainer(Container):
     def create(self, resource_name, parameters):
         item = self.schema().load(parameters)
         self.update(resource_name, item)
+
+
+class OndaOrderCache(BaseModel):
+    orders: dict = Field(default_factory=dict)
+
+    def exits(self, orderID: str) -> bool:
+        if orderID in self.orders:
+            return True
+        else:
+            return False
+
+    def add_order(self, orderID: str, time: datetime):
+        self.orders.update({orderID: time})
+
+    def del_order(self, orderID: str):
+        self.orders.pop(orderID)
+
+
+onda_order_cache = OndaOrderCache()

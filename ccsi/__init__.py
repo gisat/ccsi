@@ -14,7 +14,7 @@ from ccsi.base import load_yaml, ContainerFactory, Container
 from ccsi.resource.connection import ConnectionSchema
 from ccsi.resource.output import ResourceDescriptionSchema
 from ccsi.config import Config
-from ccsi.cache.cache import CacheSchema
+from ccsi.resource.cache import CacheSchema
 from ccsi.resource.parser import ParserSchema
 from ccsi.resource.translators import TranslatorSchema
 
