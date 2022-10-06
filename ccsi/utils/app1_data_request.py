@@ -231,6 +231,10 @@ class Downloader(BaseModel):
         with ThreadPoolExecutor(max_workers=20) as executor:
             executor.map(self.request_data, self.pool)
 
+    def sequential_run(self):
+        for resource in self.pool:
+            self.request_data(resource)
+
     def request_data(self, resource: Resource) ->None:
         time = 0
         while resource.status in [STATUS.PENDING, STATUS.TOO_MUCH_REQUESTS] or time <= self.timeout:
@@ -391,6 +395,6 @@ if __name__ == "__main__":
 
     end = time()
     print(f'Process time: {end - start} s')
-    first_wvp_date = start_date.replace("-", "") + "T000000"
-    print(first_wvp_date)
+    # first_wvp_date = start_date.replace("-", "") + "T000000"
+    # print(first_wvp_date)
 
