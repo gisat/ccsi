@@ -65,11 +65,7 @@ class OndaProxy(Proxy):
         r = get(url=url, auth=self.auth, stream=True)
         if onda_order_cache.exits(orderID=product_id):
             onda_order_cache.del_order(orderID=product_id)
-
-        with BytesIO() as buf:
-            buf.write(r.content)
-            buf.seek(0)
-        return Response(buf, content_type=r.headers['Content-Type'])
+        return Response(r, content_type=r.headers['Content-Type'])
 
     def pending(self, *args, **kwargs):
         return Response("{'status': 'pending'}", 201, content_type='application/json')
