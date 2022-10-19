@@ -7,6 +7,7 @@ from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict
 from datetime import datetime
+from io import BytesIO
 
 from ccsi.resource.cache import onda_order_cache
 
@@ -64,7 +65,11 @@ class OndaProxy(Proxy):
         r = get(url=url, auth=self.auth, stream=True)
         if onda_order_cache.exits(orderID=product_id):
             onda_order_cache.del_order(orderID=product_id)
-        return Response(r, content_type=r.headers['Content-Type'])
+
+        with BytesIO() as buf:
+            buf.write(r.content)
+            buf.seek(0)
+        return Response(buf, content_type=r.headers['Content-Type'])
 
     def pending(self, *args, **kwargs):
         return Response("{'status': 'pending'}", 201, content_type='application/json')

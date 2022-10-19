@@ -16,7 +16,7 @@ from termcolor import colored
 
 
 # constants
-BASE_URL = "http://185.226.13.104"
+# BASE_URL = "http://185.226.13.104"
 BASE_URL = "http://localhost:5000"
 
 
@@ -350,12 +350,19 @@ if __name__ == "__main__":
     #                        '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
     #                        '--ID', '123456789'])
     args = cli.parse_args(['--City', 'Heraklion',
-                           '--Start', '2020-03-01',
+                           '--Start', '2020-03-25',
                            '--End', '2020-03-31',
                            '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
                            '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
                            '--Resources', '{"onda_s3": {"productType": "rbt"}}',
                            '--ID', '123456789'])
+    # args = cli.parse_args(['--City', 'Heraklion',
+    #                        '--Start', '2020-03-01',
+    #                        '--End', '2020-03-31',
+    #                        '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
+    #                        '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
+    #                        '--Resources', '{"cds_era5": {"customcamsDataset": "total_column_water_vapour,10m_v_component_of_wind", "customformat": "grib"}}',
+    #                        '--ID', '123456789'])
 
 
     start = time()
@@ -391,6 +398,7 @@ if __name__ == "__main__":
         # download
         downloader = Downloader(pool=resource_data, path=output_directory, sleep=8*60, timeout=12*60, max_worker=1)
         downloader.run()
+
 
 
     end = time()

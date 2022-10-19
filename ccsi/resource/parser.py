@@ -1,3 +1,4 @@
+from pathlib import Path
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import make_parser
 from lxml.etree import Element
@@ -51,13 +52,19 @@ def onda_id_to_esn_proxy(text, **ignore):
     return None, {"rel": "enclosure", "type": "application/unknown", "href": f'{enclouser}'}
 
 
+def title_from_link(text, **ignore):
+    return Path(text).name, None
+
+
+
 TAG_SPEC_FUC = {'text_to_enclousure': text2enclousure,
                 'text_to_path': text_to_path,
                 'find_in_dict': find_in_dict,
                 'creodias_media_to_path': creodias_media_to_path,
                 'onda_id_to_enclosuer': onda_id_to_enclousure,
                 'onda_id_to_esn': onda_id_to_esn,
-                'onda_id_to_esn_proxy': onda_id_to_esn_proxy}
+                'onda_id_to_esn_proxy': onda_id_to_esn_proxy,
+                'title_from_link': title_from_link}
 
 
 # class Attrib(BaseModel):
@@ -332,6 +339,8 @@ class CDSAPIParser(Parser):
 
     def parse(self, content):
         self.feed = self._feed()
+        entry = self._entry()
+        self.feed.add_entry(entry)
 
         for parameter_name in self.parameters:
             tag = Tag(source_tag=parameter_name, text=content, **self.parameters[parameter_name])
@@ -339,9 +348,7 @@ class CDSAPIParser(Parser):
                 tag.text = 1
                 self.feed.add_to_head(tag)
             else:
-                entry = self._entry()
                 entry.add_tag(tag)
-                self.feed.add_entry(entry)
         return self.feed
 
 

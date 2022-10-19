@@ -1,12 +1,12 @@
-FROM    osgeo/gdal:latest
+FROM osgeo/gdal:latest
 
 WORKDIR  /usr/src/app
 
-RUN apt update \
-    && apt -y install python3 \
-    && apt -y install python3-pip \
-    && apt -y install libgeos-dev \
-    && apt -y install gdal-bin python3-gdal
+RUN apt-get update \
+    && apt-get -y install python3 \
+    && apt-get -y install python3-pip \
+    && apt-get -y install libgeos-dev \
+    && apt-get -y install gdal-bin python3-gdal
 
 RUN apt -y install libexpat1
 

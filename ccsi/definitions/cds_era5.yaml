@@ -523,3 +523,6 @@ parser:
     downloadUri:
       tag: link
       tag_spec: text_to_enclousure
+    title:
+      tag: title
+      tag_spec: title_from_link
