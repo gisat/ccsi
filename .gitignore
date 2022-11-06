@@ -3,7 +3,8 @@
 /ccsi/hands_on/hands_on_s3.py
 /ccsi/hands_on/handson_era5.py
 /ccsi/hands_on/hands_on_proxy.py
-/ccsi/hands_on/try_wekeo_clms.py
+/ccsi/hands_on/hands_on_wekeo_clms.py
 /ccsi/hands_on/wekeo_s2.py
 /ccsi/hands_on/
 /venv/
+/ccsi/.pytest_cache/

@@ -59,23 +59,23 @@ parameters:
       fpar:
         adapter_name: wekeo_hrvpp
         type: FAPAR
-        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
+        dataset: EO:EEA:DAT:CLMS_HRVPP_VI
       lai:
         adapter_name: wekeo_hrvpp
         type: LAI
-        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
+        dataset: EO:EEA:DAT:CLMS_HRVPP_VI
       ndvi:
         adapter_name: wekeo_hrvpp
         type: NDVI
-        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
+        dataset: EO:EEA:DAT:CLMS_HRVPP_VI
       ppi:
         adapter_name: wekeo_hrvpp
         type: PPI
-        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
+        dataset: EO:EEA:DAT:CLMS_HRVPP_VI
       qflag2:
         adapter_name: wekeo_hrvpp
         type: QFLAG2
-        dataset: EO:HRVPP:DAT:VEGETATION-INDICES
+        dataset: EO:EEA:DAT:CLMS_HRVPP_VI
   startIndex:
     name: page
     typ: integer
