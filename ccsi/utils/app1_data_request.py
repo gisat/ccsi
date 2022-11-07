@@ -344,7 +344,7 @@ if __name__ == "__main__":
     #                        '--ID', '123456789'])
     args = cli.parse_args(['--City', 'Heraklion',
                            '--Start', '2021-05-01',
-                           '--End', '2021-08-30',
+                           '--End', '2021-09-30',
                            '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
                            '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
                            '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',

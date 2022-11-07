@@ -48,7 +48,8 @@ class WekeoConnection(Connection):
     def send_query(self, query: dict):
         """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
         query_params = query.pop('query_params', None)
-        size, page = query_params['size'], query_params['page']
+        size, startIndex = query_params['size'], query_params['startIndex']
+        page = startIndex // size
         jobId = self.send_datarequest(query)
         status_code,  response = self.datarequest_status(jobId)
 

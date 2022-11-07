@@ -43,7 +43,7 @@ parameters:
       level2a: LEVEL2A
       level2ap: LEVEL2AP
   startIndex:
-    name: page
+    name: startIndex
     typ: integer
     target: query_params
     tranfunc:
