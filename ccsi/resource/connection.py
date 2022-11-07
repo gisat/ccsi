@@ -48,11 +48,22 @@ class WekeoConnection(Connection):
     def send_query(self, query: dict):
         """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
         query_params = query.pop('query_params', None)
+        size, page = query_params['size'], query_params['page']
         jobId = self.send_datarequest(query)
         status_code,  response = self.datarequest_status(jobId)
+
+        content = []
         if status_code == 200:
-            result = self.datarequest_results(jobId, query_params)
-            result['content'] = self.send_orders(result['content'], jobId)
+            for i in range(page*size, (page+1)*size):
+                order = self.datarequest_results(jobId, i, 1)
+                if order:
+                    result = order.copy()
+                    order['content'][0]['downloadUri'] = self.create_downloaduri(url=order['content'][0]['url'], jobId=jobId)
+                    content += order['content']
+                else:
+                    break
+
+            result['content'] = content
             return status_code, result
         else:
             return status_code, response.content
@@ -78,7 +89,8 @@ class WekeoConnection(Connection):
                 self.get_authorization_header()
                 return self.datarequest_status(self, jobId)
 
-    def datarequest_results(self, jobId, params):
+    def datarequest_results(self, jobId, page, size):
+        params = {'page': page, 'size': size}
         response = get(self.url + f'/datarequest/jobs/{jobId}/result', headers=self.auth,
                        params=params)
         if response.status_code == 200:
@@ -87,11 +99,9 @@ class WekeoConnection(Connection):
             self.get_authorization_header()
             return self.datarequest_results(jobId, params)
 
-    def send_orders(self, resluts: list, jobId: str):
-        for i in range(len(resluts)):
-            body = {"jobId": jobId, "uri": resluts[i]['url']}
-            resluts[i]['downloadUri'] = f'{self.url}/dataorder/download/{self.send_order(body)}'
-        return resluts
+    def create_downloaduri(self, url: str, jobId: str):
+        body = {"jobId": jobId, "uri": url}
+        return f'{self.url}/dataorder/download/{self.send_order(body)}'
 
     def send_order(self, order):
         response = post(self.url + '/dataorder', headers=self.auth, json=order)
