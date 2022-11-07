@@ -52,6 +52,8 @@ class WekeoConnection(Connection):
         page = startIndex // size
         jobId = self.send_datarequest(query)
         status_code,  response = self.datarequest_status(jobId)
+        result = {'content': [],
+                  'totItems': 0}
 
         content = []
         if status_code == 200:
