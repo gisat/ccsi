@@ -17,6 +17,7 @@ class Config:
 
     CDS_KEY = '47967:580c1363-60a1-456d-8fd8-05d902c854d3'
 
+
     connections_repeat = 3
 
     NAMESPACES = {'atom': {'atom': 'http://a9.com/-/spec/opensearch/1.1/'},

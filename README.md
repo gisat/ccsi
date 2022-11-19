@@ -56,13 +56,13 @@ Implemented OpenSearch protocol is self-descriptive. Each endpoint exposes its o
 
 URI for all description document describing search parameter for querying all catalogues/resources is a form:
 
-```<hostname>/<path>/<response from>/search/description.xml``` 
+```<hostname>/<path>/response from>/search/description.xml``` 
 
 This description document provide register of all parameters that are accept by global endpoint
 
 URI for all description document describing search parameter for querying specific catalogues/resources is in a form:
 
-``` <hostname>/<path>/<response from>/<recourse>/search/description.xml``` 
+``` <hostname>/<path>>/<recourse>/search/description.xml``` 
 
 This description document provides a register of recourse specific parameters that are accepted by endpoint.
 

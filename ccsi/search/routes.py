@@ -81,9 +81,8 @@ class AllSearchDescription(Resource):
     def __init__(self, **kwargs):
         self.description = kwargs['descriptions']
 
-    def get(self, form):
-        check_form(form)
-        url = f'{request.url_root}{form}/search'
+    def get(self):
+        url = f'{request.url_root}/search'
         return Response(self.description.build_description('ccsi', url),
                         mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
@@ -141,15 +140,14 @@ class ResourceSearchDescription(Resource):
     def __init__(self, **kwargs):
         self.description = kwargs['description']
 
-    def get(self, resource_name, form):
-        check_form(form)
+    def get(self, resource_name):
         exist(resource_name)
-        url = f'{request.url_root}{resource_name}/{form}/search'
+        url = f'{request.url_root}{resource_name}/search'
         return Response(self.description.build_description(resource_name, url),
                         mimetype='application/xml', content_type='text/xml; charset=utf-8')
 
 
-api.add_resource(ResourceSearchDescription, '/<string:resource_name>/<string:form>/search/description.xml',
+api.add_resource(ResourceSearchDescription, '/<string:resource_name>/search/description.xml',
                  resource_class_kwargs={'description': storage.description})
 
 

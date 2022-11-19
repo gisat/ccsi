@@ -342,13 +342,13 @@ if __name__ == "__main__":
     #                                       '\"wekeo_s2\": {\"processingLevel\": \"level2a\"},'
     #                                       '\"cds_era5\": {\"customcamsDataset\": \"total_column_water_vapour,10m_v_component_of_wind\", \"customformat\": \"grib\"}}',
     #                        '--ID', '123456789'])
-    args = cli.parse_args(['--City', 'Heraklion',
-                           '--Start', '2021-05-01',
-                           '--End', '2021-09-30',
-                           '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
-                           '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
-                           '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
-                           '--ID', '123456789'])
+    # args = cli.parse_args(['--City', 'Heraklion',
+    #                        '--Start', '2021-05-01',
+    #                        '--End', '2021-09-30',
+    #                        '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
+    #                        '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
+    #                        '--Resources', '{"wekeo_s2": {"processingLevel": "level2a"}}',
+    #                        '--ID', '123456789'])
     # args = cli.parse_args(['--City', 'Heraklion',
     #                        '--Start', '2020-03-25',
     #                        '--End', '2020-03-31',
@@ -356,13 +356,13 @@ if __name__ == "__main__":
     #                        '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
     #                        '--Resources', '{"onda_s3": {"productType": "rbt"}}',
     #                        '--ID', '123456789'])
-    # args = cli.parse_args(['--City', 'Heraklion',
-    #                        '--Start', '2020-03-01',
-    #                        '--End', '2020-03-31',
-    #                        '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
-    #                        '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
-    #                        '--Resources', '{"cds_era5": {"customcamsDataset": "total_column_water_vapour,10m_v_component_of_wind", "customformat": "grib"}}',
-    #                        '--ID', '123456789'])
+    args = cli.parse_args(['--City', 'Heraklion',
+                           '--Start', '2020-03-01',
+                           '--End', '2020-03-31',
+                           '--Output', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion',
+                           '--Geometry', 'C:\michal\gisat\projects\Cure\\app\CURE_APP1_AOIs\Heraklion\Heraklion_wgs.geojson',
+                           '--Resources', '{"cds_era5": {"customcamsDataset": "total_column_water_vapour,10m_v_component_of_wind", "customformat": "grib"}}',
+                           '--ID', '123456789'])
 
 
     start = time()
