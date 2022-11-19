@@ -43,7 +43,7 @@ where:
 
 ```<hostname>/<path>```  is service root
 
-```<response from>``` is the requested format of responses and has two options json or atom. 
+```<response form>``` is the requested format of responses and has two options json or atom. 
 
 URI for response in atom format:```<hostname>/<path>/atom/search?```
 
@@ -56,13 +56,13 @@ Implemented OpenSearch protocol is self-descriptive. Each endpoint exposes its o
 
 URI for all description document describing search parameter for querying all catalogues/resources is a form:
 
-```<hostname>/<path>/response from>/search/description.xml``` 
+```<hostname>/<path>/<response form>/search/description.xml``` 
 
 This description document provide register of all parameters that are accept by global endpoint
 
 URI for all description document describing search parameter for querying specific catalogues/resources is in a form:
 
-``` <hostname>/<path>>/<recourse>/search/description.xml``` 
+``` <hostname>/<path>>/<recourse>/<response form>/search/description.xml``` 
 
 This description document provides a register of recourse specific parameters that are accepted by endpoint.
 

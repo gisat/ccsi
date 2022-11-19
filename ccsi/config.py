@@ -1,6 +1,6 @@
 class Config:
 
-    DEBUG = False
+    DEBUG = True
 
     RESPONSE_FORM = ['atom', 'json']
 
