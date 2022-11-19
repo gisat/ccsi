@@ -48,8 +48,8 @@ class WekeoConnection(Connection):
     def send_query(self, query: dict):
         """sending the query to resource. query is ad dict with resource compatible parameters and respective values"""
         query_params = query.pop('query_params', None)
-        size, startIndex = query_params['size'], query_params['startIndex']
-        page = startIndex // size
+        maxRecords, startIndex = query_params['maxRecords'], query_params['startIndex']
+        page = startIndex // maxRecords
         jobId = self.send_datarequest(query)
         status_code,  response = self.datarequest_status(jobId)
         result = {'content': [],
@@ -57,9 +57,9 @@ class WekeoConnection(Connection):
 
         content = []
         if status_code == 200:
-            for i in range(page*size, (page+1)*size):
+            for i in range(page*maxRecords, (page+1)*maxRecords):
                 order = self.datarequest_results(jobId, i, 1)
-                if order:
+                if order and len(order.get('content')) > 0:
                     result = order.copy()
                     order['content'][0]['downloadUri'] = self.create_downloaduri(url=order['content'][0]['url'], jobId=jobId)
                     content += order['content']

@@ -2,8 +2,6 @@ from pydantic import BaseModel, Field
 from typing import Type, Any
 from abc import ABC, abstractmethod
 
-from ccsi.resource.parameters import ResourceParameters
-
 
 class AdapterABC(ABC, BaseModel):
 
@@ -11,8 +9,7 @@ class AdapterABC(ABC, BaseModel):
         arbitrary_types_allowed = True
 
 
-from ccsi.resource.adapters.wekeo import WekeoHRVPP
-
+from ccsi.resource.adapters.wekeo import WekeoHRVPP, WekeoCLMSDEM
 
 class AdapterFactory(BaseModel):
     adapters: dict = Field(default_factory=dict)
@@ -26,3 +23,4 @@ class AdapterFactory(BaseModel):
 
 adapters_factory = AdapterFactory()
 adapters_factory.add(adapter_name='wekeo_hrvpp', adpter=WekeoHRVPP)
+adapters_factory.add(adapter_name='wekeo_clms_dem', adpter=WekeoCLMSDEM)

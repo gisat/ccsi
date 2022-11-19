@@ -65,8 +65,10 @@ class WekeoTranslator(TranslatorABC):
                 pass
             else:
                 getattr(self, parameter.definitions['target'])(parameter.transform(value)[parameter.name])
-        return self.processed_query
 
+        self.processed_query.update({'query_params': {'startIndex': query.get('startIndex'),
+                                                      'maxRecords': query.get('maxRecords')}})
+        return self.processed_query
     def get_mapped_pairs(self, resource_name):
         return self.resources_parameters.get_item(resource_name).get_mapped_pairs()
 

@@ -76,6 +76,26 @@ parameters:
         adapter_name: wekeo_hrvpp
         type: QFLAG2
         dataset: EO:EEA:DAT:CLMS_HRVPP_VI
+      dem_v1:
+        adapter_name: wekeo_clms_dem
+        type: 'EU DEM v1.0'
+        dataset: EO:CLMS:DAT:EU-DEM
+      dem_v1_1:
+        adapter_name: wekeo_clms_dem
+        type: 'EU DEM v1.1'
+        dataset: EO:CLMS:DAT:EU-DEM
+      dem_aspect:
+        adapter_name: wekeo_clms_dem
+        type: hillshade
+        dataset: EO:CLMS:DAT:EU-DEM
+      dem_hillshade:
+        adapter_name: wekeo_clms_dem
+        type: hillshade
+        dataset: EO:CLMS:DAT:EU-DEM
+      dem_slope:
+        adapter_name: wekeo_clms_dem
+        type: slope
+        dataset: EO:CLMS:DAT:EU-DEM
   startIndex:
     name: page
     typ: integer

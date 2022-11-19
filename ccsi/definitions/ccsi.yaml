@@ -409,6 +409,11 @@ parameters:
       - fapar
       - ndvi
       - qflag2
+      - dem_v1
+      - dem_v1_1
+      - dem_aspect
+      - dem_hillshade
+      - dem_slope
   processingLevel:
     name: processingLevel
     typ: string

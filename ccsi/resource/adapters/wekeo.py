@@ -14,6 +14,7 @@ class BoundingBoxValues(BaseModel):
     def set_bbox(cls,  value):
         return list(map(float, value.split(',')))
 
+
     def dict(self)-> List[dict]:
         return [{"name": self.name, "bbox": self.bbox}]
 
@@ -42,30 +43,52 @@ class WekeoHRVPP(AdapterABC):
         definitions = values.pop('definition')
         transformed = {k: v for parameter, value in values.items() for k, v in
                        definitions.get_parameter(parameter).transform(value).items()}
+        query = {'datasetId': transformed.get('productType').get('dataset'),
+                 'query_params': {'maxRecords': values.get('maxRecords'),
+                                  'startIndex': values.get('startIndex')}}
 
-        boundingBoxValues = BoundingBoxValues(name='bbox', bbox=transformed.get('bbox'))
+        if transformed.get('bbox'):
+            boundingBoxValues = BoundingBoxValues(name='bbox', bbox=transformed.get('bbox'))
+            query.update({'boundingBoxValues': boundingBoxValues.dict()})
 
-        dateRangeSelectValues = WekeoMultipleChoice()
-        dateRangeSelectValues.items.append({'name': 'temporal_interval',
-                                            'start': transformed.get('start'),
-                                            'end': transformed.get('end')})
+        if transformed.get('start') and transformed.get('end'):
+            dateRangeSelectValues = WekeoMultipleChoice()
+            dateRangeSelectValues.items.append({'name': 'temporal_interval',
+                                                'start': transformed.get('start'),
+                                                'end': transformed.get('end')})
+            query.update({'dateRangeSelectValues': dateRangeSelectValues.dict()})
 
         stringChoiceValues = WekeoMultipleChoice()
         stringChoiceValues.items.append({'name': 'productType', 'value': transformed.get('productType').get('type')})
         stringChoiceValues.items.append({'name': 'platformSerialIdentifier', 'value': transformed.get('platformSerialIdentifier')})
+        query.update({'stringChoiceValues': stringChoiceValues.dict()})
 
         stringInputValues = WekeoMultipleChoice()
         stringInputValues.items.append({'name': 'uid', 'value': transformed.get('uid')})
         stringInputValues.items.append({'name': 'tileId', 'value': transformed.get('tileId')})
         stringInputValues.items.append({'name': 'name', 'value': transformed.get('name')})
         stringInputValues.items.append({'name': 'productVersion', 'value': transformed.get('productVersion')})
+        query.update({'stringInputValues': stringInputValues.dict()})
 
-        return {'datasetId': transformed.get('productType').get('dataset'),
-                'boundingBoxValues': boundingBoxValues.dict(),
-                'dateRangeSelectValues': dateRangeSelectValues.dict(),
-                'stringChoiceValues': stringChoiceValues.dict(),
-                'stringInputValues': stringInputValues.dict(),
-                'query_params': {'size': transformed.get('size'),
-                                 'page': transformed.get('page')}}
+        return query
 
 
+class WekeoCLMSDEM(AdapterABC):
+    datasetId: Optional[str]
+    stringChoiceValues: Optional[List[dict]]
+    query_params: dict
+
+    @root_validator(pre=True)
+    def set_values(cls, values):
+        definitions = values.pop('definition')
+        transformed = {k: v for parameter, value in values.items() for k, v in
+                       definitions.get_parameter(parameter).transform(value).items()}
+        query = {'datasetId': transformed.get('productType').get('dataset'),
+                 'query_params': {'maxRecords': values.get('maxRecords'),
+                                  'startIndex': values.get('startIndex')}}
+
+
+        stringChoiceValues = WekeoMultipleChoice()
+        stringChoiceValues.items.append({'name': 'product_type', 'value': transformed.get('productType').get('type')})
+        query.update({'stringChoiceValues': stringChoiceValues.dict()})
+        return query
